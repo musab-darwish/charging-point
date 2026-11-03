@@ -57,7 +57,14 @@
                                 <p class="font-bold">{{ $user->name }}</p>
                                 <p class="text-xs text-ink-muted">{{ $role }}</p>
                             </div>
-                            <form method="POST" action="{{ route('logout') }}" class="border-t border-rule pt-2">
+                            @can('manage-users')
+                                <a href="{{ route('users.index') }}" class="flex h-11 items-center gap-2 rounded-xl px-3 font-bold transition hover:bg-paper">
+                                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="4" /><path d="M3 20c0-3.5 3-6 7-6 1.4 0 2.7.3 3.8.9" /><path d="M18 14v6M15 17h6" /></svg>
+                                    المستخدمون
+                                </a>
+                            @endcan
+
+                            <form method="POST" action="{{ route('logout') }}" class="mt-2 border-t border-rule pt-2">
                                 @csrf
                                 <button type="submit" class="flex h-11 w-full items-center gap-2 rounded-xl px-3 font-bold text-debit transition hover:bg-debit-soft">
                                     <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" /><path d="M10 17l-5-5 5-5" /><path d="M5 12h11" /></svg>

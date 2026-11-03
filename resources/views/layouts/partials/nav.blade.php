@@ -26,3 +26,17 @@
     </x-slot:icon>
     الحوالات
 </x-nav-item>
+
+{{-- Owner tools: in the sidebar only; on phones they live in the user menu --}}
+@if ($layout === 'side')
+    @can('manage-users')
+        <p class="mb-1 mt-6 px-3 text-xs font-bold text-ink-muted">الإدارة</p>
+
+        <x-nav-item layout="side" :href="route('users.index')" :active="request()->routeIs('users.*')">
+            <x-slot:icon>
+                <svg class="size-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="4" /><path d="M3 20c0-3.5 3-6 7-6 1.4 0 2.7.3 3.8.9" /><path d="M18 14v6M15 17h6" /></svg>
+            </x-slot:icon>
+            المستخدمون
+        </x-nav-item>
+    @endcan
+@endif
