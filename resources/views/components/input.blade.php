@@ -1,4 +1,4 @@
-@props(['name', 'label', 'type' => 'text', 'value' => null, 'hint' => null])
+@props(['name', 'label', 'type' => 'text', 'value' => null, 'hint' => null, 'keepOld' => true])
 
 @php
     $id = $attributes->get('id', $name);
@@ -12,7 +12,7 @@
 
     <div class="relative">
         <input id="{{ $id }}" name="{{ $name }}" type="{{ $type }}"
-            @unless ($isPassword) value="{{ old($name, $value) }}" @endunless
+            @unless ($isPassword) value="{{ $keepOld ? old($name, $value) : $value }}" @endunless
             @if ($hasError) aria-invalid="true" @endif
             @if ($describedBy) aria-describedby="{{ $describedBy }}" @endif
             {{ $attributes->except('id')->class([

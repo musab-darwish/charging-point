@@ -100,6 +100,70 @@
     }
 }
 
+/* Custom cursor (mouse only, see resources/js/behaviors/cursor.js) */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+    cursor: none !important;
+}
+
+html.has-custom-cursor :is(input:not([type='checkbox'], [type='radio'], [type='submit'], [type='button']), textarea) {
+    cursor: text !important;
+}
+
+.cursor-dot,
+.cursor-ring {
+    position: fixed;
+    inset: 0 auto auto 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms ease-out;
+    will-change: transform;
+}
+
+.cursor-dot[data-visible='true'],
+.cursor-ring[data-visible='true'] {
+    opacity: 1;
+}
+
+.cursor-dot::after,
+.cursor-ring::after {
+    content: '';
+    position: absolute;
+    border-radius: 9999px;
+    transition:
+        transform 220ms var(--ease-out-soft),
+        background-color 200ms ease-out,
+        border-color 200ms ease-out;
+}
+
+.cursor-dot::after {
+    inset: -4px;
+    background: var(--color-debit);
+}
+
+.cursor-ring::after {
+    inset: -17px;
+    border: 1.5px solid color-mix(in oklab, var(--color-ink) 55%, transparent);
+}
+
+.cursor-ring[data-hover='true']::after {
+    transform: scale(1.45);
+    border-color: var(--color-debit);
+    background: color-mix(in oklab, var(--color-debit) 8%, transparent);
+}
+
+.cursor-ring[data-pressed]::after {
+    transform: scale(1.9);
+    border-color: var(--color-debit);
+    background: color-mix(in oklab, var(--color-debit) 14%, transparent);
+    transition-duration: 120ms;
+}
+
+.cursor-dot[data-pressed]::after {
+    transform: scale(0.6);
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     ::before,
