@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use RuntimeException;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +16,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $owner = config('daftar.owner');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        foreach (['name', 'username', 'password'] as $field) {
+            if (blank($owner[$field])) {
+                throw new RuntimeException('SEED_OWNER_'.strtoupper($field).' is missing in .env');
+            }
+        }
+
+        User::updateOrCreate(
+            ['username' => $owner['username']],
+            [
+                'name' => $owner['name'],
+                'password' => $owner['password'],
+                'is_owner' => true,
+            ],
+        );
     }
 }
