@@ -4,9 +4,16 @@
 
 @section('content')
     <div class="stagger space-y-6">
-        <header>
-            <h1 class="text-3xl font-extrabold">المستخدمون</h1>
-            <p class="mt-2 text-ink-muted">من يستطيع الدخول إلى النظام. المستخدم الموقوف لا يستطيع الدخول، وتبقى حركاته مسجّلة باسمه.</p>
+        <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+                <h1 class="text-3xl font-extrabold">المستخدمون</h1>
+                <p class="mt-2 text-ink-muted">من يستطيع الدخول إلى النظام. المستخدم الموقوف لا يستطيع الدخول، وتبقى حركاته مسجّلة باسمه.</p>
+            </div>
+
+            <a href="{{ route('users.create') }}" class="inline-flex h-13 shrink-0 items-center justify-center gap-2 rounded-xl bg-ink px-5 font-bold text-sheet transition duration-150 hover:bg-ink-deep active:scale-[.97]">
+                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                إضافة مستخدم
+            </a>
         </header>
 
         <ul class="divide-y divide-rule overflow-hidden rounded-2xl border border-rule bg-white">
