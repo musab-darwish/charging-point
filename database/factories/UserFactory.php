@@ -28,7 +28,18 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'username' => fake()->unique()->userName(),
             'password' => static::$password ??= Hash::make('password'),
+            'is_owner' => false,
             'remember_token' => Str::random(10),
         ];
+    }
+
+    /**
+     * Indicate that the user is the owner.
+     */
+    public function owner(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_owner' => true,
+        ]);
     }
 }
