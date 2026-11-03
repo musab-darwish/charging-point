@@ -10,7 +10,7 @@ export default defineConfig({
             refresh: true,
             fonts: [
                 bunny('Tajawal', {
-                    weights: [400, 500, 700],
+                    weights: [400, 500, 700, 800],
                 }),
             ],
         }),

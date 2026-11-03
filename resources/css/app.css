@@ -6,4 +6,14 @@
 @theme {
     --font-sans: 'Tajawal', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Daftar identity: ledger paper, ink, and the red/blue pens */
+    --color-paper: #E6EBE1;
+    --color-sheet: #F5F7F2;
+    --color-ink: #17251F;
+    --color-ink-muted: #4F5E56;
+    --color-rule: #C9D4C4;
+    --color-rule-strong: #A9B7A3;
+    --color-debit: #B3261E;
+    --color-credit: #1F3A93;
 }

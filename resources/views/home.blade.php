@@ -3,17 +3,43 @@
 @section('title', 'الرئيسية')
 
 @section('content')
-    <h1 class="text-2xl font-bold">أهلاً بنقطة الشحن</h1>
-    <p class="mt-2 text-gray-600">صفحة تجربة للقالب: الاتجاه، والخط، وTailwind.</p>
+    <h1 class="text-2xl font-bold">أهلاً بدفتر</h1>
+    <p class="mt-1 text-ink-muted">صفحة تجربة للهوية: الألوان، والخط، والاتجاه.</p>
 
-    <div class="mt-6 rounded-lg border border-gray-200 bg-white p-4">
-        <div class="flex items-center justify-between">
-            <span>رصيد تجريبي</span>
-            <span class="font-bold">25.50 ₪</span>
+    <div class="mt-6">
+        <span class="text-sm font-medium text-ink-muted">الرصيد · عليه</span>
+        <div class="flex items-baseline gap-1.5 text-debit">
+            <span class="text-5xl font-extrabold tabular-nums">47.50</span>
+            <span class="text-2xl font-bold">₪</span>
         </div>
+        <div class="mt-1 h-[7px] w-36 border-y-2 border-debit"></div>
+    </div>
 
-        <p class="mt-3 border-s-4 border-amber-400 ps-3 text-sm text-gray-600">
-            هاد الخط الأصفر لازم يطلع على اليمين.
-        </p>
+    <div class="mt-6 flex gap-3">
+        <button type="button" class="h-13 flex-1 rounded-lg bg-ink text-lg font-bold text-sheet">+ عليه</button>
+        <button type="button" class="h-13 flex-1 rounded-lg border-2 border-credit text-lg font-bold text-credit">دفعة</button>
+    </div>
+
+    <div class="mt-8 border-b border-rule">
+        <div class="flex h-16 items-center justify-between border-t border-rule">
+            <div>
+                <p class="font-medium">شحن جوال مع شاحن</p>
+                <p class="text-xs text-ink-muted">اليوم · 14:20</p>
+            </div>
+            <div class="text-end text-debit">
+                <p class="font-bold tabular-nums">1.00</p>
+                <p class="text-xs font-medium">عليه</p>
+            </div>
+        </div>
+        <div class="flex h-16 items-center justify-between border-t border-rule">
+            <div>
+                <p class="font-medium">دفعة كاش</p>
+                <p class="text-xs text-ink-muted">أمس · 19:40</p>
+            </div>
+            <div class="text-end text-credit">
+                <p class="font-bold tabular-nums">20.00</p>
+                <p class="text-xs font-medium">دفع</p>
+            </div>
+        </div>
     </div>
 @endsection

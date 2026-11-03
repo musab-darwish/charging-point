@@ -4,15 +4,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>@yield('title', config('app.name'))</title>
+        <title>@hasSection('title')@yield('title') · @endif{{ config('app.name') }}</title>
 
         @fonts
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
-        <header class="border-b border-gray-200 bg-white">
-            <div class="mx-auto max-w-3xl px-4 py-3">
-                <a href="{{ url('/') }}" class="text-lg font-bold">{{ config('app.name') }}</a>
+    <body class="min-h-screen bg-sheet text-ink antialiased">
+        <header class="border-b border-rule">
+            <div class="mx-auto flex h-14 max-w-3xl items-center px-4">
+                <a href="{{ url('/') }}" class="text-2xl font-extrabold">{{ config('app.name') }}</a>
             </div>
         </header>
 
