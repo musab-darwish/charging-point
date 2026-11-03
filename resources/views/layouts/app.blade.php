@@ -11,8 +11,26 @@
     </head>
     <body class="min-h-screen bg-sheet text-ink antialiased">
         <header class="border-b border-rule">
-            <div class="mx-auto flex h-14 max-w-3xl items-center px-4">
+            <div class="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
                 <a href="{{ url('/') }}" class="text-2xl font-extrabold">{{ config('app.name') }}</a>
+
+                @auth
+                    <div class="flex items-center gap-1">
+                        <span class="text-sm text-ink-muted">{{ auth()->user()->name }}</span>
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="flex h-11 items-center gap-1.5 rounded-lg px-3 text-sm font-bold hover:bg-paper">
+                                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"></path>
+                                    <path d="M10 17l-5-5 5-5"></path>
+                                    <path d="M5 12h11"></path>
+                                </svg>
+                                خروج
+                            </button>
+                        </form>
+                    </div>
+                @endauth
             </div>
         </header>
 
