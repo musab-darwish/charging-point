@@ -76,7 +76,7 @@
                     </details>
                 </header>
 
-                <main class="mx-auto w-full max-w-5xl px-4 pb-28 pt-6 sm:px-6 lg:px-12 lg:pb-14 lg:pt-12">
+                <main class="mx-auto w-full max-w-7xl px-4 pb-28 pt-6 sm:px-6 lg:px-10 lg:pb-12 lg:pt-8 xl:px-14">
                     @yield('content')
                 </main>
             </div>
