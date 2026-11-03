@@ -13,6 +13,9 @@
     --color-ink: #17251F;
     --color-ink-deep: #0B1511;
     --color-ink-muted: #4F5E56;
+    --color-brand: #1E5B43;
+    --color-brand-deep: #164533;
+    --color-brand-soft: #DCEBE2;
     --color-rule: #C9D4C4;
     --color-rule-strong: #A9B7A3;
     --color-debit: #B3261E;
@@ -84,12 +87,12 @@
     }
 
     ::selection {
-        background: var(--color-ink);
-        color: var(--color-sheet);
+        background: var(--color-brand);
+        color: #fff;
     }
 
     :focus-visible {
-        outline: 2px solid var(--color-ink);
+        outline: 2px solid var(--color-brand);
         outline-offset: 2px;
     }
 
@@ -144,7 +147,7 @@ html.has-custom-cursor :is(input:not([type='checkbox'], [type='radio'], [type='s
 
 .cursor-ring::after {
     inset: -17px;
-    border: 1.5px solid color-mix(in oklab, var(--color-ink) 55%, transparent);
+    border: 1.5px solid color-mix(in oklab, var(--color-brand) 60%, transparent);
 }
 
 .cursor-ring[data-hover='true']::after {

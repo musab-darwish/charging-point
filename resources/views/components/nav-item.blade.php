@@ -13,9 +13,9 @@
         'relative flex items-center transition duration-150',
         'h-11 gap-3 rounded-xl px-3 text-[15px]' => $side,
         'h-full flex-col justify-center gap-1 pt-1 text-xs' => ! $side,
-        'bg-ink font-bold text-sheet' => $side && $active,
+        'bg-brand font-bold text-white' => $side && $active,
         'font-medium text-ink hover:bg-paper' => $side && ! $active && ! $soon,
-        'font-bold text-ink' => ! $side && $active,
+        'font-bold text-brand' => ! $side && $active,
         'font-medium text-ink-muted' => ! $side && ! $active && ! $soon,
         'cursor-default font-medium text-ink-muted/60' => $soon,
     ]) }}>

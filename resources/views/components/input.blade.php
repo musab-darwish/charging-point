@@ -18,7 +18,7 @@
             {{ $attributes->except('id')->class([
                 'block h-13 w-full rounded-xl border bg-white px-4 text-lg text-ink transition duration-150',
                 'placeholder:text-ink-muted/60 focus:outline-none focus:ring-4',
-                'border-rule-strong hover:border-ink-muted focus:border-ink focus:ring-ink/10' => ! $hasError,
+                'border-rule-strong hover:border-ink-muted focus:border-brand focus:ring-brand/15' => ! $hasError,
                 'border-debit focus:border-debit focus:ring-debit/15' => $hasError,
                 'pe-13' => $isPassword,
             ]) }}>

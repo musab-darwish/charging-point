@@ -10,13 +10,15 @@
         @foreach ($messages as $kind => $message)
             <div data-flash role="{{ $kind === 'error' ? 'alert' : 'status' }}" @class([
                 'pointer-events-auto flex w-full max-w-md animate-drop items-center gap-3 rounded-xl py-2 ps-4 pe-2 text-[15px] font-bold shadow-lg shadow-ink/10',
-                'bg-ink text-sheet' => $kind === 'success',
+                'bg-brand text-white shadow-brand/25' => $kind === 'success',
                 'bg-debit-soft text-debit' => $kind === 'error',
             ])>
                 @if ($kind === 'success')
-                    <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M5 12l5 5 9-10" />
-                    </svg>
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/20">
+                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M5 12l5 5 9-10" />
+                        </svg>
+                    </span>
                 @else
                     <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
                         <circle cx="12" cy="12" r="9" />

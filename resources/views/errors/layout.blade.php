@@ -11,7 +11,7 @@
             <p class="mt-5 leading-relaxed text-ink-muted">@yield('message')</p>
 
             <div>
-                <a href="{{ url('/') }}" class="mt-8 inline-flex h-13 items-center gap-2 rounded-xl bg-ink px-5 font-bold text-sheet transition duration-150 hover:bg-ink-deep active:scale-[.97]">
+                <a href="{{ url('/') }}" class="mt-8 inline-flex h-13 items-center gap-2 rounded-xl bg-brand px-5 font-bold text-white transition duration-150 hover:bg-brand-deep active:scale-[.97]">
                     العودة إلى الرئيسية
                 </a>
             </div>

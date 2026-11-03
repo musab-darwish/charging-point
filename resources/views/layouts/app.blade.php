@@ -24,7 +24,7 @@
                 </nav>
 
                 <div class="mt-auto flex items-center gap-3 border-t border-rule px-2 pt-4">
-                    <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-ink text-base font-bold text-sheet">{{ $initial }}</span>
+                    <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand text-base font-bold text-white">{{ $initial }}</span>
                     <div class="min-w-0 flex-1">
                         <p class="truncate font-bold">{{ $user->name }}</p>
                         <p class="text-xs text-ink-muted">{{ $role }}</p>
@@ -49,7 +49,7 @@
                     <details class="group relative">
                         <summary class="flex h-11 list-none items-center gap-2 rounded-xl ps-2 pe-1 [&::-webkit-details-marker]:hidden">
                             <span class="text-sm font-medium text-ink-muted">{{ $user->name }}</span>
-                            <span class="flex size-9 items-center justify-center rounded-full bg-ink text-sm font-bold text-sheet">{{ $initial }}</span>
+                            <span class="flex size-9 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">{{ $initial }}</span>
                         </summary>
 
                         <div class="absolute end-0 top-full mt-2 w-60 animate-drop rounded-2xl border border-rule bg-white p-2 shadow-xl shadow-ink/10">

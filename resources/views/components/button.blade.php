@@ -2,7 +2,7 @@
 
 @php
     $variants = [
-        'primary' => 'bg-ink text-sheet hover:bg-ink-deep',
+        'primary' => 'bg-brand text-white hover:bg-brand-deep',
         'secondary' => 'border-2 border-ink text-ink hover:bg-paper',
         'credit' => 'bg-credit text-white hover:bg-credit/90',
         'debit' => 'bg-debit text-white hover:bg-debit/90',

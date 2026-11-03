@@ -27,11 +27,11 @@ return [
     'lowercase' => 'يجب أن يُكتب :attribute بأحرف صغيرة.',
     'max' => [
         'numeric' => 'يجب ألا يزيد :attribute عن :max.',
-        'string' => 'يجب ألا يزيد :attribute عن :max حرفاً.',
+        'string' => 'يجب ألا يزيد طول :attribute عن :max حرفاً.',
     ],
     'min' => [
         'numeric' => 'يجب ألا يقل :attribute عن :min.',
-        'string' => 'يجب ألا يقل :attribute عن :min أحرف.',
+        'string' => 'يجب ألا يقل طول :attribute عن :min أحرف.',
     ],
     'numeric' => 'يجب أن يكون :attribute رقماً.',
     'regex' => 'صيغة :attribute غير صحيحة.',

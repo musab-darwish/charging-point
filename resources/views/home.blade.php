@@ -29,7 +29,7 @@
             <div class="mt-4 grid gap-4 sm:grid-cols-3">
                 <div class="rounded-2xl border border-rule bg-white p-5">
                     <div class="flex items-center justify-between">
-                        <span class="flex size-11 items-center justify-center rounded-xl bg-ink text-sheet">
+                        <span class="flex size-11 items-center justify-center rounded-xl bg-brand text-white">
                             <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4" /><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6" /><path d="M16 4a4 4 0 0 1 0 8M22 20c0-3-2-5.2-5-5.8" /></svg>
                         </span>
                         <span class="rounded-md border border-rule-strong px-2 py-0.5 text-xs font-bold text-ink-muted">قريباً</span>

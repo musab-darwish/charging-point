@@ -36,7 +36,7 @@
 
                 <ul class="mt-10 space-y-4">
                     <li class="flex items-center gap-4">
-                        <span class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-ink text-sheet">
+                        <span class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand text-white">
                             <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4z" /><path d="M4 10h16M9 10v9" /></svg>
                         </span>
                         <span class="text-lg font-medium">حسابات الزبائن والديون بدقة</span>
@@ -90,7 +90,7 @@
                     <x-input name="password" type="password" label="كلمة المرور" required autocomplete="current-password" />
 
                     <label class="flex h-11 w-fit items-center gap-3">
-                        <input type="checkbox" name="remember" value="1" @checked(old('remember')) class="size-5 rounded accent-ink">
+                        <input type="checkbox" name="remember" value="1" @checked(old('remember')) class="size-5 rounded accent-brand">
                         <span>تذكّرني على هذا الجهاز</span>
                     </label>
 
