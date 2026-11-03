@@ -10,6 +10,7 @@
     </head>
     <body class="min-h-dvh bg-sheet text-ink antialiased">
         <x-flash />
+        <x-confirm-dialog />
 
         <div class="lg:flex">
             {{-- Sidebar (laptop) --}}

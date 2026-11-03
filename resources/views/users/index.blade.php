@@ -18,7 +18,7 @@
 
         <ul class="divide-y divide-rule overflow-hidden rounded-2xl border border-rule bg-white">
             @foreach ($users as $user)
-                <li @class(['flex items-center gap-4 px-4 py-4 sm:px-6', 'bg-sheet/60' => $user->isDeactivated()])>
+                <li @class(['flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-4 sm:px-6', 'bg-sheet/60' => $user->isDeactivated()])>
                     <span @class([
                         'flex size-11 shrink-0 items-center justify-center rounded-full text-base font-bold',
                         'bg-brand text-white' => ! $user->isDeactivated(),
@@ -47,6 +47,38 @@
                             <span class="mx-1.5 text-rule-strong">·</span>
                             أُضيف في {{ $user->created_at->translatedFormat('j F Y') }}
                         </p>
+                    </div>
+
+                    <div class="flex w-full gap-2 ps-15 sm:w-auto sm:ps-0">
+                        <a href="{{ route('users.password.edit', $user) }}" class="inline-flex h-11 items-center gap-1.5 rounded-xl border border-rule-strong px-3.5 text-sm font-bold transition hover:bg-paper">
+                            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                            كلمة المرور
+                        </a>
+
+                        @unless ($user->is_owner)
+                            @if ($user->isDeactivated())
+                                <form method="POST" action="{{ route('users.activate', $user) }}" data-submit-lock>
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="inline-flex h-11 items-center gap-1.5 rounded-xl border border-brand/40 px-3.5 text-sm font-bold text-brand transition hover:bg-brand-soft">
+                                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg>
+                                        تفعيل
+                                    </button>
+                                </form>
+                            @else
+                                <form method="POST" action="{{ route('users.deactivate', $user) }}" data-submit-lock
+                                    data-confirm-title="إيقاف {{ $user->name }}؟"
+                                    data-confirm="لن يستطيع {{ $user->name }} تسجيل الدخول، وسيُسجَّل خروجه فوراً. تبقى كل حركاته مسجّلة باسمه، ويمكنك إعادة تفعيله في أي وقت."
+                                    data-confirm-action="إيقاف الحساب">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="inline-flex h-11 items-center gap-1.5 rounded-xl border border-debit/30 px-3.5 text-sm font-bold text-debit transition hover:bg-debit-soft">
+                                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M5.7 5.7l12.6 12.6" /></svg>
+                                        إيقاف
+                                    </button>
+                                </form>
+                            @endif
+                        @endunless
                     </div>
                 </li>
             @endforeach

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserPasswordController;
+use App\Http\Controllers\UserStatusController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -18,5 +20,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
+
+        Route::get('/users/{user}/password', [UserPasswordController::class, 'edit'])->name('users.password.edit');
+        Route::put('/users/{user}/password', [UserPasswordController::class, 'update'])->name('users.password.update');
+
+        Route::patch('/users/{user}/deactivate', [UserStatusController::class, 'deactivate'])->name('users.deactivate');
+        Route::patch('/users/{user}/activate', [UserStatusController::class, 'activate'])->name('users.activate');
     });
 });
