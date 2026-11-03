@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
 use App\Http\Controllers\UserStatusController;
@@ -15,6 +16,8 @@ Route::middleware('auth')->group(function () {
     Route::view('/', 'home')->name('home');
 
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+
+    Route::resource('customers', CustomerController::class)->except('show');
 
     Route::middleware('can:manage-users')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
