@@ -40,7 +40,8 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('home'));
+        return redirect()->intended(route('home'))
+            ->with('status', 'مرحباً بعودتك، '.$request->user()->name.'.');
     }
 
     /**
@@ -53,6 +54,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('login')->with('status', 'تم تسجيل الخروج بنجاح.');
     }
 }
