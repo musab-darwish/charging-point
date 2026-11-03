@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'الدخول')
+@section('title', 'تسجيل الدخول')
 
 @section('content')
     <div class="mx-auto max-w-sm pt-4">
-        <h1 class="text-3xl font-extrabold">الدخول</h1>
+        <h1 class="text-3xl font-extrabold">تسجيل الدخول</h1>
         <div class="mt-2 h-[7px] w-20 border-y-2 border-debit"></div>
 
         <form method="POST" action="{{ route('login') }}" class="mt-8 space-y-5">
@@ -32,10 +32,10 @@
 
             <label class="flex h-11 items-center gap-2.5">
                 <input type="checkbox" name="remember" value="1" class="size-5 accent-ink">
-                <span>تذكرني على هاد الجهاز</span>
+                <span>تذكّرني على هذا الجهاز</span>
             </label>
 
-            <button type="submit" class="h-13 w-full rounded-lg bg-ink text-lg font-bold text-sheet">دخول</button>
+            <button type="submit" class="h-13 w-full rounded-lg bg-ink text-lg font-bold text-sheet">تسجيل الدخول</button>
         </form>
     </div>
 @endsection

@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>@hasSection('title')@yield('title') · @endif{{ config('app.name') }}</title>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
         @fonts
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -12,7 +13,10 @@
     <body class="min-h-screen bg-sheet text-ink antialiased">
         <header class="border-b border-rule">
             <div class="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
-                <a href="{{ url('/') }}" class="text-2xl font-extrabold">{{ config('app.name') }}</a>
+                <a href="{{ url('/') }}" class="flex items-center gap-2 text-xl font-extrabold">
+                    <x-logo class="size-7" />
+                    {{ config('app.name') }}
+                </a>
 
                 @auth
                     <div class="flex items-center gap-1">
@@ -26,7 +30,7 @@
                                     <path d="M10 17l-5-5 5-5"></path>
                                     <path d="M5 12h11"></path>
                                 </svg>
-                                خروج
+                                تسجيل الخروج
                             </button>
                         </form>
                     </div>

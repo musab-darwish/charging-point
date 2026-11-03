@@ -28,13 +28,13 @@ class LoginController extends Controller
             'username' => ['required', 'string'],
             'password' => ['required', 'string'],
         ], [
-            'username.required' => 'اكتب اسم المستخدم.',
-            'password.required' => 'اكتب كلمة المرور.',
+            'username.required' => 'يرجى إدخال اسم المستخدم.',
+            'password.required' => 'يرجى إدخال كلمة المرور.',
         ]);
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             throw ValidationException::withMessages([
-                'username' => 'اسم المستخدم أو كلمة المرور غلط.',
+                'username' => 'اسم المستخدم أو كلمة المرور غير صحيحة.',
             ]);
         }
 

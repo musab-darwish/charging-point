@@ -3,8 +3,8 @@
 @section('title', 'الرئيسية')
 
 @section('content')
-    <h1 class="text-2xl font-bold">أهلاً بدفتر</h1>
-    <p class="mt-1 text-ink-muted">صفحة تجربة للهوية: الألوان، والخط، والاتجاه.</p>
+    <h1 class="text-2xl font-bold">مرحباً بك في نقطة شحن</h1>
+    <p class="mt-1 text-ink-muted">صفحة تجريبية لعرض الهوية البصرية.</p>
 
     <div class="mt-6">
         <span class="text-sm font-medium text-ink-muted">الرصيد · عليه</span>
@@ -33,12 +33,12 @@
         </div>
         <div class="flex h-16 items-center justify-between border-t border-rule">
             <div>
-                <p class="font-medium">دفعة كاش</p>
+                <p class="font-medium">دفعة نقدية</p>
                 <p class="text-xs text-ink-muted">أمس · 19:40</p>
             </div>
             <div class="text-end text-credit">
                 <p class="font-bold tabular-nums">20.00</p>
-                <p class="text-xs font-medium">دفع</p>
+                <p class="text-xs font-medium">مدفوع</p>
             </div>
         </div>
     </div>
