@@ -11,6 +11,7 @@ export default defineConfig({
             fonts: [
                 bunny('Tajawal', {
                     weights: [400, 500, 700, 800],
+                    subsets: ['arabic', 'latin'],
                 }),
             ],
         }),
