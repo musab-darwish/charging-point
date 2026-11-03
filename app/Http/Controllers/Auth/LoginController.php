@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +33,10 @@ class LoginController extends Controller
             'password.required' => 'يرجى إدخال كلمة المرور.',
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        // Deactivated users are treated like wrong credentials.
+        $activeOnly = fn (Builder $query) => $query->whereNull('deactivated_at');
+
+        if (! Auth::attempt([...$credentials, $activeOnly], $request->boolean('remember'))) {
             throw ValidationException::withMessages([
                 'username' => 'اسم المستخدم أو كلمة المرور غير صحيحة.',
             ]);
