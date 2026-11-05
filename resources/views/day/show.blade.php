@@ -33,7 +33,7 @@
                 </div>
 
                 @if ($sheet->rows->isNotEmpty())
-                    <div class="gap-3 xl:columns-2 *:mb-3 *:break-inside-avoid">
+                    <div class="gap-3 lg:columns-2 2xl:columns-3 *:mb-3 *:break-inside-avoid">
                         @foreach ($sheet->rows as $row)
                             @include('day.partials.customer-card')
                         @endforeach
@@ -45,7 +45,7 @@
                         </span>
                         <p class="mt-4 text-lg font-bold">لم يُسجَّل أي شغل في هذا اليوم بعد</p>
                         <p class="mt-1 text-ink-muted">اختر الزبون واضغط على الأصناف لتسجيل شغله.</p>
-                        <button type="button" data-open-entry class="mt-5 inline-flex h-12 items-center gap-2 rounded-xl bg-brand px-5 font-bold text-white transition hover:bg-brand-deep active:scale-[.97] lg:hidden">
+                        <button type="button" data-open-entry class="mt-5 inline-flex h-12 items-center gap-2 rounded-xl bg-brand px-5 font-bold text-white transition hover:bg-brand-deep active:scale-[.97]">
                             <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
                             تسجيل شغل
                         </button>

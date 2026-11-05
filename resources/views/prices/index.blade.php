@@ -16,7 +16,7 @@
             </a>
         </header>
 
-        <div class="grid items-start gap-6 xl:grid-cols-2">
+        <div class="gap-6 lg:columns-2 *:mb-6 *:break-inside-avoid">
             @foreach (\App\Models\PriceItem::CATEGORIES as $category => $label)
                 @php $items = $groups->get($category, collect()); @endphp
 

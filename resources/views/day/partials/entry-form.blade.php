@@ -10,12 +10,13 @@
     $shortcut = 0;
 @endphp
 
-{{-- A register: customer and items on one side, the receipt on the other. On a phone it is a full-screen sheet. --}}
-<aside id="work-entry" data-work-entry data-open="{{ $errors->hasAny(['customer_id', 'new_customer_name', 'items', 'items.*', 'date']) ? 'true' : 'false' }}"
-    aria-label="تسجيل شغل"
-    class="fixed inset-x-0 top-0 z-40 flex h-dvh flex-col bg-sheet transition-transform duration-300 ease-out max-lg:invisible max-lg:translate-y-full max-lg:data-[open=true]:visible max-lg:data-[open=true]:translate-y-0 lg:static lg:z-auto lg:h-auto">
+{{-- A register in a dialog: full screen on a phone, a large window on a laptop.
+     Customer and items on one side, the receipt on the other. --}}
+<dialog id="work-entry" data-work-entry aria-label="تسجيل شغل"
+    data-open-on-load="{{ $errors->hasAny(['customer_id', 'new_customer_name', 'items', 'items.*', 'date']) ? 'true' : 'false' }}"
+    class="m-0 h-dvh max-h-none w-full max-w-none overflow-visible bg-transparent p-0 text-ink backdrop:bg-ink/45 lg:m-auto lg:h-[min(100dvh-3rem,54rem)] lg:w-[min(100%-3rem,78rem)]">
     <form method="POST" action="{{ route('work.store') }}" data-submit-lock data-work-form data-old='{{ json_encode($oldState) }}'
-        class="flex min-h-0 flex-1 flex-col max-lg:overflow-hidden lg:overflow-hidden lg:rounded-2xl lg:border lg:border-rule lg:bg-white">
+        class="flex h-full flex-col overflow-hidden bg-sheet max-lg:animate-sheet-up lg:animate-drop lg:rounded-3xl lg:border lg:border-rule lg:bg-white lg:shadow-2xl lg:shadow-ink/25">
         @csrf
         <input type="hidden" name="date" value="{{ $sheet->day->format('Y-m-d') }}">
         <input type="hidden" name="form_token" value="{{ $workToken }}">
@@ -28,14 +29,14 @@
                 اكتب الاسم <kbd class="rounded border border-rule-strong bg-sheet px-1.5 font-sans font-bold">Enter</kbd>
                 ثم الأصناف بالأرقام <kbd class="rounded border border-rule-strong bg-sheet px-1.5 font-sans font-bold tabular-nums">1–9</kbd>
             </p>
-            <button type="button" data-close-entry aria-label="إغلاق" class="ms-auto flex size-10 items-center justify-center rounded-lg text-ink-muted transition hover:bg-paper lg:hidden">
+            <button type="button" data-close-entry aria-label="إغلاق" class="ms-auto flex size-10 items-center justify-center rounded-lg text-ink-muted transition hover:bg-paper">
                 <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
             </button>
         </header>
 
-        <div class="min-h-0 flex-1 max-lg:overflow-y-auto max-lg:pb-52 lg:grid lg:grid-cols-[minmax(0,1fr)_22rem] xl:grid-cols-[minmax(0,1fr)_24rem]">
+        <div class="min-h-0 flex-1 max-lg:overflow-y-auto max-lg:pb-52 lg:grid lg:grid-cols-[minmax(0,1fr)_23rem] xl:grid-cols-[minmax(0,1fr)_26rem]">
             {{-- Customer and items --}}
-            <div class="space-y-5 px-5 py-5">
+            <div class="space-y-5 px-5 py-5 lg:overflow-y-auto">
                 <div data-customer-picker data-search-url="{{ route('customers.search') }}"
                     data-walk-in='{{ json_encode(['id' => $walkIn->id, 'name' => $walkIn->name, 'balance' => '0.00', 'walkIn' => true]) }}'
                     class="rounded-xl transition data-[missing=true]:ring-4 data-[missing=true]:ring-debit/25 data-[missing=true]:ring-offset-4 data-[missing=true]:ring-offset-white">
@@ -106,8 +107,8 @@
             </div>
 
             {{-- The receipt --}}
-            <div class="flex flex-col bg-sheet/50 lg:border-s lg:border-rule">
-                <div class="flex-1 px-5 py-5">
+            <div class="flex flex-col bg-sheet/50 lg:min-h-0 lg:border-s lg:border-rule">
+                <div class="flex-1 px-5 py-5 lg:overflow-y-auto">
                     <p class="mb-2 text-sm font-bold">البنود</p>
                     <p data-cart-empty class="rounded-xl border border-dashed border-rule px-4 py-6 text-center text-sm text-ink-muted">اضغط على صنف لإضافته هنا.</p>
                     <ul data-cart class="space-y-2"></ul>
@@ -173,4 +174,4 @@
             </div>
         </li>
     </template>
-</aside>
+</dialog>

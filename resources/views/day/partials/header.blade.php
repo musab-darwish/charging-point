@@ -12,6 +12,14 @@
         <h1 class="mt-0.5 text-3xl font-extrabold">{{ $day->translatedFormat('l، j F Y') }}</h1>
     </div>
 
+    <div class="flex flex-wrap items-center gap-3">
+    <button type="button" data-open-entry
+        class="hidden h-12 items-center gap-2 rounded-xl bg-brand ps-4 pe-3 text-lg font-bold text-white shadow-lg shadow-brand/20 transition duration-150 hover:bg-brand-deep active:scale-[.97] lg:inline-flex">
+        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+        تسجيل شغل
+        <kbd class="rounded-md bg-white/20 px-1.5 font-sans text-sm font-bold">+</kbd>
+    </button>
+
     <nav aria-label="التنقل بين الأيام" class="flex items-center gap-2">
         <a href="{{ \App\Support\WorkDay::url($previous) }}" aria-label="اليوم السابق" title="اليوم السابق"
             class="flex size-11 items-center justify-center rounded-xl border border-rule-strong bg-white transition hover:bg-paper">
@@ -38,6 +46,7 @@
             <a href="{{ route('day.today') }}" class="inline-flex h-11 items-center rounded-xl bg-brand px-4 font-bold text-white transition hover:bg-brand-deep">اليوم</a>
         @endif
     </nav>
+    </div>
 </header>
 
 @unless ($day->isToday())

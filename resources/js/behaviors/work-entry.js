@@ -2,9 +2,9 @@ const SEARCH_WAIT_MS = 200;
 const MAX_QUANTITY = 99;
 
 /**
- * Today's work form: pick a customer, tap items to build the list, then
- * record it (on account, or paid on the spot). On a phone the form is a
- * full-screen sheet. Validation still happens on the server.
+ * Today's work form, in a dialog: pick a customer, tap items to build the
+ * list, then record it (on account, or paid on the spot). Full screen on a
+ * phone, a large window on a laptop. Validation still happens on the server.
  */
 export function initWorkEntry() {
     const panel = document.querySelector('[data-work-entry]');
@@ -71,7 +71,7 @@ export function initWorkEntry() {
 
     const picker = createPicker(form, update);
     const cart = createCart(panel, form, update);
-    const sheet = createSheet(panel);
+    const modal = createModal(panel, form, picker);
 
     // An Enter key in a field must never submit the form by surprise.
     form.addEventListener('keydown', (event) => {
@@ -90,13 +90,20 @@ export function initWorkEntry() {
     document.addEventListener('keydown', (event) => {
         const typing = event.target.closest?.('input:not([type="hidden"]), textarea, select');
 
-        if (typing || event.ctrlKey || event.metaKey || event.altKey || document.querySelector('dialog[open]')) {
+        if (typing || event.ctrlKey || event.metaKey || event.altKey) {
+            return;
+        }
+
+        // "+" opens the recording window from the day page.
+        if (event.key === '+' && !document.querySelector('dialog[open]')) {
+            event.preventDefault();
+            modal.open();
             return;
         }
 
         const tile = /^[1-9]$/.test(event.key) && form.querySelector(`[data-shortcut="${event.key}"]`);
 
-        if (tile && panel.checkVisibility()) {
+        if (tile && panel.open && document.querySelectorAll('dialog[open]').length === 1) {
             event.preventDefault();
             tile.click();
             tile.focus({ preventScroll: true });
@@ -107,9 +114,7 @@ export function initWorkEntry() {
     document.querySelectorAll('[data-entry-customer]').forEach((button) => {
         button.addEventListener('click', () => {
             picker.choose(JSON.parse(button.dataset.entryCustomer));
-            sheet.open();
-            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            form.querySelector('[data-add-item], [data-add-free]')?.focus({ preventScroll: true });
+            modal.open();
         });
     });
 
@@ -258,7 +263,8 @@ function createPicker(form, onChange) {
         } else if (event.key === 'Enter' && options[active]) {
             event.preventDefault();
             choose(options[active], { moveOn: true });
-        } else if (event.key === 'Escape') {
+        } else if (event.key === 'Escape' && !results.hidden) {
+            event.preventDefault();
             close();
         }
     });
@@ -437,29 +443,43 @@ function createCart(panel, form, onChange) {
 }
 
 /**
- * On a phone, the form is a sheet that slides up over the page.
+ * The recording dialog: opened by "تسجيل شغل", the "+" key or a card's
+ * "إضافة". Closing keeps what was entered, so reopening carries on.
  */
-function createSheet(panel) {
-    const phone = window.matchMedia('(max-width: 1023px)');
+function createModal(dialog, form, picker) {
+    const open = () => {
+        if (!dialog.open) {
+            dialog.showModal();
+        }
 
-    const setOpen = (open) => {
-        panel.dataset.open = String(open);
-        document.documentElement.classList.toggle('overflow-hidden', open && phone.matches);
-        document.documentElement.classList.toggle('entry-sheet-open', open && phone.matches);
+        document.documentElement.classList.add('overflow-hidden');
+
+        // Start where the work starts: the customer, or the items once one is chosen.
+        const start = picker.chosen()
+            ? form.querySelector('[data-add-item], [data-add-free]')
+            : form.querySelector('#entry-customer-search');
+        start?.focus({ preventScroll: true });
     };
 
-    document.querySelectorAll('[data-open-entry]').forEach((button) => button.addEventListener('click', () => setOpen(true)));
-    panel.querySelector('[data-close-entry]')?.addEventListener('click', () => setOpen(false));
+    dialog.addEventListener('close', () => document.documentElement.classList.remove('overflow-hidden'));
 
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && panel.dataset.open === 'true' && !document.querySelector('dialog[open]')) {
-            setOpen(false);
+    // A click on the dimmed backdrop (laptop) closes it.
+    dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) {
+            dialog.close();
         }
     });
 
-    setOpen(panel.dataset.open === 'true');
+    document.querySelectorAll('[data-open-entry]').forEach((button) => button.addEventListener('click', open));
+    dialog.querySelector('[data-close-entry]')?.addEventListener('click', () => dialog.close());
 
-    return { open: () => setOpen(true) };
+    // After a validation error, show the form again with what was sent
+    // (once the old input has been put back).
+    if (dialog.dataset.openOnLoad === 'true') {
+        setTimeout(open, 0);
+    }
+
+    return { open };
 }
 
 /**

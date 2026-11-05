@@ -28,6 +28,7 @@
     --animate-rise: rise 320ms var(--ease-out-soft) both;
     --animate-fade: fade 400ms ease-out both;
     --animate-drop: drop 260ms var(--ease-out-soft) both;
+    --animate-sheet-up: sheet-up 320ms var(--ease-out-soft) both;
     --animate-spin-fast: spin 0.7s linear infinite;
     --animate-draw: draw 900ms var(--ease-out-soft) 150ms both;
     --animate-pop: pop 420ms var(--ease-out-soft) 700ms both;
@@ -45,6 +46,11 @@
     @keyframes drop {
         from { opacity: 0; transform: translateY(-12px) scale(0.98); }
         to { opacity: 1; transform: none; }
+    }
+
+    @keyframes sheet-up {
+        from { transform: translateY(100%); }
+        to { transform: none; }
     }
 
     @keyframes draw {
@@ -101,11 +107,6 @@
     summary {
         cursor: pointer;
     }
-}
-
-/* While the recording sheet covers a phone screen, the bottom navigation steps aside */
-html.entry-sheet-open [data-bottom-nav] {
-    display: none;
 }
 
 /* Custom cursor (mouse only, see resources/js/behaviors/cursor.js) */
