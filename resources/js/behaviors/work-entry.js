@@ -86,11 +86,6 @@ export function initWorkEntry() {
 
     form.querySelector('[data-add-free]')?.addEventListener('click', () => cart.addFree());
 
-    // Today's customers and the walk-in as one-tap chips.
-    form.querySelectorAll('[data-quick-customer]').forEach((button) => {
-        button.addEventListener('click', () => picker.choose(JSON.parse(button.dataset.quickCustomer), { moveOn: true }));
-    });
-
     // Digits 1-9 add the matching item, unless typing in a field.
     document.addEventListener('keydown', (event) => {
         const typing = event.target.closest?.('input:not([type="hidden"]), textarea, select');
@@ -107,12 +102,6 @@ export function initWorkEntry() {
             tile.focus({ preventScroll: true });
         }
     });
-
-    // On a laptop, start typing a customer's name right away.
-    const hasErrors = form.dataset.old && JSON.parse(form.dataset.old).items?.length;
-    if (window.matchMedia('(min-width: 1024px)').matches && !hasErrors) {
-        form.querySelector('#entry-customer-search')?.focus({ preventScroll: true });
-    }
 
     // "+ إضافة" on a customer's card: start a new entry for them.
     document.querySelectorAll('[data-entry-customer]').forEach((button) => {
@@ -169,7 +158,6 @@ function createPicker(form, onChange) {
     const input = searchBox.querySelector('input');
     const results = root.querySelector('[data-customer-results]');
     const chosenBox = root.querySelector('[data-customer-chosen]');
-    const quick = root.querySelector('[data-quick-customers]') ?? document.createElement('div');
     const idField = form.querySelector('[data-customer-id]');
     const newField = form.querySelector('[data-new-customer]');
     const walkIn = JSON.parse(root.dataset.walkIn);
@@ -236,7 +224,6 @@ function createPicker(form, onChange) {
 
         chosenBox.hidden = false;
         searchBox.hidden = true;
-        quick.hidden = true;
         close();
         onChange();
 
@@ -252,7 +239,6 @@ function createPicker(form, onChange) {
         newField.value = '';
         chosenBox.hidden = true;
         searchBox.hidden = false;
-        quick.hidden = false;
         input.value = '';
         input.focus();
         onChange();

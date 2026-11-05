@@ -33,7 +33,7 @@
                 </div>
 
                 @if ($sheet->rows->isNotEmpty())
-                    <div class="grid items-start gap-3 xl:grid-cols-2">
+                    <div class="gap-3 xl:columns-2 *:mb-3 *:break-inside-avoid">
                         @foreach ($sheet->rows as $row)
                             @include('day.partials.customer-card')
                         @endforeach

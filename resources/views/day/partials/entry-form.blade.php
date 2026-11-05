@@ -6,17 +6,14 @@
         'items' => old('items', []),
     ];
 
-    // All active items in one grid: by kind, then in the owner's order.
-    $tiles = collect(\App\Models\PriceItem::CATEGORIES)->keys()->flatMap(fn ($category) => $priceGroups->get($category, collect()))->values();
-
-    // Customers already seen on this day, for one-tap picking (pickups, payments).
-    $todayCustomers = $sheet->rows->reject(fn ($row) => $row->customer->is_walk_in)->take(8);
+    // Number the first nine items (across all kinds) for the 1-9 keys.
+    $shortcut = 0;
 @endphp
 
 {{-- A register: customer and items on one side, the receipt on the other. On a phone it is a full-screen sheet. --}}
 <aside id="work-entry" data-work-entry data-open="{{ $errors->hasAny(['customer_id', 'new_customer_name', 'items', 'items.*', 'date']) ? 'true' : 'false' }}"
     aria-label="تسجيل شغل"
-    class="fixed inset-0 z-40 flex flex-col bg-sheet transition-transform duration-300 ease-out max-lg:invisible max-lg:translate-y-full max-lg:data-[open=true]:visible max-lg:data-[open=true]:translate-y-0 lg:static lg:z-auto">
+    class="fixed inset-x-0 top-0 z-40 flex h-dvh flex-col bg-sheet transition-transform duration-300 ease-out max-lg:invisible max-lg:translate-y-full max-lg:data-[open=true]:visible max-lg:data-[open=true]:translate-y-0 lg:static lg:z-auto lg:h-auto">
     <form method="POST" action="{{ route('work.store') }}" data-submit-lock data-work-form data-old='{{ json_encode($oldState) }}'
         class="flex min-h-0 flex-1 flex-col max-lg:overflow-hidden lg:overflow-hidden lg:rounded-2xl lg:border lg:border-rule lg:bg-white">
         @csrf
@@ -64,23 +61,9 @@
                             class="absolute inset-x-0 top-full z-20 mt-2 max-h-80 animate-drop overflow-y-auto rounded-xl border border-rule bg-white p-1.5 shadow-xl shadow-ink/10"></ul>
                     </div>
 
-                    <div data-quick-customers class="mt-3 flex flex-wrap items-center gap-2">
-                        <span class="text-xs font-bold text-ink-muted">سريع:</span>
-                        <button type="button" data-quick-customer='{{ json_encode(['id' => $walkIn->id, 'name' => $walkIn->name, 'balance' => '0.00', 'walkIn' => true]) }}'
-                            class="inline-flex h-9 items-center gap-1.5 rounded-full border border-rule-strong bg-white px-3 text-sm font-bold transition hover:border-brand hover:bg-brand-soft/50">
-                            {{ $walkIn->name }}
-                        </button>
-                        @foreach ($todayCustomers as $row)
-                            <button type="button" data-quick-customer='{{ json_encode(['id' => $row->customer->id, 'name' => $row->customer->name, 'balance' => $row->balance]) }}'
-                                class="inline-flex h-9 max-w-48 items-center gap-1.5 rounded-full border border-rule-strong bg-white px-3 text-sm font-bold transition hover:border-brand hover:bg-brand-soft/50">
-                                <span @class(['size-2 shrink-0 rounded-full', 'bg-brand' => $row->status->state === \App\Support\DayStatus::PAID, 'bg-debit' => $row->status->state !== \App\Support\DayStatus::PAID])></span>
-                                <span class="truncate">{{ $row->customer->name }}</span>
-                            </button>
-                        @endforeach
-                    </div>
                 </div>
 
-                @if ($tiles->isEmpty())
+                @if ($priceGroups->isEmpty())
                     <p class="rounded-xl border border-dashed border-rule-strong px-4 py-3 text-sm text-ink-muted">
                         لا توجد أصناف بعد.
                         @can('manage-prices')
@@ -91,28 +74,35 @@
                     </p>
                 @endif
 
-                <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-                    @foreach ($tiles as $item)
-                        <button type="button" data-add-item='{{ json_encode(['id' => $item->id, 'name' => $item->name, 'price' => $item->price]) }}'
-                            @if ($loop->iteration <= 9) data-shortcut="{{ $loop->iteration }}" @endif
-                            class="group flex min-h-20 flex-col justify-between gap-1 rounded-xl border border-rule-strong bg-white p-3 text-start transition duration-150 hover:border-brand hover:bg-brand-soft/40 focus-visible:border-brand active:scale-[.96]">
-                            <span class="flex items-center justify-between text-ink-muted">
-                                <x-category-icon :category="$item->category" class="size-4" />
-                                @if ($loop->iteration <= 9)
-                                    <kbd class="hidden min-w-5 rounded border border-rule bg-sheet px-1 text-center font-sans text-[11px] font-bold tabular-nums lg:block">{{ $loop->iteration }}</kbd>
-                                @endif
-                            </span>
-                            <span class="font-bold leading-snug">{{ $item->name }}</span>
-                            <span class="text-sm font-extrabold tabular-nums text-brand">{{ $item->price ? $item->price.' ₪' : 'سعر حر' }}</span>
-                        </button>
-                    @endforeach
+                @foreach (\App\Models\PriceItem::CATEGORIES as $category => $label)
+                    @continue(! $priceGroups->has($category))
+                    <section aria-label="{{ $label }}">
+                        <h3 class="mb-2 flex items-center gap-1.5 text-sm font-bold text-ink-muted">
+                            <x-category-icon :category="$category" class="size-4" />
+                            {{ $label }}
+                        </h3>
+                        <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 2xl:grid-cols-4">
+                            @foreach ($priceGroups[$category] as $item)
+                                @php $shortcut++; @endphp
+                                <button type="button" data-add-item='{{ json_encode(['id' => $item->id, 'name' => $item->name, 'price' => $item->price]) }}'
+                                    @if ($shortcut <= 9) data-shortcut="{{ $shortcut }}" @endif
+                                    class="relative flex min-h-18 flex-col justify-between gap-1 rounded-xl border border-rule-strong bg-white p-3 text-start transition duration-150 hover:border-brand hover:bg-brand-soft/40 focus-visible:border-brand active:scale-[.96]">
+                                    @if ($shortcut <= 9)
+                                        <kbd class="absolute end-2 top-2 hidden min-w-5 rounded border border-rule bg-sheet px-1 text-center font-sans text-[11px] font-bold tabular-nums text-ink-muted lg:block">{{ $shortcut }}</kbd>
+                                    @endif
+                                    <span class="font-bold leading-snug lg:pe-6">{{ $item->name }}</span>
+                                    <span class="text-sm font-extrabold tabular-nums text-brand">{{ $item->price ? $item->price.' ₪' : 'سعر حر' }}</span>
+                                </button>
+                            @endforeach
+                        </div>
+                    </section>
+                @endforeach
 
-                    <button type="button" data-add-free
-                        class="flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-rule-strong p-3 font-bold text-ink-muted transition hover:border-ink-muted hover:text-ink active:scale-[.96]">
-                        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
-                        بند آخر
-                    </button>
-                </div>
+                <button type="button" data-add-free
+                    class="inline-flex h-12 items-center gap-2 rounded-xl border-2 border-dashed border-rule-strong px-4 font-bold text-ink-muted transition hover:border-ink-muted hover:text-ink active:scale-[.97]">
+                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                    بند آخر (شغلة ليست في القائمة)
+                </button>
             </div>
 
             {{-- The receipt --}}

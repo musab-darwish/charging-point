@@ -3,6 +3,11 @@
     $customer = $row->customer;
     $status = $row->status;
     $balanceSign = bccomp($row->balance, '0', 2);
+
+    // The day's movements in order; a long card shows the latest five and folds the rest.
+    $lines = $row->items->concat($row->payments)->sortBy([['occurred_at', 'asc'], ['id', 'asc']])->values();
+    $folded = $lines->count() > 6 ? $lines->slice(0, $lines->count() - 5) : collect();
+    $shown = $lines->slice($folded->count());
 @endphp
 
 <article class="animate-rise rounded-2xl border border-rule bg-white">
@@ -35,28 +40,28 @@
         </span>
     </header>
 
-    <ul class="mx-4 mt-3 divide-y divide-dashed divide-rule border-y border-dashed border-rule sm:mx-5">
-        @foreach ($row->items as $item)
-            <li class="flex items-baseline gap-3 py-2">
-                <span class="w-10 shrink-0 text-xs tabular-nums text-ink-muted">{{ $item->occurred_at->format('H:i') }}</span>
-                <span class="min-w-0 flex-1 truncate">
-                    {{ $item->description }}
-                    @if ($item->quantity > 1)
-                        <span class="text-sm font-bold text-ink-muted">×{{ $item->quantity }}</span>
-                    @endif
-                </span>
-                <span class="font-bold tabular-nums">{{ $item->amount }}</span>
-            </li>
-        @endforeach
+    <div class="mx-4 mt-3 border-y border-dashed border-rule sm:mx-5">
+        @if ($folded->isNotEmpty())
+            <details class="group border-b border-dashed border-rule">
+                <summary class="flex h-10 cursor-pointer list-none items-center gap-1.5 text-sm font-bold text-ink-muted transition hover:text-ink [&::-webkit-details-marker]:hidden">
+                    <svg class="size-4 transition group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+                    <span class="group-open:hidden">{{ trans_choice('{1} عرض حركة سابقة|{2} عرض حركتين سابقتين|[3,10] عرض :count حركات سابقة|[11,*] عرض :count حركة سابقة', $folded->count()) }}</span>
+                    <span class="hidden group-open:inline">إخفاء الحركات السابقة</span>
+                </summary>
+                <ul class="divide-y divide-dashed divide-rule border-t border-dashed border-rule">
+                    @foreach ($folded as $line)
+                        @include('day.partials.card-line')
+                    @endforeach
+                </ul>
+            </details>
+        @endif
 
-        @foreach ($row->payments as $payment)
-            <li class="flex items-baseline gap-3 py-2 text-credit">
-                <span class="w-10 shrink-0 text-xs tabular-nums opacity-70">{{ $payment->occurred_at->format('H:i') }}</span>
-                <span class="min-w-0 flex-1 font-medium">دفعة {{ $payment->method === 'cash' ? 'نقدية' : 'بتحويل' }}</span>
-                <span class="font-bold tabular-nums">−{{ $payment->amount }}</span>
-            </li>
-        @endforeach
-    </ul>
+        <ul class="divide-y divide-dashed divide-rule">
+            @foreach ($shown as $line)
+                @include('day.partials.card-line')
+            @endforeach
+        </ul>
+    </div>
 
     <footer class="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3.5 sm:px-5">
         <div class="me-auto">
