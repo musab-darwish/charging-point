@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['name', 'phone', 'notes'])]
 class Customer extends Model
@@ -75,12 +76,34 @@ class Customer extends Model
     }
 
     /**
+     * @return HasMany<Transaction, $this>
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * What the customer owes: all debits minus all credits, worked out from
+     * the transactions every time (never stored). Positive means they owe,
+     * negative means they paid ahead, "0.00" means settled.
+     */
+    public function balance(): string
+    {
+        $balance = $this->transactions()
+            ->selectRaw("COALESCE(SUM(CASE WHEN type = 'debit' THEN amount ELSE -amount END), 0) AS balance")
+            ->value('balance');
+
+        return number_format((float) $balance, 2, '.', '');
+    }
+
+    /**
      * Whether this customer can be deleted: only one with no records.
-     * Update this when transactions and freeze items exist.
+     * Update this when freeze items exist.
      */
     public function canBeDeleted(): bool
     {
-        return ! $this->is_walk_in;
+        return ! $this->is_walk_in && ! $this->transactions()->exists();
     }
 
     /**

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['name', 'category', 'price'])]
 class PriceItem extends Model
@@ -74,12 +75,19 @@ class PriceItem extends Model
     }
 
     /**
+     * @return HasMany<Transaction, $this>
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    /**
      * Whether this item can be deleted: only one never used in a record.
-     * Update this when transactions exist.
      */
     public function canBeDeleted(): bool
     {
-        return true;
+        return ! $this->transactions()->exists();
     }
 
     /**
