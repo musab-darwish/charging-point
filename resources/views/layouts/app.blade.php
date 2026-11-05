@@ -72,6 +72,13 @@
                                 </a>
                             @endcan
 
+                            @can('manage-payment-accounts')
+                                <a href="{{ route('payment-accounts.index') }}" class="flex h-11 items-center gap-2 rounded-xl px-3 font-bold transition hover:bg-paper">
+                                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 10h18M7 15h4" /></svg>
+                                    حسابات التحويل
+                                </a>
+                            @endcan
+
                             <form method="POST" action="{{ route('logout') }}" class="mt-2 border-t border-rule pt-2">
                                 @csrf
                                 <button type="submit" class="flex h-11 w-full items-center gap-2 rounded-xl px-3 font-bold text-debit transition hover:bg-debit-soft">

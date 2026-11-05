@@ -5,6 +5,7 @@ use App\Http\Controllers\CashPaymentController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerSearchController;
 use App\Http\Controllers\DayController;
+use App\Http\Controllers\PaymentAccountController;
 use App\Http\Controllers\PriceItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
@@ -47,5 +48,12 @@ Route::middleware('auth')->group(function () {
         Route::patch('/prices/{price}/move/{direction}', [PriceItemController::class, 'move'])
             ->whereIn('direction', ['up', 'down'])
             ->name('prices.move');
+    });
+
+    Route::middleware('can:manage-payment-accounts')->group(function () {
+        Route::resource('payment-accounts', PaymentAccountController::class)
+            ->except('show')
+            ->parameters(['payment-accounts' => 'account']);
+        Route::patch('/payment-accounts/{account}/toggle', [PaymentAccountController::class, 'toggle'])->name('payment-accounts.toggle');
     });
 });
