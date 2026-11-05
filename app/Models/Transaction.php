@@ -60,6 +60,16 @@ class Transaction extends Model
     }
 
     /**
+     * The account a transfer arrived on.
+     *
+     * @return BelongsTo<PaymentAccount, $this>
+     */
+    public function paymentAccount(): BelongsTo
+    {
+        return $this->belongsTo(PaymentAccount::class);
+    }
+
+    /**
      * Who recorded it.
      *
      * @return BelongsTo<User, $this>

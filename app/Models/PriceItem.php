@@ -15,6 +15,16 @@ class PriceItem extends Model
     /** @use HasFactory<PriceItemFactory> */
     use HasFactory;
 
+    /**
+     * The table's defaults, so a new item knows it is active before it's
+     * read back from the database.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'is_active' => true,
+    ];
+
     /** The kinds of item, with their Arabic names, in display order. */
     public const CATEGORIES = [
         'charging' => 'الشحن',
