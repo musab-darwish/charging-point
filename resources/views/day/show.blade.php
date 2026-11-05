@@ -22,7 +22,7 @@
 
         @include('day.partials.summary')
 
-        <div class="grid items-start gap-6 lg:grid-cols-[25rem_minmax(0,1fr)] xl:grid-cols-[27rem_minmax(0,1fr)]">
+        <div class="grid items-start gap-6 xl:grid-cols-[26rem_minmax(0,1fr)] 2xl:grid-cols-[28rem_minmax(0,1fr)]">
             @include('day.partials.entry-form')
 
             <section aria-labelledby="day-customers-title" class="min-w-0 max-lg:pb-20">

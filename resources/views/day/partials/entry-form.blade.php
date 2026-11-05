@@ -10,7 +10,7 @@
 {{-- On a phone this panel is a full-screen sheet opened by "تسجيل شغل"; on a laptop it sits beside the list --}}
 <aside id="work-entry" data-work-entry data-open="{{ $errors->hasAny(['customer_id', 'new_customer_name', 'items', 'items.*', 'date']) ? 'true' : 'false' }}"
     aria-label="تسجيل شغل"
-    class="fixed inset-0 z-40 flex flex-col bg-sheet transition-transform duration-300 ease-out max-lg:invisible max-lg:translate-y-full max-lg:data-[open=true]:visible max-lg:data-[open=true]:translate-y-0 lg:sticky lg:top-6 lg:z-auto lg:max-h-[calc(100dvh-3rem)]">
+    class="fixed inset-0 z-40 flex flex-col bg-sheet transition-transform duration-300 ease-out max-lg:invisible max-lg:translate-y-full max-lg:data-[open=true]:visible max-lg:data-[open=true]:translate-y-0 lg:static lg:z-auto xl:sticky xl:top-6 xl:max-h-[calc(100dvh-3rem)]">
     <form method="POST" action="{{ route('work.store') }}" data-submit-lock data-work-form data-old='{{ json_encode($oldState) }}'
         class="flex min-h-0 flex-1 flex-col overflow-hidden lg:rounded-2xl lg:border lg:border-rule lg:bg-white">
         @csrf
@@ -28,7 +28,7 @@
 
         <div class="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5">
             {{-- 1. Customer --}}
-            <div data-customer-picker data-search-url="{{ route('customers.search') }}"
+            <div data-customer-picker data-search-url="{{ route('customers.search') }}" class="rounded-xl transition data-[missing=true]:ring-4 data-[missing=true]:ring-debit/25 data-[missing=true]:ring-offset-4 data-[missing=true]:ring-offset-sheet"
                 data-walk-in='{{ json_encode(['id' => $walkIn->id, 'name' => $walkIn->name, 'balance' => '0.00', 'walkIn' => true]) }}'>
                 <label for="entry-customer-search" class="mb-1.5 block text-sm font-bold">الزبون</label>
 
@@ -112,13 +112,18 @@
 
             <p data-walk-in-note hidden class="mb-3 rounded-lg bg-paper px-3 py-2 text-xs font-medium text-ink-muted">الزبون العابر يدفع فوراً، فيُسجَّل شغله واصلاً.</p>
 
+            <p data-entry-error role="alert" hidden class="mb-3 flex animate-rise items-center gap-2 rounded-lg bg-debit-soft px-3 py-2 text-sm font-bold text-debit">
+                <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5v.01" /></svg>
+                <span data-entry-error-text></span>
+            </p>
+
             <div class="grid grid-cols-2 gap-2">
-                <button type="submit" name="pay_now" value="0" data-save-on-account disabled
+                <button type="submit" name="pay_now" value="0" data-save-on-account
                     class="group inline-flex h-13 items-center justify-center gap-2 rounded-xl border-2 border-ink font-bold transition duration-150 hover:bg-paper active:scale-[.97] disabled:pointer-events-none disabled:opacity-40 aria-busy:opacity-80">
                     <svg class="hidden size-5 animate-spin-fast group-aria-busy:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9" /></svg>
                     على الحساب
                 </button>
-                <button type="submit" name="pay_now" value="1" data-save-paid disabled
+                <button type="submit" name="pay_now" value="1" data-save-paid
                     class="group inline-flex h-13 items-center justify-center gap-2 rounded-xl bg-brand font-bold text-white transition duration-150 hover:bg-brand-deep active:scale-[.97] disabled:pointer-events-none disabled:opacity-40 aria-busy:opacity-80">
                     <svg class="hidden size-5 animate-spin-fast group-aria-busy:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9" /></svg>
                     <svg class="size-5 group-aria-busy:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg>
@@ -135,7 +140,7 @@
             <div class="flex items-center gap-2">
                 <p data-line-name class="min-w-0 flex-1 truncate font-bold"></p>
                 <input data-field="description" type="text" maxlength="150" placeholder="وصف البند، مثل: تصليح شاحن"
-                    class="h-10 min-w-0 flex-1 rounded-lg border border-rule-strong bg-white px-3 font-bold focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15">
+                    class="h-10 min-w-0 flex-1 rounded-lg border border-rule-strong bg-white px-3 font-bold focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15 aria-[invalid=true]:border-debit aria-[invalid=true]:ring-4 aria-[invalid=true]:ring-debit/15">
                 <button type="button" data-remove-line aria-label="حذف البند" class="flex size-9 shrink-0 items-center justify-center rounded-lg text-ink-muted transition hover:bg-debit-soft hover:text-debit">
                     <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
                 </button>
@@ -150,7 +155,7 @@
                 <span class="text-ink-muted">×</span>
                 <div class="relative w-24" dir="ltr">
                     <input data-field="unit_price" type="text" inputmode="decimal" placeholder="السعر" aria-label="سعر الوحدة"
-                        class="h-10 w-full rounded-lg border border-rule-strong bg-white ps-3 pe-7 text-end font-bold tabular-nums focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15">
+                        class="h-10 w-full rounded-lg border border-rule-strong bg-white ps-3 pe-7 text-end font-bold tabular-nums focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15 aria-[invalid=true]:border-debit aria-[invalid=true]:ring-4 aria-[invalid=true]:ring-debit/15">
                     <span class="pointer-events-none absolute inset-y-0 end-2.5 flex items-center text-sm text-ink-muted">₪</span>
                 </div>
                 <span class="ms-auto text-lg font-extrabold tabular-nums" data-line-total>0.00</span>

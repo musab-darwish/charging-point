@@ -18,14 +18,56 @@ export function initWorkEntry() {
     const savePaid = form.querySelector('[data-save-paid]');
     const walkInNote = form.querySelector('[data-walk-in-note]');
 
+    const errorBox = form.querySelector('[data-entry-error]');
+    const pickerRoot = form.querySelector('[data-customer-picker]');
+
+    const showError = (message, focus) => {
+        errorBox.querySelector('[data-entry-error-text]').textContent = message;
+        errorBox.hidden = false;
+        focus?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        focus?.focus({ preventScroll: true });
+    };
+
     const update = () => {
         const chosen = picker.chosen();
-        const ready = chosen !== null && cart.count() > 0;
 
-        savePaid.disabled = !ready;
-        saveOnAccount.disabled = !ready || Boolean(chosen?.walkIn);
+        // Only the walk-in customer can't go on account; anything else that is
+        // missing is explained when a button is pressed.
+        saveOnAccount.disabled = Boolean(chosen?.walkIn);
         walkInNote.hidden = !chosen?.walkIn;
+
+        if (chosen) {
+            pickerRoot.dataset.missing = 'false';
+        }
+
+        errorBox.hidden = true;
     };
+
+    // Say what is missing instead of submitting (runs before the submit lock).
+    form.addEventListener(
+        'submit',
+        (event) => {
+            const problem = findProblem(form, picker);
+
+            if (!problem) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            if (problem.field === 'customer') {
+                pickerRoot.dataset.missing = 'true';
+            } else {
+                problem.input?.setAttribute('aria-invalid', 'true');
+            }
+
+            showError(problem.message, problem.input);
+        },
+        { capture: true },
+    );
+
+    form.addEventListener('input', (event) => event.target.removeAttribute?.('aria-invalid'));
 
     const picker = createPicker(form, update);
     const cart = createCart(panel, form, update);
@@ -56,6 +98,37 @@ export function initWorkEntry() {
 
     restoreOldInput(form, picker, cart);
     update();
+}
+
+/**
+ * The first thing stopping the form from being recorded, if any.
+ */
+function findProblem(form, picker) {
+    if (!picker.chosen()) {
+        return { field: 'customer', message: 'اختر الزبون أولاً.', input: form.querySelector('#entry-customer-search') };
+    }
+
+    const lines = [...form.querySelectorAll('[data-line]')];
+
+    if (lines.length === 0) {
+        return { field: 'items', message: 'أضف صنفاً واحداً على الأقل.', input: form.querySelector('[data-add-item], [data-add-free]') };
+    }
+
+    for (const line of lines) {
+        const description = line.querySelector('[data-field="description"]');
+
+        if (description.type !== 'hidden' && description.value.trim() === '') {
+            return { field: 'line', message: 'اكتب وصف البند.', input: description };
+        }
+
+        const price = line.querySelector('[data-field="unit_price"]');
+
+        if (!(toNumber(price.value) > 0)) {
+            return { field: 'line', message: 'اكتب سعر كل بند، أكبر من صفر.', input: price };
+        }
+    }
+
+    return null;
 }
 
 /**
