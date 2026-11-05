@@ -5,7 +5,7 @@
     $balanceSign = bccomp($row->balance, '0', 2);
 @endphp
 
-<article class="mb-3 animate-rise rounded-2xl border border-rule bg-white">
+<article class="animate-rise rounded-2xl border border-rule bg-white">
     <header class="flex items-center gap-3 px-4 pt-4 sm:px-5">
         <span @class([
             'flex size-11 shrink-0 items-center justify-center rounded-full text-base font-bold',

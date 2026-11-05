@@ -86,6 +86,34 @@ export function initWorkEntry() {
 
     form.querySelector('[data-add-free]')?.addEventListener('click', () => cart.addFree());
 
+    // Today's customers and the walk-in as one-tap chips.
+    form.querySelectorAll('[data-quick-customer]').forEach((button) => {
+        button.addEventListener('click', () => picker.choose(JSON.parse(button.dataset.quickCustomer), { moveOn: true }));
+    });
+
+    // Digits 1-9 add the matching item, unless typing in a field.
+    document.addEventListener('keydown', (event) => {
+        const typing = event.target.closest?.('input:not([type="hidden"]), textarea, select');
+
+        if (typing || event.ctrlKey || event.metaKey || event.altKey || document.querySelector('dialog[open]')) {
+            return;
+        }
+
+        const tile = /^[1-9]$/.test(event.key) && form.querySelector(`[data-shortcut="${event.key}"]`);
+
+        if (tile && panel.checkVisibility()) {
+            event.preventDefault();
+            tile.click();
+            tile.focus({ preventScroll: true });
+        }
+    });
+
+    // On a laptop, start typing a customer's name right away.
+    const hasErrors = form.dataset.old && JSON.parse(form.dataset.old).items?.length;
+    if (window.matchMedia('(min-width: 1024px)').matches && !hasErrors) {
+        form.querySelector('#entry-customer-search')?.focus({ preventScroll: true });
+    }
+
     // "+ إضافة" on a customer's card: start a new entry for them.
     document.querySelectorAll('[data-entry-customer]').forEach((button) => {
         button.addEventListener('click', () => {
@@ -117,8 +145,8 @@ function findProblem(form, picker) {
     for (const line of lines) {
         const description = line.querySelector('[data-field="description"]');
 
-        if (description.type !== 'hidden' && description.value.trim() === '') {
-            return { field: 'line', message: 'اكتب وصف البند.', input: description };
+        if (description.type !== 'hidden' && !/\p{L}/u.test(description.value)) {
+            return { field: 'line', message: 'اكتب وصفاً للبند بالكلمات، مثل: طحن سكر.', input: description };
         }
 
         const price = line.querySelector('[data-field="unit_price"]');
@@ -141,6 +169,7 @@ function createPicker(form, onChange) {
     const input = searchBox.querySelector('input');
     const results = root.querySelector('[data-customer-results]');
     const chosenBox = root.querySelector('[data-customer-chosen]');
+    const quick = root.querySelector('[data-quick-customers]') ?? document.createElement('div');
     const idField = form.querySelector('[data-customer-id]');
     const newField = form.querySelector('[data-new-customer]');
     const walkIn = JSON.parse(root.dataset.walkIn);
@@ -192,7 +221,7 @@ function createPicker(form, onChange) {
         }
     };
 
-    const choose = (customer) => {
+    const choose = (customer, { moveOn = false } = {}) => {
         chosen = customer;
         idField.value = customer.isNew ? '' : customer.id;
         newField.value = customer.isNew ? customer.name : '';
@@ -207,8 +236,14 @@ function createPicker(form, onChange) {
 
         chosenBox.hidden = false;
         searchBox.hidden = true;
+        quick.hidden = true;
         close();
         onChange();
+
+        // Picked by the user: go straight on to the items.
+        if (moveOn) {
+            form.querySelector('[data-add-item], [data-add-free]')?.focus({ preventScroll: true });
+        }
     };
 
     const clear = () => {
@@ -217,6 +252,7 @@ function createPicker(form, onChange) {
         newField.value = '';
         chosenBox.hidden = true;
         searchBox.hidden = false;
+        quick.hidden = false;
         input.value = '';
         input.focus();
         onChange();
@@ -235,7 +271,7 @@ function createPicker(form, onChange) {
             render();
         } else if (event.key === 'Enter' && options[active]) {
             event.preventDefault();
-            choose(options[active]);
+            choose(options[active], { moveOn: true });
         } else if (event.key === 'Escape') {
             close();
         }
@@ -423,6 +459,7 @@ function createSheet(panel) {
     const setOpen = (open) => {
         panel.dataset.open = String(open);
         document.documentElement.classList.toggle('overflow-hidden', open && phone.matches);
+        document.documentElement.classList.toggle('entry-sheet-open', open && phone.matches);
     };
 
     document.querySelectorAll('[data-open-entry]').forEach((button) => button.addEventListener('click', () => setOpen(true)));

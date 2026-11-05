@@ -95,6 +95,20 @@ test('a free item is recorded as other', function () {
         ->and($debit->amount)->toBe('7.00');
 });
 
+test('a free item needs a description with words, not just a number', function () {
+    foreach (['3', '12.5', '-'] as $description) {
+        $this->actingAs($this->user)->post('/work', workForm([
+            'items' => [['price_item_id' => null, 'description' => $description, 'quantity' => 1, 'unit_price' => '4']],
+        ]))->assertSessionHasErrors('items.0.description');
+    }
+
+    $this->actingAs($this->user)->post('/work', workForm([
+        'items' => [['price_item_id' => null, 'description' => '3 كيلو سكر', 'quantity' => 1, 'unit_price' => '4']],
+    ]))->assertSessionHasNoErrors();
+
+    expect(Transaction::count())->toBe(1);
+});
+
 test('an item needs a price above zero', function () {
     $this->actingAs($this->user)->post('/work', workForm([
         'items' => [['price_item_id' => $this->phone->id, 'description' => 'جوال', 'quantity' => 1, 'unit_price' => '']],

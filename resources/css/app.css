@@ -103,6 +103,11 @@
     }
 }
 
+/* While the recording sheet covers a phone screen, the bottom navigation steps aside */
+html.entry-sheet-open [data-bottom-nav] {
+    display: none;
+}
+
 /* Custom cursor (mouse only, see resources/js/behaviors/cursor.js) */
 html.has-custom-cursor,
 html.has-custom-cursor * {

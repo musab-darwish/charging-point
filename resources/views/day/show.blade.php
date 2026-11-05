@@ -22,10 +22,9 @@
 
         @include('day.partials.summary')
 
-        <div class="grid items-start gap-6 xl:grid-cols-[26rem_minmax(0,1fr)] 2xl:grid-cols-[28rem_minmax(0,1fr)]">
-            @include('day.partials.entry-form')
+        @include('day.partials.entry-form')
 
-            <section aria-labelledby="day-customers-title" class="min-w-0 max-lg:pb-20">
+        <section aria-labelledby="day-customers-title" class="min-w-0 max-lg:pb-20">
                 <div class="mb-3 flex items-baseline justify-between">
                     <h2 id="day-customers-title" class="text-lg font-extrabold">زبائن {{ $sheet->day->isToday() ? 'اليوم' : 'هذا اليوم' }}</h2>
                     @if ($sheet->rows->isNotEmpty())
@@ -33,9 +32,13 @@
                     @endif
                 </div>
 
-                @forelse ($sheet->rows as $row)
-                    @include('day.partials.customer-card')
-                @empty
+                @if ($sheet->rows->isNotEmpty())
+                    <div class="grid items-start gap-3 xl:grid-cols-2">
+                        @foreach ($sheet->rows as $row)
+                            @include('day.partials.customer-card')
+                        @endforeach
+                    </div>
+                @else
                     <div class="ledger-paper rounded-2xl border border-rule py-14 ps-14 pe-6 text-center">
                         <span class="mx-auto flex size-14 items-center justify-center rounded-full bg-white text-ink-muted">
                             <svg class="size-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h11l3 3v15H5z" /><path d="M9 8h6M9 12h6M9 16h4" /></svg>
@@ -47,9 +50,8 @@
                             تسجيل شغل
                         </button>
                     </div>
-                @endforelse
+                @endif
             </section>
-        </div>
 
         {{-- Phone: the recording form opens as a full-screen sheet --}}
         <button type="button" data-open-entry
