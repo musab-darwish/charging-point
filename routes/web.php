@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CashPaymentController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerSearchController;
+use App\Http\Controllers\DayController;
 use App\Http\Controllers\PriceItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
 use App\Http\Controllers\UserStatusController;
+use App\Http\Controllers\WorkController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -14,10 +18,15 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::view('/', 'home')->name('home');
+    Route::get('/', [DayController::class, 'today'])->name('day.today');
+    Route::get('/day/{date}', [DayController::class, 'show'])->where('date', '\d{4}-\d{2}-\d{2}')->name('day.show');
+
+    Route::post('/work', [WorkController::class, 'store'])->name('work.store');
+    Route::post('/payments/cash', [CashPaymentController::class, 'store'])->name('payments.cash');
 
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
+    Route::get('/customers/search', CustomerSearchController::class)->name('customers.search');
     Route::resource('customers', CustomerController::class)->except('show');
 
     Route::middleware('can:manage-users')->group(function () {

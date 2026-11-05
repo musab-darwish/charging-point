@@ -1,9 +1,9 @@
 {{-- Main navigation, shared by the laptop sidebar and the phone bottom bar --}}
-<x-nav-item :layout="$layout" :href="route('home')" :active="request()->routeIs('home')">
+<x-nav-item :layout="$layout" :href="route('day.today')" :active="request()->routeIs('day.*')">
     <x-slot:icon>
-        <svg class="size-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7" /><path d="M5 10v10h14V10" /><path d="M10 20v-6h4v6" /></svg>
+        <svg class="size-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h11l3 3v15H5z" /><path d="M9 8h6M9 12h6M9 16h4" /></svg>
     </x-slot:icon>
-    الرئيسية
+    شغل اليوم
 </x-nav-item>
 
 <x-nav-item :layout="$layout" :href="route('customers.index')" :active="request()->routeIs('customers.*')">

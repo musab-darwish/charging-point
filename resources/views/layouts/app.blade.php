@@ -15,7 +15,7 @@
         <div class="lg:flex">
             {{-- Sidebar (laptop) --}}
             <aside class="sticky top-0 hidden h-dvh w-72 shrink-0 flex-col border-e border-rule bg-paper/50 px-4 py-6 lg:flex">
-                <a href="{{ route('home') }}" class="flex items-center gap-2.5 px-3">
+                <a href="{{ route('day.today') }}" class="flex items-center gap-2.5 px-3">
                     <x-logo class="size-9" />
                     <span class="text-xl font-extrabold">{{ config('app.name') }}</span>
                 </a>
@@ -42,7 +42,7 @@
             <div class="min-w-0 flex-1">
                 {{-- Top bar (phone) --}}
                 <header class="sticky top-0 z-30 flex h-15 items-center justify-between border-b border-rule bg-sheet px-4 lg:hidden">
-                    <a href="{{ route('home') }}" class="flex items-center gap-2">
+                    <a href="{{ route('day.today') }}" class="flex items-center gap-2">
                         <x-logo class="size-7" />
                         <span class="text-lg font-extrabold">{{ config('app.name') }}</span>
                     </a>
