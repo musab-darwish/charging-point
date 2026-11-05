@@ -64,8 +64,9 @@
         </ul>
     </div>
 
-    <footer class="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3.5 sm:px-5">
-        <div class="me-auto">
+    {{-- Totals on one line, then the actions on their own row, so every card looks the same whatever its width --}}
+    <footer class="px-4 py-3.5 sm:px-5">
+        <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
             <p class="text-sm">
                 <span class="text-ink-muted">شغل اليوم</span>
                 <span class="font-extrabold tabular-nums">{{ $row->work }} ₪</span>
@@ -74,9 +75,9 @@
                 <p class="text-xs text-ink-muted">
                     الرصيد الكلي:
                     @if ($balanceSign > 0)
-                        <span class="font-bold text-debit">عليه {{ $row->balance }} ₪</span>
+                        <span class="font-bold tabular-nums text-debit">عليه {{ $row->balance }} ₪</span>
                     @elseif ($balanceSign < 0)
-                        <span class="font-bold text-credit">له {{ ltrim($row->balance, '-') }} ₪</span>
+                        <span class="font-bold tabular-nums text-credit">له {{ ltrim($row->balance, '-') }} ₪</span>
                     @else
                         <span class="font-bold">مسكّر</span>
                     @endif
@@ -85,19 +86,21 @@
         </div>
 
         @unless ($customer->is_walk_in)
-            <button type="button" data-entry-customer='{{ json_encode(['id' => $customer->id, 'name' => $customer->name, 'balance' => $row->balance]) }}'
-                class="inline-flex h-11 items-center gap-1.5 rounded-xl border border-rule-strong px-3.5 text-sm font-bold transition hover:bg-paper">
-                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
-                إضافة
-            </button>
-
-            @if ($balanceSign > 0)
-                <button type="button" data-pay='{{ json_encode(['id' => $customer->id, 'name' => $customer->name, 'remaining' => $status->remaining, 'balance' => $row->balance]) }}'
-                    class="inline-flex h-11 items-center gap-1.5 rounded-xl bg-credit px-4 text-sm font-bold text-white transition hover:bg-credit/90 active:scale-[.97]">
-                    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg>
-                    واصل
+            <div class="mt-3 flex gap-2">
+                <button type="button" data-entry-customer='{{ json_encode(['id' => $customer->id, 'name' => $customer->name, 'balance' => $row->balance]) }}'
+                    class="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl border border-rule-strong px-3.5 text-sm font-bold transition hover:bg-paper">
+                    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                    إضافة
                 </button>
-            @endif
+
+                @if ($balanceSign > 0)
+                    <button type="button" data-pay='{{ json_encode(['id' => $customer->id, 'name' => $customer->name, 'remaining' => $status->remaining, 'balance' => $row->balance]) }}'
+                        class="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl bg-credit px-4 text-sm font-bold text-white transition hover:bg-credit/90 active:scale-[.97]">
+                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg>
+                        واصل
+                    </button>
+                @endif
+            </div>
         @endunless
     </footer>
 </article>
