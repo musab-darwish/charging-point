@@ -1,5 +1,6 @@
 import { initConfirmDialogs } from './behaviors/confirm';
 import { initCursor } from './behaviors/cursor';
+import { initDayFilter } from './behaviors/day-filter';
 import { initDayNav } from './behaviors/day-nav';
 import { initFlashMessages } from './behaviors/flash';
 import { initLiveSearch } from './behaviors/live-search';
@@ -17,5 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initWorkEntry();
     initPaymentDialog();
     initDayNav();
+    initDayFilter();
     initCursor();
 });

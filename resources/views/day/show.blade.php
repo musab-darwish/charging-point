@@ -33,10 +33,17 @@
                 </div>
 
                 @if ($sheet->rows->isNotEmpty())
-                    <div class="gap-3 lg:columns-2 2xl:columns-3 *:mb-3 *:break-inside-avoid">
+                    @include('day.partials.filter')
+
+                    <div data-day-cards class="gap-3 lg:columns-2 2xl:columns-3 *:mb-3 *:break-inside-avoid">
                         @foreach ($sheet->rows as $row)
                             @include('day.partials.customer-card')
                         @endforeach
+                    </div>
+
+                    <div data-day-no-match hidden class="rounded-2xl border border-dashed border-rule-strong bg-white/60 px-6 py-10 text-center">
+                        <p class="text-lg font-bold">لا يوجد زبون يطابق البحث في هذا اليوم</p>
+                        <p class="mt-1 text-ink-muted">جرّب اسماً آخر، أو اختر «الكل».</p>
                     </div>
                 @else
                     <div class="ledger-paper rounded-2xl border border-rule py-14 ps-14 pe-6 text-center">

@@ -10,7 +10,8 @@
     $shown = $lines->slice($folded->count());
 @endphp
 
-<article class="animate-rise rounded-2xl border border-rule bg-white">
+<article data-day-card data-status="{{ $status->state }}" data-search="{{ $customer->name }} {{ $customer->phone_local }}"
+    class="animate-rise rounded-2xl border border-rule bg-white">
     <header class="flex items-center gap-3 px-4 pt-4 sm:px-5">
         <span @class([
             'flex size-11 shrink-0 items-center justify-center rounded-full text-base font-bold',
