@@ -84,7 +84,7 @@ function createPicker(form, onChange) {
     };
 
     const render = () => {
-        results.replaceChildren(...options.map((option, index) => optionElement(option, index === active)));
+        results.replaceChildren(...options.map((option, index) => optionElement(option, index, index === active)));
         results.hidden = options.length === 0;
         input.setAttribute('aria-expanded', String(!results.hidden));
     };
@@ -183,11 +183,11 @@ function createPicker(form, onChange) {
     return { chosen: () => chosen, choose };
 }
 
-function optionElement(option, isActive) {
+function optionElement(option, index, isActive) {
     const item = document.createElement('li');
     item.setAttribute('role', 'option');
     item.setAttribute('aria-selected', String(isActive));
-    item.dataset.option = '';
+    item.dataset.option = String(index);
     item.className = `flex cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2 ${isActive ? 'bg-brand-soft' : 'hover:bg-paper'}`;
 
     const badge = document.createElement('span');
