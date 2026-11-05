@@ -39,4 +39,13 @@
             المستخدمون
         </x-nav-item>
     @endcan
+
+    @can('manage-prices')
+        <x-nav-item layout="side" :href="route('prices.index')" :active="request()->routeIs('prices.*')">
+            <x-slot:icon>
+                <svg class="size-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z" /><circle cx="7.5" cy="8.5" r="1.5" /></svg>
+            </x-slot:icon>
+            الأصناف والأسعار
+        </x-nav-item>
+    @endcan
 @endif

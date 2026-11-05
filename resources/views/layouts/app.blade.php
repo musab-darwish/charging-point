@@ -65,6 +65,13 @@
                                 </a>
                             @endcan
 
+                            @can('manage-prices')
+                                <a href="{{ route('prices.index') }}" class="flex h-11 items-center gap-2 rounded-xl px-3 font-bold transition hover:bg-paper">
+                                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z" /><circle cx="7.5" cy="8.5" r="1.5" /></svg>
+                                    الأصناف والأسعار
+                                </a>
+                            @endcan
+
                             <form method="POST" action="{{ route('logout') }}" class="mt-2 border-t border-rule pt-2">
                                 @csrf
                                 <button type="submit" class="flex h-11 w-full items-center gap-2 rounded-xl px-3 font-bold text-debit transition hover:bg-debit-soft">

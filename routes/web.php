@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\PriceItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
 use App\Http\Controllers\UserStatusController;
@@ -29,5 +30,13 @@ Route::middleware('auth')->group(function () {
 
         Route::patch('/users/{user}/deactivate', [UserStatusController::class, 'deactivate'])->name('users.deactivate');
         Route::patch('/users/{user}/activate', [UserStatusController::class, 'activate'])->name('users.activate');
+    });
+
+    Route::middleware('can:manage-prices')->group(function () {
+        Route::resource('prices', PriceItemController::class)->except('show');
+        Route::patch('/prices/{price}/toggle', [PriceItemController::class, 'toggle'])->name('prices.toggle');
+        Route::patch('/prices/{price}/move/{direction}', [PriceItemController::class, 'move'])
+            ->whereIn('direction', ['up', 'down'])
+            ->name('prices.move');
     });
 });
