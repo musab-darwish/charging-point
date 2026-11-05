@@ -18,8 +18,11 @@
     <form method="POST" action="{{ route('work.store') }}" data-submit-lock data-work-form data-old='{{ json_encode($oldState) }}'
         class="flex h-full flex-col overflow-hidden bg-sheet max-lg:animate-sheet-up lg:animate-drop lg:rounded-3xl lg:border lg:border-rule lg:bg-white lg:shadow-2xl lg:shadow-ink/25">
         @csrf
-        <input type="hidden" name="date" value="{{ $sheet->day->format('Y-m-d') }}">
+        <input type="hidden" name="date" value="{{ $day->format('Y-m-d') }}">
         <input type="hidden" name="form_token" value="{{ $workToken }}">
+        @isset($backToCustomer)
+            <input type="hidden" name="back_to_customer" value="{{ $backToCustomer->id }}">
+        @endisset
         <input type="hidden" name="customer_id" data-customer-id>
         <input type="hidden" name="new_customer_name" data-new-customer>
 

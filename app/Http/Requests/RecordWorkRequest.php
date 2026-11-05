@@ -61,6 +61,7 @@ class RecordWorkRequest extends FormRequest
             return [
                 'date' => ['required', 'date_format:Y-m-d'],
                 'form_token' => ['required', 'uuid'],
+                'back_to_customer' => ['nullable', 'integer', 'exists:customers,id'],
             ];
         }
 
@@ -75,6 +76,7 @@ class RecordWorkRequest extends FormRequest
             'items.*.unit_price' => ['required', 'numeric', 'gt:0', 'max:9999.99', 'decimal:0,2'],
             'pay_now' => ['boolean'],
             'form_token' => ['required', 'uuid'],
+            'back_to_customer' => ['nullable', 'integer', 'exists:customers,id'],
         ];
     }
 

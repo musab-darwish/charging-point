@@ -20,7 +20,7 @@ class WorkController extends Controller
         $day = $request->day();
 
         if ($request->alreadyRecorded()) {
-            return WorkDay::redirect($day)->with('status', 'هذا الشغل مسجّل من قبل.');
+            return WorkDay::redirectBack($day, $request->validated('back_to_customer'))->with('status', 'هذا الشغل مسجّل من قبل.');
         }
 
         $customer = DB::transaction(function () use ($request, $recordWork, $day) {
@@ -38,7 +38,7 @@ class WorkController extends Controller
             return $customer;
         });
 
-        return WorkDay::redirect($day)->with('status', $request->boolean('pay_now')
+        return WorkDay::redirectBack($day, $request->validated('back_to_customer'))->with('status', $request->boolean('pay_now')
             ? 'تم تسجيل شغل '.$customer->name.' واصلاً.'
             : 'تم تسجيل شغل '.$customer->name.' على حسابه.');
     }

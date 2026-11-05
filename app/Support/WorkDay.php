@@ -34,4 +34,13 @@ class WorkDay
     {
         return redirect()->to(self::url($day));
     }
+
+    /**
+     * Go back to where a form was opened: the customer's page when it came
+     * from there (back_to_customer), otherwise the day's page.
+     */
+    public static function redirectBack(CarbonInterface $day, mixed $customerId): RedirectResponse
+    {
+        return $customerId ? redirect()->route('customers.show', (int) $customerId) : self::redirect($day);
+    }
 }

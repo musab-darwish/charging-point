@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
+use App\Models\PriceItem;
+use App\Support\Statement;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class CustomerController extends Controller
@@ -53,6 +56,24 @@ class CustomerController extends Controller
     }
 
     /**
+     * A customer's page: the balance and the statement by day, with the
+     * day page's dialogs to record work or a payment for them right here.
+     */
+    public function show(Customer $customer): View
+    {
+        abort_if($customer->is_walk_in, 404);
+
+        return view('customers.show', [
+            'customer' => $customer,
+            'statement' => new Statement($customer),
+            'priceGroups' => PriceItem::active()->ordered()->get()->groupBy('category'),
+            'walkIn' => Customer::walkIn(),
+            'workToken' => (string) Str::uuid(),
+            'paymentToken' => (string) Str::uuid(),
+        ]);
+    }
+
+    /**
      * Show the form for editing a customer.
      */
     public function edit(Customer $customer): View
@@ -71,7 +92,7 @@ class CustomerController extends Controller
 
         $customer->update($request->customerData());
 
-        return redirect()->route('customers.index')
+        return redirect()->route('customers.show', $customer)
             ->with('status', 'تم حفظ بيانات '.$customer->name.'.');
     }
 

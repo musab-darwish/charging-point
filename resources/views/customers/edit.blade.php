@@ -4,9 +4,9 @@
 
 @section('content')
     <div class="stagger">
-        <a href="{{ route('customers.index') }}" class="inline-flex h-11 items-center gap-1.5 text-sm font-bold text-ink-muted transition hover:text-ink">
+        <a href="{{ route('customers.show', $customer) }}" class="inline-flex h-11 items-center gap-1.5 text-sm font-bold text-ink-muted transition hover:text-ink">
             <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
-            الزبائن
+            حساب {{ $customer->name }}
         </a>
 
         <header>
@@ -23,7 +23,7 @@
 
                 <div class="mt-6 flex flex-col-reverse gap-3 border-t border-rule pt-5 sm:flex-row">
                     <x-button class="sm:min-w-44" loading="جارٍ الحفظ…">حفظ التعديلات</x-button>
-                    <a href="{{ route('customers.index') }}" class="inline-flex h-13 items-center justify-center rounded-xl px-5 font-bold text-ink transition hover:bg-paper">إلغاء</a>
+                    <a href="{{ route('customers.show', $customer) }}" class="inline-flex h-13 items-center justify-center rounded-xl px-5 font-bold text-ink transition hover:bg-paper">إلغاء</a>
                 </div>
             </form>
 

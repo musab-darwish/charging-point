@@ -20,7 +20,7 @@
     <ul class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         @foreach ($customers as $customer)
             <li>
-                <a href="{{ route('customers.edit', $customer) }}" class="group flex h-full items-center gap-4 rounded-2xl border border-rule bg-white p-4 transition duration-150 hover:-translate-y-0.5 hover:border-rule-strong hover:shadow-lg hover:shadow-ink/5">
+                <a href="{{ route('customers.show', $customer) }}" class="group flex h-full items-center gap-4 rounded-2xl border border-rule bg-white p-4 transition duration-150 hover:-translate-y-0.5 hover:border-rule-strong hover:shadow-lg hover:shadow-ink/5">
                     <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-paper text-lg font-bold text-brand transition group-hover:bg-brand group-hover:text-white">
                         {{ mb_substr($customer->name, 0, 1) }}
                     </span>

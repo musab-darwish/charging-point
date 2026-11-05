@@ -11,7 +11,7 @@ use Illuminate\Http\RedirectResponse;
 class CashPaymentController extends Controller
 {
     /**
-     * Record a cash payment ("واصل") from the day page.
+     * Record a cash payment ("واصل") from the day page or the customer's page.
      */
     public function store(CashPaymentRequest $request, RecordCashPayment $recordPayment): RedirectResponse
     {
@@ -26,10 +26,12 @@ class CashPaymentController extends Controller
             $request->validated('form_token'),
         );
 
+        $back = WorkDay::redirectBack($day, $request->validated('back_to_customer'));
+
         if (! $recorded) {
-            return WorkDay::redirect($day)->with('status', 'هذه الدفعة مسجّلة من قبل.');
+            return $back->with('status', 'هذه الدفعة مسجّلة من قبل.');
         }
 
-        return WorkDay::redirect($day)->with('status', 'تم تسجيل دفعة '.$request->amount().' ₪ من '.$customer->name.'.');
+        return $back->with('status', 'تم تسجيل دفعة '.$request->amount().' ₪ من '.$customer->name.'.');
     }
 }

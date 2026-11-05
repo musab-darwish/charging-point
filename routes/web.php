@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
     Route::get('/customers/search', CustomerSearchController::class)->name('customers.search');
-    Route::resource('customers', CustomerController::class)->except('show');
+    Route::resource('customers', CustomerController::class);
 
     Route::middleware('can:manage-users')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');

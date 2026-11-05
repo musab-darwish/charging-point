@@ -41,6 +41,7 @@ class CashPaymentRequest extends FormRequest
             'amount' => ['required', 'numeric', 'gt:0', 'max:99999.99', 'decimal:0,2'],
             'date' => ['required', 'date_format:Y-m-d', 'before_or_equal:today'],
             'form_token' => ['required', 'uuid'],
+            'back_to_customer' => ['nullable', 'integer', 'exists:customers,id'],
         ];
     }
 

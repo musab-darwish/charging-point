@@ -23,7 +23,7 @@
             @if ($customer->is_walk_in)
                 <p class="truncate text-lg font-bold">{{ $customer->name }}</p>
             @else
-                <a href="{{ route('customers.edit', $customer) }}" class="block truncate text-lg font-bold transition hover:text-brand">{{ $customer->name }}</a>
+                <a href="{{ route('customers.show', $customer) }}" class="block truncate text-lg font-bold transition hover:text-brand">{{ $customer->name }}</a>
             @endif
             <p class="text-xs text-ink-muted">آخر حركة {{ $row->lastAt->format('H:i') }}</p>
         </div>
