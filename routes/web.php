@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\CashPaymentController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerSearchController;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\PaymentAccountController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PriceItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/day/{date}', [DayController::class, 'show'])->where('date', '\d{4}-\d{2}-\d{2}')->name('day.show');
 
     Route::post('/work', [WorkController::class, 'store'])->name('work.store');
-    Route::post('/payments/cash', [CashPaymentController::class, 'store'])->name('payments.cash');
+    Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
 
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 

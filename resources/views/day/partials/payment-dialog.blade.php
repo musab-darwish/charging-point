@@ -1,7 +1,7 @@
 {{-- "واصل": a cash payment for one customer, opened from their card or their page (see resources/js/behaviors/payment-dialog.js) --}}
 <dialog id="payment-dialog" aria-labelledby="payment-dialog-title"
     class="m-auto w-[min(100%-2rem,26rem)] overflow-visible bg-transparent p-0 text-ink backdrop:bg-ink/45">
-    <form method="POST" action="{{ route('payments.cash') }}" data-submit-lock class="animate-drop rounded-3xl border border-rule bg-white p-6 shadow-2xl shadow-ink/25 sm:p-7">
+    <form method="POST" action="{{ route('payments.store') }}" data-submit-lock class="animate-drop rounded-3xl border border-rule bg-white p-6 shadow-2xl shadow-ink/25 sm:p-7">
         @csrf
         <input type="hidden" name="customer_id" data-payment-customer>
         <input type="hidden" name="date" value="{{ $day->format('Y-m-d') }}">

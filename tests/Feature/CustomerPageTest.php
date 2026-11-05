@@ -55,7 +55,7 @@ test('a payment made from the customer page goes back to it', function () {
     Transaction::factory()->for($this->customer)->debit('5.00')->create();
 
     $this->actingAs($this->user)
-        ->post(route('payments.cash'), [
+        ->post(route('payments.store'), [
             'customer_id' => $this->customer->id,
             'amount' => '5',
             'date' => now()->format('Y-m-d'),

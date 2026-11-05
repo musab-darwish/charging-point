@@ -3,15 +3,17 @@
 namespace App\Http\Requests;
 
 use App\Models\Customer;
+use App\Models\PaymentAccount;
+use App\Models\Transaction;
 use App\Support\Numbers;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * A cash payment ("واصل") from today's work page.
+ * A payment ("واصل"), cash or transfer, from the day page or the customer's page.
  */
-class CashPaymentRequest extends FormRequest
+class PaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +24,15 @@ class CashPaymentRequest extends FormRequest
     }
 
     /**
-     * Accept an amount typed with Arabic digits.
+     * Cash unless said otherwise, and accept numbers typed with Arabic digits.
      */
     protected function prepareForValidation(): void
     {
-        $this->merge(['amount' => Numbers::normalize($this->input('amount'))]);
+        $this->merge([
+            'method' => $this->input('method') ?: Transaction::CASH,
+            'amount' => Numbers::normalize($this->input('amount')),
+            'reference' => Numbers::normalize($this->input('reference')),
+        ]);
     }
 
     /**
@@ -39,6 +45,10 @@ class CashPaymentRequest extends FormRequest
         return [
             'customer_id' => ['required', 'integer', Rule::exists('customers', 'id')->where('is_walk_in', false)],
             'amount' => ['required', 'numeric', 'gt:0', 'max:99999.99', 'decimal:0,2'],
+            'method' => ['required', Rule::in([Transaction::CASH, Transaction::TRANSFER])],
+            // Only a transfer has an account and a reference; cash drops them.
+            'payment_account_id' => ['exclude_unless:method,transfer', 'required', 'integer', Rule::exists('payment_accounts', 'id')->where('is_active', true)],
+            'reference' => ['exclude_unless:method,transfer', 'nullable', 'string', 'max:50'],
             'date' => ['required', 'date_format:Y-m-d', 'before_or_equal:today'],
             'form_token' => ['required', 'uuid'],
             'back_to_customer' => ['nullable', 'integer', 'exists:customers,id'],
@@ -55,6 +65,20 @@ class CashPaymentRequest extends FormRequest
         return [
             'amount.gt' => 'المبلغ يجب أن يكون أكبر من صفر.',
             'amount.decimal' => 'يقبل المبلغ منزلتين عشريتين على الأكثر.',
+            'payment_account_id.required' => 'اختر الحساب الذي وصلت عليه الحوالة.',
+            'payment_account_id.exists' => 'هذا الحساب غير متاح للحوالات.',
+        ];
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'reference' => 'رقم الحوالة',
         ];
     }
 
@@ -66,5 +90,15 @@ class CashPaymentRequest extends FormRequest
     public function amount(): string
     {
         return number_format((float) $this->validated('amount'), 2, '.', '');
+    }
+
+    /**
+     * The account a transfer arrived on; null for cash.
+     */
+    public function account(): ?PaymentAccount
+    {
+        $id = $this->validated('payment_account_id');
+
+        return $id ? PaymentAccount::findOrFail($id) : null;
     }
 }
