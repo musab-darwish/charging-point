@@ -21,7 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Only the owner manages users (and, later, prices).
+        // Only the owner manages users and the price list.
         Gate::define('manage-users', fn (User $user) => $user->is_owner);
+        Gate::define('manage-prices', fn (User $user) => $user->is_owner);
     }
 }
