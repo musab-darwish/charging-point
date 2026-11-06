@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerSearchController;
 use App\Http\Controllers\DayController;
+use App\Http\Controllers\DebtorController;
 use App\Http\Controllers\FreezeItemController;
 use App\Http\Controllers\OldDebtController;
 use App\Http\Controllers\PaymentAccountController;
@@ -29,6 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/work', [WorkController::class, 'store'])->name('work.store');
     Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
     Route::post('/transactions/{transaction}/reverse', [ReversalController::class, 'store'])->name('transactions.reverse');
+
+    Route::get('/debtors', [DebtorController::class, 'index'])->name('debtors.index');
 
     Route::get('/freezer', [FreezeItemController::class, 'index'])->name('freezer.index');
     Route::post('/freezer', [FreezeItemController::class, 'store'])->name('freezer.store');
