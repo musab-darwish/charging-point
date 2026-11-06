@@ -138,7 +138,7 @@ final class AccountMessage
             $lines[] = 'للتحويل:';
 
             foreach ($this->accounts as $account) {
-                $lines[] = '• '.$account->name.': '.$account->number.' (باسم '.$account->holder_name.')';
+                $lines[] = '• '.$account->name.': '.$account->number.' ('.$account->holder_name.')';
             }
         }
 

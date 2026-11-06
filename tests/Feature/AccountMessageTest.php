@@ -102,7 +102,7 @@ test('the active transfer accounts are offered only when something is owed', fun
     PaymentAccount::factory()->inactive()->create(['name' => 'بنك قديم']);
     entry('debit', '5.00', '2026-11-05 10:00');
 
-    expect((new AccountMessage($this->customer))->short())->toContain('• جوال باي: 0599000111 (باسم مصعب)')
+    expect((new AccountMessage($this->customer))->short())->toContain('• جوال باي: 0599000111 (مصعب)')
         ->not->toContain('بنك قديم');
 
     entry('credit', '5.00', '2026-11-06 10:00');
