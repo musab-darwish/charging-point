@@ -107,3 +107,22 @@ test('an old debt is not that day\'s work, but it is on the statement', function
         ->and($row->balance)->toBe('47.00')
         ->and((new Statement($this->customer))->days->sole()->summary())->toContain('رصيد سابق من الدفتر');
 });
+
+test('the page lists what was moved, with the totals owed and in their favour', function () {
+    $other = Customer::factory()->create(['name' => 'أبو علي']);
+    $this->actingAs($this->owner)->post('/old-debts', oldDebtForm(['amount' => '45']));
+    $this->actingAs($this->owner)->post('/old-debts', oldDebtForm(['customer_id' => $other->id, 'amount' => '5', 'direction' => 'credit']));
+
+    $this->actingAs($this->owner)->get('/old-debts')
+        ->assertOk()
+        ->assertSeeInOrder(['مجموع ما عليهم', '45.00', 'مجموع ما لهم', '5.00'])
+        ->assertSeeInOrder(['أبو علي', 'له 5.00', 'أبو محمد', 'عليه 45.00']);
+});
+
+test('a balance in their favour reads as such on the statement', function () {
+    $this->actingAs($this->owner)->post('/old-debts', oldDebtForm(['amount' => '5', 'direction' => 'credit']));
+
+    $this->actingAs($this->owner)->get(route('customers.show', $this->customer))
+        ->assertSee('رصيد سابق من الدفتر (له)')
+        ->assertDontSee('دفعة نقدية');
+});

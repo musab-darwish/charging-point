@@ -79,6 +79,13 @@
                                 </a>
                             @endcan
 
+                            @can('move-old-debts')
+                                <a href="{{ route('old-debts.index') }}" class="flex h-11 items-center gap-2 rounded-xl px-3 font-bold transition hover:bg-paper">
+                                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v16H5.5A1.5 1.5 0 0 0 4 20.5z" /><path d="M4 20.5A1.5 1.5 0 0 0 5.5 22H19v-3" /><path d="M8 7h7M8 11h5" /></svg>
+                                    نقل الديون السابقة
+                                </a>
+                            @endcan
+
                             <form method="POST" action="{{ route('logout') }}" class="mt-2 border-t border-rule pt-2">
                                 @csrf
                                 <button type="submit" class="flex h-11 w-full items-center gap-2 rounded-xl px-3 font-bold text-debit transition hover:bg-debit-soft">

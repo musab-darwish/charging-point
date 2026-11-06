@@ -5,6 +5,7 @@ import { initDayNav } from './behaviors/day-nav';
 import { initFlashMessages } from './behaviors/flash';
 import { initFreezer } from './behaviors/freezer';
 import { initLiveSearch } from './behaviors/live-search';
+import { initOldDebts } from './behaviors/old-debts';
 import { initPasswordToggles } from './behaviors/password-toggle';
 import { initPaymentDialog } from './behaviors/payment-dialog';
 import { initReversal } from './behaviors/reversal';
@@ -23,5 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initDayNav();
     initDayFilter();
     initFreezer();
+    initOldDebts();
     initCursor();
 });

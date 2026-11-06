@@ -158,6 +158,8 @@
                                         <span class="max-lg:order-3 max-lg:col-span-2 lg:order-2">
                                             @if ($day->items->isNotEmpty())
                                                 {{ $day->summary() }}
+                                            @elseif ($opening = $day->payments->firstWhere('category', \App\Models\Transaction::OPENING))
+                                                <span class="font-medium text-credit">{{ $opening->description }} (له)</span>
                                             @else
                                                 <span class="font-medium text-credit">{{ $day->payments->count() > 1 ? 'دفعات على الحساب' : 'دفعة على الحساب' }}</span>
                                             @endif

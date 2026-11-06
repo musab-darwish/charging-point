@@ -3,6 +3,7 @@
      A cancelled one is struck through with why; in correction mode each other one has a "×" to cancel it. --}}
 @php
     $label = match (true) {
+        $line->category === \App\Models\Transaction::OPENING => $line->description.($line->isDebit() ? '' : ' (له)'),
         $line->isDebit() => $line->description.($line->quantity > 1 ? ' ×'.$line->quantity : ''),
         $line->isTransfer() => 'حوالة على '.$line->paymentAccount?->name,
         default => 'دفعة نقدية',
@@ -74,7 +75,7 @@
                     @endif
                 </div>
             </div>
-        @elseif ($line->isDebit())
+        @elseif ($line->isDebit() && $line->category !== \App\Models\Transaction::OPENING)
             <span class="min-w-0 flex-1 truncate">
                 {{ $line->description }}
                 @if ($line->quantity > 1)

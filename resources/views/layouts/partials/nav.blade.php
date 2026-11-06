@@ -66,4 +66,13 @@
             حسابات التحويل
         </x-nav-item>
     @endcan
+
+    @can('move-old-debts')
+        <x-nav-item layout="side" :href="route('old-debts.index')" :active="request()->routeIs('old-debts.*')">
+            <x-slot:icon>
+                <svg class="size-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v16H5.5A1.5 1.5 0 0 0 4 20.5z" /><path d="M4 20.5A1.5 1.5 0 0 0 5.5 22H19v-3" /><path d="M8 7h7M8 11h5" /></svg>
+            </x-slot:icon>
+            نقل الديون السابقة
+        </x-nav-item>
+    @endcan
 @endif
