@@ -95,14 +95,16 @@ test('a cancellation must say why', function () {
 });
 
 test('cancelling a freezer pickup charge puts the item back in the freezer', function () {
-    $freezeItem = FreezeItem::factory()->for($this->customer)->pickedUp()->create(['picked_up_by' => $this->user->id]);
+    $freezeItem = FreezeItem::factory()->for($this->customer)->pickedUp()->create(['picked_up_by' => $this->user->id, 'stored_at' => now()->subDays(3)]);
     $charge = Transaction::factory()->for($this->customer)->debit('5.00')->create(['category' => 'freezing', 'freeze_item_id' => $freezeItem->id]);
 
     $this->actingAs($this->user)->post("/transactions/{$charge->id}/reverse", reverseForm(['reason' => 'السعر خطأ']));
 
     $freezeItem->refresh();
 
+    // Back in the freezer from the day it first arrived, not from today.
     expect($freezeItem->isInFreezer())->toBeTrue()
+        ->and($freezeItem->daysStored())->toBe(3)
         ->and($freezeItem->picked_up_by)->toBeNull()
         ->and($freezeItem->transaction)->toBeNull()
         ->and($this->customer->balance())->toBe('0.00');
