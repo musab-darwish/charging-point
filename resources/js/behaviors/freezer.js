@@ -1,9 +1,11 @@
 import { createCustomerPicker } from './customer-picker';
+import { amountProblem, clearFieldError, guardForm, toNumber } from './forms';
 
 /**
  * The freezer page: "وضع غرض في الفريزر" opens a dialog to pick the customer
  * and describe the item; "استلام" on an item opens the pickup dialog for it,
- * where the price is written. Both reopen after a refused submit.
+ * where the price is written. Both explain mistakes under the field, and
+ * reopen after the server refuses a submit.
  */
 export function initFreezer() {
     initStoreDialog();
@@ -18,14 +20,13 @@ function initStoreDialog() {
     }
 
     const form = dialog.querySelector('[data-freezer-store-form]');
-    const pickerRoot = form.querySelector('[data-customer-picker]');
-    const missing = form.querySelector('[data-freezer-missing]');
-    const description = form.querySelector('[data-freezer-description]');
+    const description = form.querySelector('#freezer-description');
+    const quantity = form.querySelector('#freezer-quantity');
+    const storedOn = form.querySelector('#freezer-stored-on');
 
     const picker = createCustomerPicker(form, () => {
         if (picker?.chosen()) {
-            pickerRoot.dataset.missing = 'false';
-            missing.hidden = true;
+            clearFieldError(form, 'freezer-customer-search');
         }
     });
 
@@ -42,31 +43,39 @@ function initStoreDialog() {
         }
     });
 
-    // The price list's freezing items, one tap to fill the description.
-    form.querySelectorAll('[data-freezer-suggestion]').forEach((button) => {
-        button.addEventListener('click', () => {
-            description.value = button.dataset.freezerSuggestion;
-            description.focus();
-        });
-    });
+    guardForm(form, () => {
+        if (!picker.chosen()) {
+            return { id: 'freezer-customer-search', message: 'اختر الزبون أولاً، أو اكتب اسمه لإضافته.' };
+        }
 
-    // Say what is missing instead of sending a form the server will refuse.
-    // Capture phase, so this runs before the submit lock.
-    form.addEventListener(
-        'submit',
-        (event) => {
-            if (picker.chosen()) {
-                return;
+        const text = description.value.trim();
+
+        if (text === '') {
+            return { id: 'freezer-description', message: 'اكتب ما الذي وُضع في الفريزر.' };
+        }
+
+        if (text.length < 2 || !/\p{L}/u.test(text)) {
+            return { id: 'freezer-description', message: 'اكتب وصفاً للغرض بالكلمات، مثل: دجاجة.' };
+        }
+
+        if (quantity.value.trim() !== '') {
+            const count = toNumber(quantity.value);
+
+            if (!Number.isInteger(count) || count < 1 || count > 99) {
+                return { id: 'freezer-quantity', message: 'الكمية عدد صحيح من 1 إلى 99.' };
             }
+        }
 
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            pickerRoot.dataset.missing = 'true';
-            missing.hidden = false;
-            form.querySelector('#freezer-customer-search').focus();
-        },
-        { capture: true },
-    );
+        if (storedOn.value === '') {
+            return { id: 'freezer-stored-on', message: 'اختر تاريخ الوصول.' };
+        }
+
+        if (storedOn.value > storedOn.max) {
+            return { id: 'freezer-stored-on', message: 'لا يمكن أن يكون تاريخ الوصول في يوم لم يأتِ بعد.' };
+        }
+
+        return null;
+    });
 
     const old = JSON.parse(form.dataset.old);
 
@@ -89,7 +98,7 @@ function initPickupDialog() {
     }
 
     const form = dialog.querySelector('[data-pickup-form]');
-    const price = form.querySelector('[data-pickup-price]');
+    const price = form.querySelector('#pickup-price');
     const buttons = [...document.querySelectorAll('[data-pickup]')];
 
     const open = (item, { keepPrice = false } = {}) => {
@@ -101,12 +110,24 @@ function initPickupDialog() {
 
         if (!keepPrice) {
             price.value = '';
+            clearFieldError(form, 'pickup-price');
         }
 
         dialog.showModal();
         price.focus();
         price.select();
     };
+
+    guardForm(form, () => {
+        const problem = amountProblem(price.value, {
+            label: 'السعر',
+            empty: 'اكتب سعر التجميد، أو 0 إن كان بدون مقابل.',
+            allowZero: true,
+            max: 9999.99,
+        });
+
+        return problem ? { id: 'pickup-price', message: problem } : null;
+    });
 
     buttons.forEach((button) => button.addEventListener('click', () => open(JSON.parse(button.dataset.pickup))));
     dialog.querySelector('[data-close-pickup]').addEventListener('click', () => dialog.close());

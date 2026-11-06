@@ -63,7 +63,10 @@ class PaymentRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'amount.required' => 'اكتب المبلغ المدفوع.',
+            'amount.numeric' => 'اكتب المبلغ بالأرقام، مثل 3 أو 2.50.',
             'amount.gt' => 'المبلغ يجب أن يكون أكبر من صفر.',
+            'amount.max' => 'المبلغ أكبر من المسموح (99999.99 ₪).',
             'amount.decimal' => 'يقبل المبلغ منزلتين عشريتين على الأكثر.',
             'payment_account_id.required' => 'اختر الحساب الذي وصلت عليه الحوالة.',
             'payment_account_id.exists' => 'هذا الحساب غير متاح للحوالات.',

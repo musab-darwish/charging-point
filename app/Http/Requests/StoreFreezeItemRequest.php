@@ -69,8 +69,13 @@ class StoreFreezeItemRequest extends FormRequest
             'customer_id.exists' => 'اختر زبوناً باسمه، فالغرض يُستلم لاحقاً.',
             'new_customer_name.unique' => 'يوجد زبون بهذا الاسم. اختره من البحث بدلاً من إضافته من جديد.',
             'description.required' => 'اكتب ما الذي وُضع في الفريزر.',
-            'description.min' => 'اكتب وصفاً للغرض بالكلمات، مثل: كيكة وسط.',
-            'description.regex' => 'اكتب وصفاً للغرض بالكلمات، مثل: كيكة وسط.',
+            'description.min' => 'اكتب وصفاً للغرض بالكلمات، مثل: دجاجة.',
+            'description.regex' => 'اكتب وصفاً للغرض بالكلمات، مثل: دجاجة.',
+            'quantity.integer' => 'الكمية عدد صحيح من 1 إلى 99.',
+            'quantity.min' => 'الكمية عدد صحيح من 1 إلى 99.',
+            'quantity.max' => 'الكمية عدد صحيح من 1 إلى 99.',
+            'stored_on.required' => 'اختر تاريخ الوصول.',
+            'stored_on.date_format' => 'اختر تاريخ الوصول.',
             'stored_on.before_or_equal' => 'لا يمكن أن يكون تاريخ الوصول في يوم لم يأتِ بعد.',
         ];
     }

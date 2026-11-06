@@ -143,3 +143,15 @@ test('an unknown payment method is refused', function () {
         ->post('/payments', paymentForm(['method' => 'cheque']))
         ->assertSessionHasErrors('method');
 });
+
+test('an amount that is not a number is refused in plain words', function () {
+    $this->actingAs($this->user)
+        ->post('/payments', paymentForm(['amount' => 'خمسة']))
+        ->assertSessionHasErrors(['amount' => 'اكتب المبلغ بالأرقام، مثل 3 أو 2.50.']);
+
+    $this->actingAs($this->user)
+        ->post('/payments', paymentForm(['amount' => '100000']))
+        ->assertSessionHasErrors(['amount' => 'المبلغ أكبر من المسموح (99999.99 ₪).']);
+
+    expect($this->customer->transactions()->count())->toBe(0);
+});

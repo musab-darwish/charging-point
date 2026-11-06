@@ -31,39 +31,32 @@
             <div>
                 <p class="mb-1.5 text-sm font-bold">لمن؟</p>
                 @include('partials.customer-picker', ['pickerId' => 'freezer', 'next' => '#freezer-description'])
-                <p data-freezer-missing hidden class="mt-2 text-sm font-medium text-debit">اختر الزبون أولاً، أو اكتب اسمه لإضافته.</p>
+                <p data-error-for="freezer-customer-search" @unless ($errors->hasAny(['customer_id', 'new_customer_name'])) hidden @endunless class="mt-2 flex items-center gap-1.5 text-sm font-medium text-debit"><svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5v.01" /></svg><span data-error-text>{{ $errors->first('customer_id') ?: $errors->first('new_customer_name') }}</span></p>
             </div>
 
             <div>
                 <label for="freezer-description" class="mb-1.5 block text-sm font-bold">ما الغرض؟</label>
                 <input id="freezer-description" name="description" type="text" required maxlength="150" autocomplete="off" value="{{ old('description') }}"
-                    placeholder="مثل: كيكة وسط" data-freezer-description
-                    class="block h-13 w-full rounded-xl border border-rule-strong bg-white px-4 text-lg transition placeholder:text-ink-muted/60 hover:border-ink-muted focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15">
-                @if ($suggestions->isNotEmpty())
-                    <div class="mt-2 flex flex-wrap gap-1.5">
-                        @foreach ($suggestions as $suggestion)
-                            <button type="button" data-freezer-suggestion="{{ $suggestion }}"
-                                class="inline-flex h-11 items-center rounded-lg border border-rule px-3 text-sm font-bold text-ink-muted transition hover:border-brand/40 hover:bg-brand-soft hover:text-brand">
-                                {{ $suggestion }}
-                            </button>
-                        @endforeach
-                    </div>
-                @endif
+                    placeholder="مثل: دجاجة" data-freezer-description @error('description') aria-invalid="true" @enderror
+                    class="block h-13 w-full rounded-xl border border-rule-strong bg-white px-4 text-lg transition placeholder:text-ink-muted/60 hover:border-ink-muted focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15 aria-invalid:border-debit aria-invalid:focus:border-debit aria-invalid:focus:ring-debit/15">
+                <p data-error-for="freezer-description" @unless ($errors->has('description')) hidden @endunless class="mt-2 flex items-center gap-1.5 text-sm font-medium text-debit"><svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5v.01" /></svg><span data-error-text>{{ $errors->first('description') }}</span></p>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label for="freezer-quantity" class="mb-1.5 block text-sm font-bold">الكمية <span class="font-medium text-ink-muted">(اختياري)</span></label>
-                    <input id="freezer-quantity" name="quantity" type="text" inputmode="numeric" autocomplete="off" value="{{ old('quantity') }}" placeholder="1" dir="ltr"
-                        class="block h-13 w-full rounded-xl border border-rule-strong bg-white px-4 text-end text-lg font-bold tabular-nums transition placeholder:text-ink-muted/50 hover:border-ink-muted focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15">
+                    <input id="freezer-quantity" name="quantity" type="text" inputmode="numeric" autocomplete="off" value="{{ old('quantity') }}" placeholder="1" dir="ltr" @error('quantity') aria-invalid="true" @enderror
+                        class="block h-13 w-full rounded-xl border border-rule-strong bg-white px-4 text-end text-lg font-bold tabular-nums transition placeholder:text-ink-muted/50 hover:border-ink-muted focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15 aria-invalid:border-debit aria-invalid:focus:border-debit aria-invalid:focus:ring-debit/15">
                 </div>
                 <div>
                     <label for="freezer-stored-on" class="mb-1.5 block text-sm font-bold">تاريخ الوصول</label>
-                    <input id="freezer-stored-on" name="stored_on" type="date" required value="{{ old('stored_on', now()->format('Y-m-d')) }}" max="{{ now()->format('Y-m-d') }}"
-                        class="block h-13 w-full rounded-xl border border-rule-strong bg-white px-3 font-bold tabular-nums transition hover:border-ink-muted focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15">
+                    <input id="freezer-stored-on" name="stored_on" type="date" required value="{{ old('stored_on', now()->format('Y-m-d')) }}" max="{{ now()->format('Y-m-d') }}" @error('stored_on') aria-invalid="true" @enderror
+                        class="block h-13 w-full rounded-xl border border-rule-strong bg-white px-3 font-bold tabular-nums transition hover:border-ink-muted focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15 aria-invalid:border-debit aria-invalid:focus:border-debit aria-invalid:focus:ring-debit/15">
                 </div>
             </div>
-            <p class="-mt-2 text-xs text-ink-muted">اختر يوماً سابقاً للأغراض الموجودة في الفريزر من قبل، ليُحسب عدد أيامها صحيحاً.</p>
+            <p data-error-for="freezer-quantity" @unless ($errors->has('quantity')) hidden @endunless class="-mt-2 flex items-center gap-1.5 text-sm font-medium text-debit"><svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5v.01" /></svg><span data-error-text>{{ $errors->first('quantity') }}</span></p>
+            <p data-error-for="freezer-stored-on" @unless ($errors->has('stored_on')) hidden @endunless class="-mt-2 flex items-center gap-1.5 text-sm font-medium text-debit"><svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5v.01" /></svg><span data-error-text>{{ $errors->first('stored_on') }}</span></p>
+            <p data-hint-for="freezer-stored-on" @error('stored_on') hidden @enderror class="-mt-2 text-xs text-ink-muted">اختر يوماً سابقاً للأغراض الموجودة في الفريزر من قبل، ليُحسب عدد أيامها صحيحاً.</p>
         </div>
 
         <div class="mt-6 grid grid-cols-2 gap-3">

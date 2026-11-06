@@ -22,15 +22,12 @@
 
         <label for="pickup-price" class="mb-1.5 mt-6 block text-sm font-bold">سعر التجميد</label>
         <div class="relative" dir="ltr">
-            <input id="pickup-price" name="price" type="text" inputmode="decimal" required autocomplete="off" data-pickup-price value="{{ old('price') }}"
-                class="block h-16 w-full rounded-xl border border-rule-strong bg-white ps-4 pe-12 text-end text-3xl font-extrabold tabular-nums transition focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15">
+            <input id="pickup-price" name="price" type="text" inputmode="decimal" required autocomplete="off" data-pickup-price value="{{ old('price') }}" @error('price') aria-invalid="true" @enderror
+                class="block h-16 w-full rounded-xl border border-rule-strong bg-white ps-4 pe-12 text-end text-3xl font-extrabold tabular-nums transition focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15 aria-invalid:border-debit aria-invalid:focus:border-debit aria-invalid:focus:ring-debit/15">
             <span class="pointer-events-none absolute inset-y-0 end-4 flex items-center text-xl font-bold text-ink-muted">₪</span>
         </div>
-        @error('price')
-            <p class="mt-2 text-sm font-medium text-debit">{{ $message }}</p>
-        @else
-            <p class="mt-2 text-xs text-ink-muted">اكتب 0 إن كان بدون مقابل، فلا يُسجَّل عليه شيء.</p>
-        @enderror
+        <p data-error-for="pickup-price" @unless ($errors->has('price')) hidden @endunless class="mt-2 flex items-center gap-1.5 text-sm font-medium text-debit"><svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5v.01" /></svg><span data-error-text>{{ $errors->first('price') }}</span></p>
+        <p data-hint-for="pickup-price" @error('price') hidden @enderror class="mt-2 text-xs text-ink-muted">اكتب 0 إن كان بدون مقابل، فلا يُسجَّل عليه شيء.</p>
 
         <div class="mt-6 grid grid-cols-2 gap-3">
             <button type="submit" name="pay_now" value="0"

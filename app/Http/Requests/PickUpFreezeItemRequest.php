@@ -53,8 +53,10 @@ class PickUpFreezeItemRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'price.required' => 'اكتب سعر التجميد، أو صفراً إن كان بدون مقابل.',
+            'price.required' => 'اكتب سعر التجميد، أو 0 إن كان بدون مقابل.',
+            'price.numeric' => 'اكتب السعر بالأرقام، مثل 3 أو 2.50.',
             'price.min' => 'لا يمكن أن يكون السعر بالسالب.',
+            'price.max' => 'السعر أكبر من المسموح (9999.99 ₪).',
             'price.decimal' => 'يقبل السعر منزلتين عشريتين على الأكثر.',
         ];
     }

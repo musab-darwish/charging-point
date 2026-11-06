@@ -8,7 +8,6 @@ use App\Http\Requests\PickUpFreezeItemRequest;
 use App\Http\Requests\StoreFreezeItemRequest;
 use App\Models\Customer;
 use App\Models\FreezeItem;
-use App\Models\PriceItem;
 use App\Support\WorkDay;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
@@ -26,8 +25,6 @@ class FreezeItemController extends Controller
         return view('freezer.index', [
             'items' => FreezeItem::inFreezer()->with(['customer', 'user'])->get(),
             'recent' => FreezeItem::recentlyPickedUp()->with(['customer', 'pickedUpBy', 'transaction'])->get(),
-            // The freezing items on the price list, as quick descriptions.
-            'suggestions' => PriceItem::active()->where('category', 'freezing')->ordered()->pluck('name'),
             'storeToken' => (string) Str::uuid(),
             'pickUpToken' => (string) Str::uuid(),
         ]);

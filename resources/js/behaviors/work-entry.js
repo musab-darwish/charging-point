@@ -1,4 +1,5 @@
 import { createCustomerPicker } from './customer-picker';
+import { toNumber } from './forms';
 
 const MAX_QUANTITY = 99;
 
@@ -320,16 +321,4 @@ function restoreOldInput(form, picker, cart) {
             unitPrice: item.unit_price,
         });
     });
-}
-
-/**
- * Read a number typed on an Arabic keyboard (١٫٥) as well as a normal one.
- */
-function toNumber(value) {
-    const latin = String(value)
-        .replace(/[٠-٩]/g, (digit) => String(digit.charCodeAt(0) - 0x0660))
-        .replace(/[٫,،]/g, '.')
-        .trim();
-
-    return latin === '' ? NaN : Number(latin);
 }

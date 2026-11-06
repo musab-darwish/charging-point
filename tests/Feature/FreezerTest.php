@@ -161,3 +161,44 @@ test('the freezer page lists what is waiting and what was picked up', function (
         ->assertOk()
         ->assertSeeInOrder(['في الفريزر الآن', 'كيكة وسط', 'أبو محمد', '3 أيام', 'استُلمت مؤخراً', 'قنينة مي', '2.00 ₪']);
 });
+
+test('a price that is not a number is refused in plain words', function () {
+    $item = FreezeItem::factory()->for($this->customer)->create();
+
+    $this->actingAs($this->user)
+        ->post("/freezer/{$item->id}/pickup", pickUpForm(['price' => 'ثلاثة', 'pickup_for' => $item->id]))
+        ->assertSessionHasErrors(['price' => 'اكتب السعر بالأرقام، مثل 3 أو 2.50.']);
+
+    $this->actingAs($this->user)
+        ->post("/freezer/{$item->id}/pickup", pickUpForm(['price' => '2.505']))
+        ->assertSessionHasErrors(['price' => 'يقبل السعر منزلتين عشريتين على الأكثر.']);
+
+    $this->actingAs($this->user)
+        ->post("/freezer/{$item->id}/pickup", pickUpForm(['price' => '10000']))
+        ->assertSessionHasErrors(['price' => 'السعر أكبر من المسموح (9999.99 ₪).']);
+
+    expect($item->fresh()->isInFreezer())->toBeTrue();
+});
+
+test('a refused price reopens the pickup on the same item', function () {
+    $item = FreezeItem::factory()->for($this->customer)->create();
+
+    $this->actingAs($this->user)
+        ->from('/freezer')
+        ->post("/freezer/{$item->id}/pickup", pickUpForm(['price' => '', 'pickup_for' => $item->id]))
+        ->assertRedirect('/freezer');
+
+    $this->actingAs($this->user)->get('/freezer')
+        ->assertSee('data-reopen="'.$item->id.'"', false)
+        ->assertSee('اكتب سعر التجميد، أو 0 إن كان بدون مقابل.');
+});
+
+test('a quantity that is not a whole number from 1 to 99 is refused', function () {
+    foreach (['0', '100', '1.5', 'كثير'] as $quantity) {
+        $this->actingAs($this->user)
+            ->post('/freezer', storeForm(['quantity' => $quantity]))
+            ->assertSessionHasErrors(['quantity' => 'الكمية عدد صحيح من 1 إلى 99.']);
+    }
+
+    expect(FreezeItem::count())->toBe(0);
+});

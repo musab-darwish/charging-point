@@ -1,3 +1,5 @@
+import { amountProblem, clearFieldError, guardForm } from './forms';
+
 /**
  * "واصل": a [data-pay] button on a customer's card (or their page) opens the
  * payment dialog with the day's remaining amount filled in, and a one-tap
@@ -10,6 +12,8 @@ export function initPaymentDialog() {
     if (!dialog) {
         return;
     }
+
+    const form = dialog.querySelector('[data-payment-form]');
 
     const amount = dialog.querySelector('[data-payment-amount]');
     const fills = dialog.querySelectorAll('[data-payment-fill]');
@@ -48,6 +52,7 @@ export function initPaymentDialog() {
 
             // Every payment starts as cash, with nothing left from the last one.
             methods.forEach((method) => (method.checked = method.value === 'cash'));
+            ['payment-amount', 'payment-account', 'payment-reference'].forEach((id) => clearFieldError(form, id));
             if (reference) {
                 reference.value = '';
             }
@@ -62,6 +67,26 @@ export function initPaymentDialog() {
     });
 
     methods.forEach((method) => method.addEventListener('change', showMethod));
+
+    guardForm(form, () => {
+        const problem = amountProblem(amount.value, { label: 'المبلغ', empty: 'اكتب المبلغ المدفوع.', max: 99999.99 });
+
+        if (problem) {
+            return { id: 'payment-amount', message: problem };
+        }
+
+        const transfer = form.querySelector('[data-payment-method]:checked').value === 'transfer';
+
+        if (transfer && accounts.length === 0) {
+            return { id: 'payment-account', message: 'لا يمكن تسجيل حوالة قبل إضافة حساب تحويل.' };
+        }
+
+        if (transfer && !form.querySelector('[data-payment-account]:checked')) {
+            return { id: 'payment-account', message: 'اختر الحساب الذي وصلت عليه الحوالة.' };
+        }
+
+        return null;
+    });
 
     fills.forEach((button) => button.addEventListener('click', () => choose(button.dataset.paymentFill)));
 

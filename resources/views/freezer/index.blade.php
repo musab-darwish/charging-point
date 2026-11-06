@@ -35,7 +35,7 @@
                 <dt class="text-sm font-bold text-ink-muted">أقدم غرض</dt>
                 <dd class="mt-1 text-3xl font-extrabold tabular-nums">
                     @if ($oldest)
-                        {{ $oldest->daysStored() }} <span class="text-base text-ink-muted">{{ $oldest->daysStored() === 1 ? 'يوم' : 'أيام' }}</span>
+                        {{ $stayed($oldest->daysStored()) }}
                     @else
                         —
                     @endif

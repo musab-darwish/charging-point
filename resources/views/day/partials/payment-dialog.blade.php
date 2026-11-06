@@ -54,9 +54,10 @@
         <label for="payment-amount" class="mb-1.5 mt-5 block text-sm font-bold">المبلغ المدفوع</label>
         <div class="relative" dir="ltr">
             <input id="payment-amount" name="amount" type="text" inputmode="decimal" required autocomplete="off" data-payment-amount
-                class="block h-16 w-full rounded-xl border border-rule-strong bg-white ps-4 pe-12 text-end text-3xl font-extrabold tabular-nums transition focus:border-credit focus:outline-none focus:ring-4 focus:ring-credit/15">
+                class="block h-16 w-full rounded-xl border border-rule-strong bg-white ps-4 pe-12 text-end text-3xl font-extrabold tabular-nums transition focus:border-credit focus:outline-none focus:ring-4 focus:ring-credit/15 aria-invalid:border-debit aria-invalid:focus:border-debit aria-invalid:focus:ring-debit/15">
             <span class="pointer-events-none absolute inset-y-0 end-4 flex items-center text-xl font-bold text-ink-muted">₪</span>
         </div>
+        <p data-error-for="payment-amount" hidden class="mt-2 flex items-center gap-1.5 text-sm font-medium text-debit"><svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5v.01" /></svg><span data-error-text></span></p>
 
         {{-- A transfer: which account it arrived on, and its number if there is one --}}
         <div data-transfer-fields hidden class="mt-5 space-y-5">
@@ -69,8 +70,9 @@
                         يضيفها المالك من صفحة حسابات التحويل.
                     @endcan
                 </p>
+                <p data-error-for="payment-account" hidden class="mt-2 flex items-center gap-1.5 text-sm font-medium text-debit"><span data-error-text></span></p>
             @else
-                <fieldset>
+                <fieldset id="payment-account" data-error-group="payment-account" tabindex="-1" class="outline-none">
                     <legend class="mb-1.5 block text-sm font-bold">وصلت على حساب</legend>
                     <div class="space-y-2">
                         @foreach ($paymentAccounts as $account)
@@ -85,12 +87,14 @@
                             </label>
                         @endforeach
                     </div>
+                    <p data-error-for="payment-account" hidden class="mt-2 flex items-center gap-1.5 text-sm font-medium text-debit"><svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5v.01" /></svg><span data-error-text></span></p>
                 </fieldset>
 
                 <div>
                     <label for="payment-reference" class="mb-1.5 block text-sm font-bold">رقم الحوالة <span class="font-medium text-ink-muted">(اختياري)</span></label>
                     <input id="payment-reference" name="reference" type="text" inputmode="numeric" autocomplete="off" dir="ltr" maxlength="50" data-payment-reference
-                        class="block h-12 w-full rounded-xl border border-rule-strong bg-white px-4 text-end font-bold tabular-nums transition focus:border-credit focus:outline-none focus:ring-4 focus:ring-credit/15">
+                        class="block h-12 w-full rounded-xl border border-rule-strong bg-white px-4 text-end font-bold tabular-nums transition focus:border-credit focus:outline-none focus:ring-4 focus:ring-credit/15 aria-invalid:border-debit aria-invalid:focus:border-debit aria-invalid:focus:ring-debit/15">
+                    <p data-error-for="payment-reference" hidden class="mt-2 flex items-center gap-1.5 text-sm font-medium text-debit"><svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5v.01" /></svg><span data-error-text></span></p>
                 </div>
             @endif
         </div>
