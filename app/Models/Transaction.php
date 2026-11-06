@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable([
     'customer_id', 'type', 'category', 'price_item_id', 'description', 'quantity', 'unit_price',
-    'amount', 'occurred_at', 'method', 'payment_account_id', 'reference', 'freeze_item_id', 'form_token', 'user_id',
+    'amount', 'occurred_at', 'method', 'payment_account_id', 'reference', 'freeze_item_id', 'reverses_id', 'form_token', 'user_id',
 ])]
 class Transaction extends Model
 {
@@ -80,6 +81,26 @@ class Transaction extends Model
     }
 
     /**
+     * The movement this one cancels, when it is a reversal.
+     *
+     * @return BelongsTo<Transaction, $this>
+     */
+    public function reverses(): BelongsTo
+    {
+        return $this->belongsTo(Transaction::class, 'reverses_id');
+    }
+
+    /**
+     * The reversal that cancelled this movement, if it was cancelled.
+     *
+     * @return HasOne<Transaction, $this>
+     */
+    public function reversal(): HasOne
+    {
+        return $this->hasOne(Transaction::class, 'reverses_id');
+    }
+
+    /**
      * Who recorded it.
      *
      * @return BelongsTo<User, $this>
@@ -118,6 +139,30 @@ class Transaction extends Model
     public function isDebit(): bool
     {
         return $this->type === self::DEBIT;
+    }
+
+    /**
+     * Whether this movement cancels another one.
+     */
+    public function isReversal(): bool
+    {
+        return $this->reverses_id !== null;
+    }
+
+    /**
+     * Whether a reversal cancelled this movement.
+     */
+    public function isReversed(): bool
+    {
+        return $this->reversal !== null;
+    }
+
+    /**
+     * A movement can be cancelled once, and a cancellation itself never is.
+     */
+    public function canBeReversed(): bool
+    {
+        return ! $this->isReversal() && ! $this->isReversed();
     }
 
     public function isTransfer(): bool

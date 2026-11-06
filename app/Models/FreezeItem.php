@@ -64,13 +64,17 @@ class FreezeItem extends Model
     }
 
     /**
-     * The charge made at pickup (none when it was free).
+     * The charge made at pickup (none when it was free). A charge that was
+     * cancelled doesn't count: the item went back in the freezer.
      *
      * @return HasOne<Transaction, $this>
      */
     public function transaction(): HasOne
     {
-        return $this->hasOne(Transaction::class)->where('type', Transaction::DEBIT);
+        return $this->hasOne(Transaction::class)
+            ->where('type', Transaction::DEBIT)
+            ->whereNull('reverses_id')
+            ->whereDoesntHave('reversal');
     }
 
     /**

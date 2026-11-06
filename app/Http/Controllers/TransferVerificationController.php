@@ -15,6 +15,11 @@ class TransferVerificationController extends Controller
     {
         abort_unless($transaction->isTransfer(), 404);
 
+        // A cancelled transfer never arrived, so there is nothing to confirm.
+        if ($transaction->isReversed()) {
+            return back()->with('error', 'هذه الحوالة مُلغاة، فلا يمكن تأكيدها.');
+        }
+
         $transaction->verify();
 
         return back()->with('status', 'تم تأكيد وصول حوالة '.$transaction->amount.' ₪.');
