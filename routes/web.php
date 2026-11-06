@@ -5,6 +5,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerSearchController;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\FreezeItemController;
+use App\Http\Controllers\OldDebtController;
 use App\Http\Controllers\PaymentAccountController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PriceItemController;
@@ -64,6 +65,11 @@ Route::middleware('auth')->group(function () {
             ->except('show')
             ->parameters(['payment-accounts' => 'account']);
         Route::patch('/payment-accounts/{account}/toggle', [PaymentAccountController::class, 'toggle'])->name('payment-accounts.toggle');
+    });
+
+    Route::middleware('can:move-old-debts')->group(function () {
+        Route::get('/old-debts', [OldDebtController::class, 'index'])->name('old-debts.index');
+        Route::post('/old-debts', [OldDebtController::class, 'store'])->name('old-debts.store');
     });
 
     Route::middleware('can:verify-transfers')->group(function () {

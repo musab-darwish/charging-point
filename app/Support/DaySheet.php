@@ -27,6 +27,7 @@ final class DaySheet
     public function __construct(public readonly CarbonImmutable $day)
     {
         $transactions = Transaction::onDay($day)
+            ->dailyWork()
             ->with(['customer', 'paymentAccount', 'user'])
             ->orderBy('occurred_at')
             ->orderBy('id')

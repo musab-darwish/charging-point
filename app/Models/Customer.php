@@ -98,6 +98,18 @@ class Customer extends Model
     }
 
     /**
+     * The balance moved over from the debt notebook, unless it was cancelled.
+     */
+    public function openingBalance(): ?Transaction
+    {
+        return $this->transactions()
+            ->where('category', Transaction::OPENING)
+            ->whereNull('reverses_id')
+            ->whereDoesntHave('reversal')
+            ->first();
+    }
+
+    /**
      * What they left in the freezer, now or before.
      *
      * @return HasMany<FreezeItem, $this>

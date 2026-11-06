@@ -28,6 +28,9 @@ class Transaction extends Model
 
     public const TRANSFER = 'transfer';
 
+    /** A balance moved over from the debt notebook: not any day's work. */
+    public const OPENING = 'opening';
+
     /**
      * Get the attributes that should be cast.
      *
@@ -124,6 +127,17 @@ class Transaction extends Model
     public function scopeCredits(Builder $query): void
     {
         $query->where('type', self::CREDIT);
+    }
+
+    /**
+     * The day's own work and payments: everything but a balance moved over
+     * from the debt notebook (which only lands on the day it was moved).
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeDailyWork(Builder $query): void
+    {
+        $query->where(fn (Builder $query) => $query->whereNull('category')->orWhere('category', '!=', self::OPENING));
     }
 
     /**
