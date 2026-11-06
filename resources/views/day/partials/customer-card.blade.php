@@ -4,14 +4,14 @@
     $status = $row->status;
     $balanceSign = bccomp($row->balance, '0', 2);
 
-    // The day's movements in order; a long card shows the latest five and folds the rest.
-    $lines = $row->items->concat($row->payments)->sortBy([['occurred_at', 'asc'], ['id', 'asc']])->values();
+    // The day's movements in order (cancelled ones struck through); a long card shows the latest five and folds the rest.
+    $lines = $row->entries;
     $folded = $lines->count() > 6 ? $lines->slice(0, $lines->count() - 5) : collect();
     $shown = $lines->slice($folded->count());
 @endphp
 
 <article data-day-card data-status="{{ $status->state }}" data-search="{{ $customer->name }} {{ $customer->phone_local }}"
-    class="animate-rise rounded-2xl border border-rule bg-white">
+    data-correctable class="group/card animate-rise rounded-2xl border border-rule bg-white">
     <header class="flex items-center gap-3 px-4 pt-4 sm:px-5">
         <span @class([
             'flex size-11 shrink-0 items-center justify-center rounded-full text-base font-bold',
@@ -62,6 +62,10 @@
                 @include('day.partials.card-line')
             @endforeach
         </ul>
+    </div>
+
+    <div class="px-4 sm:px-5">
+        @include('day.partials.correct-toggle')
     </div>
 
     {{-- Totals on one line, then the actions on their own row, so every card looks the same whatever its width --}}

@@ -152,3 +152,28 @@ test('the statement leaves cancelled movements out of the day but lists them', f
         ->and($day->cancelled->pluck('id')->all())->toBe([$wrong->id])
         ->and($day->entries())->toHaveCount(2);
 });
+
+test('the day page strikes a cancelled movement through and says why', function () {
+    $wrong = Transaction::factory()->for($this->customer)->debit('3.00')->create(['description' => 'باور']);
+    Transaction::factory()->for($this->customer)->debit('2.00')->create(['description' => 'جوال']);
+
+    $this->actingAs($this->user)->post("/transactions/{$wrong->id}/reverse", reverseForm(['reason' => 'سُجّلت لزبون آخر']));
+
+    $this->actingAs($this->user)->get('/')
+        ->assertOk()
+        ->assertSeeInOrder(['باور', 'أُلغيت', 'سُجّلت لزبون آخر', $this->user->name])
+        // The address sits in a JSON data attribute, where slashes are escaped.
+        ->assertSee(trim(json_encode(route('transactions.reverse', Transaction::where('description', 'جوال')->first())), '"'), false)
+        ->assertDontSee(trim(json_encode(route('transactions.reverse', $wrong)), '"'), false);
+});
+
+test('a refused reason reopens the cancel dialog on the same movement', function () {
+    $item = Transaction::factory()->for($this->customer)->debit('3.00')->create();
+
+    $this->actingAs($this->user)->from('/')
+        ->post("/transactions/{$item->id}/reverse", reverseForm(['reason' => '', 'reverse_for' => $item->id]));
+
+    $this->actingAs($this->user)->get('/')
+        ->assertSee('data-reopen="'.$item->id.'"', false)
+        ->assertSee('اكتب سبب الإلغاء.');
+});

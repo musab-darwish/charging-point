@@ -7,6 +7,7 @@ import { initFreezer } from './behaviors/freezer';
 import { initLiveSearch } from './behaviors/live-search';
 import { initPasswordToggles } from './behaviors/password-toggle';
 import { initPaymentDialog } from './behaviors/payment-dialog';
+import { initReversal } from './behaviors/reversal';
 import { initSubmitLocks } from './behaviors/submit-lock';
 import { initWorkEntry } from './behaviors/work-entry';
 
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initLiveSearch();
     initWorkEntry();
     initPaymentDialog();
+    initReversal();
     initDayNav();
     initDayFilter();
     initFreezer();

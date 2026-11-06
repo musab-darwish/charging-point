@@ -71,6 +71,7 @@ class CustomerController extends Controller
             'walkIn' => Customer::walkIn(),
             'workToken' => (string) Str::uuid(),
             'paymentToken' => (string) Str::uuid(),
+            'reverseToken' => (string) Str::uuid(),
             'paymentAccounts' => PaymentAccount::active()->ordered()->get(),
         ]);
     }

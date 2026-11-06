@@ -56,5 +56,6 @@
         </button>
 
         @include('day.partials.payment-dialog', ['day' => $sheet->day])
+        @include('day.partials.reverse-dialog')
     </div>
 @endsection

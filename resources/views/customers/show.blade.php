@@ -197,16 +197,19 @@
                                     </summary>
 
                                     {{-- Every movement of the day with its time, as on the day page --}}
-                                    <div class="border-t border-dashed border-rule bg-sheet/70 px-4 pb-3 sm:px-5 lg:ps-[calc(8.5rem+2.25rem)] lg:pe-[calc(7.5rem+1.25rem+3.25rem)]">
+                                    <div data-correctable class="group/card border-t border-dashed border-rule bg-sheet/70 px-4 pb-3 sm:px-5 lg:ps-[calc(8.5rem+2.25rem)] lg:pe-[calc(7.5rem+1.25rem+3.25rem)]">
                                         <ul class="divide-y divide-dashed divide-rule">
-                                            @foreach ($day->items->concat($day->payments)->sortBy([['occurred_at', 'asc'], ['id', 'asc']]) as $line)
+                                            @foreach ($day->entries() as $line)
                                                 @include('day.partials.card-line')
                                             @endforeach
                                         </ul>
-                                        <a href="{{ WorkDay::url($day->date) }}" class="mt-1 inline-flex h-11 items-center gap-1.5 text-sm font-bold text-brand transition hover:text-brand-deep">
-                                            صفحة شغل هذا اليوم
-                                            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
-                                        </a>
+                                        <div class="mt-1 flex flex-wrap items-center justify-between gap-x-4">
+                                            <a href="{{ WorkDay::url($day->date) }}" class="inline-flex h-11 items-center gap-1.5 text-sm font-bold text-brand transition hover:text-brand-deep">
+                                                صفحة شغل هذا اليوم
+                                                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+                                            </a>
+                                            @include('day.partials.correct-toggle')
+                                        </div>
                                     </div>
                                 </details>
                             </li>
@@ -218,5 +221,6 @@
 
         @include('day.partials.entry-form', ['day' => now()->toImmutable()->startOfDay(), 'backToCustomer' => $customer])
         @include('day.partials.payment-dialog', ['day' => now()->toImmutable()->startOfDay(), 'backToCustomer' => $customer])
+        @include('day.partials.reverse-dialog')
     </div>
 @endsection
