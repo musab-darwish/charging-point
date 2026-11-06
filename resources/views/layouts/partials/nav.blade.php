@@ -22,14 +22,15 @@
     الزبائن
 </x-nav-item>
 
-<x-nav-item :layout="$layout" soon>
+<x-nav-item :layout="$layout" :href="route('debtors.index')" :active="request()->routeIs('debtors.*')">
     <x-slot:icon>
         <svg class="size-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16" /><path d="M7 15V9M12 15V5M17 15v-3" /></svg>
     </x-slot:icon>
     المديونون
 </x-nav-item>
 
-<x-nav-item :layout="$layout" soon>
+<x-nav-item :layout="$layout" :href="route('transfers.index')" :active="request()->routeIs('transfers.*')"
+    :count="once(fn () => \App\Models\Transaction::awaitingConfirmation()->count())">
     <x-slot:icon>
         <svg class="size-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4" /><path d="M3 7h18" /><path d="M7 21l-4-4 4-4" /><path d="M21 17H3" /></svg>
     </x-slot:icon>
