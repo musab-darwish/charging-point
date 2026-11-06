@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Tailscale serves HTTPS on this same machine and passes requests on.
+        $middleware->trustProxies(at: '127.0.0.1');
+
         $middleware->web(append: [
             EnsureUserIsActive::class,
         ]);
