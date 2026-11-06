@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerSearchController;
 use App\Http\Controllers\DayController;
+use App\Http\Controllers\FreezeItemController;
 use App\Http\Controllers\PaymentAccountController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PriceItemController;
@@ -25,6 +26,11 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/work', [WorkController::class, 'store'])->name('work.store');
     Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
+
+    Route::get('/freezer', [FreezeItemController::class, 'index'])->name('freezer.index');
+    Route::post('/freezer', [FreezeItemController::class, 'store'])->name('freezer.store');
+    Route::post('/freezer/{freezeItem}/pickup', [FreezeItemController::class, 'pickUp'])->name('freezer.pickup');
+    Route::delete('/freezer/{freezeItem}', [FreezeItemController::class, 'destroy'])->name('freezer.destroy');
 
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
