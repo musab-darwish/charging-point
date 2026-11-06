@@ -109,4 +109,34 @@ class Transaction extends Model
     {
         return $this->type === self::DEBIT;
     }
+
+    public function isTransfer(): bool
+    {
+        return $this->type === self::CREDIT && $this->method === self::TRANSFER;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->verified_at !== null;
+    }
+
+    /**
+     * Mark a transfer as seen on the account ("تأكدت"). The only change a
+     * movement ever takes: the amount and the balance stay as they are.
+     * Marking it again keeps the first time.
+     */
+    public function verify(): void
+    {
+        if (! $this->isVerified()) {
+            $this->forceFill(['verified_at' => now()])->save();
+        }
+    }
+
+    /**
+     * Undo a "تأكدت" pressed by mistake.
+     */
+    public function unverify(): void
+    {
+        $this->forceFill(['verified_at' => null])->save();
+    }
 }

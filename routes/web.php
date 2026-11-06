@@ -7,6 +7,7 @@ use App\Http\Controllers\DayController;
 use App\Http\Controllers\PaymentAccountController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PriceItemController;
+use App\Http\Controllers\TransferVerificationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
 use App\Http\Controllers\UserStatusController;
@@ -55,5 +56,10 @@ Route::middleware('auth')->group(function () {
             ->except('show')
             ->parameters(['payment-accounts' => 'account']);
         Route::patch('/payment-accounts/{account}/toggle', [PaymentAccountController::class, 'toggle'])->name('payment-accounts.toggle');
+    });
+
+    Route::middleware('can:verify-transfers')->group(function () {
+        Route::patch('/transfers/{transaction}/verify', [TransferVerificationController::class, 'store'])->name('transfers.verify');
+        Route::delete('/transfers/{transaction}/verify', [TransferVerificationController::class, 'destroy'])->name('transfers.unverify');
     });
 });
