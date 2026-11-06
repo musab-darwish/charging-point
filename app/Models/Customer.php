@@ -98,12 +98,24 @@ class Customer extends Model
     }
 
     /**
-     * Whether this customer can be deleted: only one with no records.
-     * Update this when freeze items exist.
+     * What they left in the freezer, now or before.
+     *
+     * @return HasMany<FreezeItem, $this>
+     */
+    public function freezeItems(): HasMany
+    {
+        return $this->hasMany(FreezeItem::class);
+    }
+
+    /**
+     * Whether this customer can be deleted: only one with no records and
+     * nothing ever left in the freezer.
      */
     public function canBeDeleted(): bool
     {
-        return ! $this->is_walk_in && ! $this->transactions()->exists();
+        return ! $this->is_walk_in
+            && ! $this->transactions()->exists()
+            && ! $this->freezeItems()->exists();
     }
 
     /**

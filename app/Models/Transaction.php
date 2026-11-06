@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
     'customer_id', 'type', 'category', 'price_item_id', 'description', 'quantity', 'unit_price',
-    'amount', 'occurred_at', 'method', 'payment_account_id', 'reference', 'form_token', 'user_id',
+    'amount', 'occurred_at', 'method', 'payment_account_id', 'reference', 'freeze_item_id', 'form_token', 'user_id',
 ])]
 class Transaction extends Model
 {
@@ -67,6 +67,16 @@ class Transaction extends Model
     public function paymentAccount(): BelongsTo
     {
         return $this->belongsTo(PaymentAccount::class);
+    }
+
+    /**
+     * The freezer item a pickup charge is for.
+     *
+     * @return BelongsTo<FreezeItem, $this>
+     */
+    public function freezeItem(): BelongsTo
+    {
+        return $this->belongsTo(FreezeItem::class);
     }
 
     /**
