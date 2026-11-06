@@ -14,13 +14,15 @@ use Illuminate\Support\Collection;
 final class DayRow
 {
     /**
-     * @param  Collection<int, Transaction>  $items  the day's debits
-     * @param  Collection<int, Transaction>  $payments  the day's credits
+     * @param  Collection<int, Transaction>  $items  the day's debits that still count
+     * @param  Collection<int, Transaction>  $payments  the day's credits that still count
+     * @param  Collection<int, Transaction>  $entries  every movement to list, cancelled ones struck through
      */
     public function __construct(
         public readonly Customer $customer,
         public readonly Collection $items,
         public readonly Collection $payments,
+        public readonly Collection $entries,
         public readonly string $work,
         public readonly string $paid,
         public readonly DayStatus $status,
@@ -33,16 +35,15 @@ final class DayRow
      */
     public static function from(Customer $customer, Collection $transactions, string $balance): self
     {
-        $items = $transactions->filter->isDebit()->values();
-        $payments = $transactions->reject->isDebit()->values();
-
-        $work = $items->reduce(fn (string $sum, Transaction $item) => bcadd($sum, $item->amount, 2), '0.00');
-        $paid = $payments->reduce(fn (string $sum, Transaction $payment) => bcadd($sum, $payment->amount, 2), '0.00');
+        $movements = Movements::from($transactions);
+        $work = $movements->work();
+        $paid = $movements->paid();
 
         return new self(
             customer: $customer,
-            items: $items,
-            payments: $payments,
+            items: $movements->items,
+            payments: $movements->payments,
+            entries: $movements->entries(),
             work: $work,
             paid: $paid,
             status: DayStatus::from($work, $paid),

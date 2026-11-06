@@ -5,6 +5,9 @@ use App\Models\FreezeItem;
 use App\Models\PaymentAccount;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Support\DaySheet;
+use App\Support\Statement;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 
 beforeEach(function () {
@@ -116,4 +119,36 @@ test('a cancelled transfer cannot be confirmed', function () {
     $this->actingAs($owner)->patch(route('transfers.verify', $transfer))->assertSessionHas('error');
 
     expect($transfer->fresh()->isVerified())->toBeFalse();
+});
+
+test('a cancelled item drops out of the day without counting as a payment', function () {
+    $wrong = Transaction::factory()->for($this->customer)->debit('3.00')->create(['description' => '3']);
+    Transaction::factory()->for($this->customer)->debit('2.00')->create(['description' => 'جوال']);
+
+    $this->actingAs($this->user)->post("/transactions/{$wrong->id}/reverse", reverseForm());
+
+    $row = (new DaySheet(CarbonImmutable::today()))->rows->sole();
+
+    expect($row->work)->toBe('2.00')
+        ->and($row->paid)->toBe('0.00')
+        ->and($row->status->label())->toBe('لم يُدفع بعد')
+        ->and($row->items->pluck('description')->all())->toBe(['جوال'])
+        ->and($row->entries)->toHaveCount(2)
+        ->and($row->entries->firstWhere('id', $wrong->id)->reversal->description)->toBe('سُجّلت بالخطأ');
+});
+
+test('the statement leaves cancelled movements out of the day but lists them', function () {
+    $wrong = Transaction::factory()->for($this->customer)->debit('3.00')->create(['description' => '3', 'occurred_at' => now()->subDay()]);
+    Transaction::factory()->for($this->customer)->debit('2.00')->create(['description' => 'جوال', 'occurred_at' => now()->subDay()]);
+
+    $this->actingAs($this->user)->post("/transactions/{$wrong->id}/reverse", reverseForm());
+
+    $day = (new Statement($this->customer))->days->sole();
+
+    expect($day->summary())->toBe('جوال')
+        ->and($day->work)->toBe('2.00')
+        ->and($day->paid)->toBe('0.00')
+        ->and($day->balanceAfter)->toBe('2.00')
+        ->and($day->cancelled->pluck('id')->all())->toBe([$wrong->id])
+        ->and($day->entries())->toHaveCount(2);
 });

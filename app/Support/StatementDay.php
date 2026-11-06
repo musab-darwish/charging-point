@@ -13,13 +13,15 @@ use Illuminate\Support\Collection;
 final class StatementDay
 {
     /**
-     * @param  Collection<int, Transaction>  $items  the day's debits
-     * @param  Collection<int, Transaction>  $payments  the day's credits
+     * @param  Collection<int, Transaction>  $items  the day's debits that still count
+     * @param  Collection<int, Transaction>  $payments  the day's credits that still count
+     * @param  Collection<int, Transaction>  $cancelled  movements cancelled that day, with their reversal
      */
     public function __construct(
         public readonly CarbonImmutable $date,
         public readonly Collection $items,
         public readonly Collection $payments,
+        public readonly Collection $cancelled,
         public readonly string $work,
         public readonly string $paid,
         public readonly string $balanceAfter,
@@ -31,16 +33,16 @@ final class StatementDay
      */
     public static function from(CarbonImmutable $date, Collection $transactions, string $balanceBefore): self
     {
-        $items = $transactions->filter->isDebit()->values();
-        $payments = $transactions->reject->isDebit()->values();
-
-        $work = $items->reduce(fn (string $sum, Transaction $item) => bcadd($sum, $item->amount, 2), '0.00');
-        $paid = $payments->reduce(fn (string $sum, Transaction $payment) => bcadd($sum, $payment->amount, 2), '0.00');
+        // A cancelled movement and its cancellation drop out together, so the balance is unchanged by them.
+        $movements = Movements::from($transactions);
+        $work = $movements->work();
+        $paid = $movements->paid();
 
         return new self(
             date: $date,
-            items: $items,
-            payments: $payments,
+            items: $movements->items,
+            payments: $movements->payments,
+            cancelled: $movements->cancelled,
             work: $work,
             paid: $paid,
             balanceAfter: bcsub(bcadd($balanceBefore, $work, 2), $paid, 2),
@@ -62,6 +64,18 @@ final class StatementDay
                 'quantity' => $same->sum(fn (Transaction $item) => $item->quantity ?? 1),
                 'amount' => $same->reduce(fn (string $sum, Transaction $item) => bcadd($sum, $item->amount, 2), '0.00'),
             ])
+            ->values();
+    }
+
+    /**
+     * Every movement to list in the day's details, cancelled ones in their place.
+     *
+     * @return Collection<int, Transaction>
+     */
+    public function entries(): Collection
+    {
+        return $this->items->concat($this->payments)->concat($this->cancelled)
+            ->sortBy([['occurred_at', 'asc'], ['id', 'asc']])
             ->values();
     }
 
