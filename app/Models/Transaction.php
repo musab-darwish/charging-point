@@ -130,6 +130,21 @@ class Transaction extends Model
     }
 
     /**
+     * Transfers still waiting for the owner to see them arrive ("تأكدت"):
+     * not confirmed yet, and not cancelled.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeAwaitingConfirmation(Builder $query): void
+    {
+        $query->where('type', self::CREDIT)
+            ->where('method', self::TRANSFER)
+            ->whereNull('verified_at')
+            ->whereNull('reverses_id')
+            ->whereDoesntHave('reversal');
+    }
+
+    /**
      * The day's own work and payments: everything but a balance moved over
      * from the debt notebook (which only lands on the day it was moved).
      *
