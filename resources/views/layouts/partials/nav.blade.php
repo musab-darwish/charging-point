@@ -6,13 +6,6 @@
     شغل اليوم
 </x-nav-item>
 
-<x-nav-item :layout="$layout" :href="route('customers.index')" :active="request()->routeIs('customers.*')">
-    <x-slot:icon>
-        <svg class="size-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4" /><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6" /><path d="M16 4a4 4 0 0 1 0 8M22 20c0-3-2-5.2-5-5.8" /></svg>
-    </x-slot:icon>
-    الزبائن
-</x-nav-item>
-
 {{-- once(): the sidebar and the phone bar share one count --}}
 <x-nav-item :layout="$layout" :href="route('freezer.index')" :active="request()->routeIs('freezer.*')"
     :count="once(fn () => \App\Models\FreezeItem::whereNull('picked_up_at')->count())">
@@ -20,6 +13,13 @@
         <svg class="size-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M4.9 6l14.2 12M4.9 18L19.1 6" /><path d="M9 3.5l3 2 3-2M9 20.5l3-2 3 2" /></svg>
     </x-slot:icon>
     التجميد
+</x-nav-item>
+
+<x-nav-item :layout="$layout" :href="route('customers.index')" :active="request()->routeIs('customers.*')">
+    <x-slot:icon>
+        <svg class="size-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4" /><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6" /><path d="M16 4a4 4 0 0 1 0 8M22 20c0-3-2-5.2-5-5.8" /></svg>
+    </x-slot:icon>
+    الزبائن
 </x-nav-item>
 
 <x-nav-item :layout="$layout" soon>

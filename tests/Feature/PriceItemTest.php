@@ -115,3 +115,15 @@ test('an unused item can be deleted', function () {
 
     expect(PriceItem::find($item->id))->toBeNull();
 });
+
+test('cooling is a kind of item on the price list, apart from the freezer', function () {
+    $this->actingAs($this->owner)
+        ->post('/prices', ['name' => 'Cake', 'category' => 'cooling', 'price' => '1.5'])
+        ->assertSessionHasNoErrors();
+
+    $this->actingAs($this->owner)->get('/prices')->assertSeeInOrder(['التبريد', 'Cake']);
+
+    $this->actingAs($this->owner)
+        ->post('/prices', ['name' => 'Chicken', 'category' => 'freezing', 'price' => '3'])
+        ->assertSessionHasErrors('category');
+});

@@ -28,7 +28,8 @@ class PriceItem extends Model
     /** The kinds of item, with their Arabic names, in display order. */
     public const CATEGORIES = [
         'charging' => 'الشحن',
-        'freezing' => 'التجميد',
+        // A day's cooling at a fixed price. Freezing for days is the freezer page.
+        'cooling' => 'التبريد',
         'drink' => 'المشروبات',
         'other' => 'أخرى',
     ];
