@@ -22,6 +22,7 @@ final class Statement
     public function __construct(public readonly Customer $customer)
     {
         $transactions = $customer->transactions()
+            ->with('paymentAccount')
             ->orderBy('occurred_at')
             ->orderBy('id')
             ->get();

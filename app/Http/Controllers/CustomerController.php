@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
+use App\Models\PaymentAccount;
 use App\Models\PriceItem;
 use App\Support\Statement;
 use Illuminate\Http\RedirectResponse;
@@ -70,6 +71,7 @@ class CustomerController extends Controller
             'walkIn' => Customer::walkIn(),
             'workToken' => (string) Str::uuid(),
             'paymentToken' => (string) Str::uuid(),
+            'paymentAccounts' => PaymentAccount::active()->ordered()->get(),
         ]);
     }
 

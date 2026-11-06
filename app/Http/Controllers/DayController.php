@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\PaymentAccount;
 use App\Models\PriceItem;
 use App\Support\DaySheet;
 use Carbon\CarbonImmutable;
@@ -44,6 +45,7 @@ class DayController extends Controller
             'walkIn' => Customer::walkIn(),
             'workToken' => (string) Str::uuid(),
             'paymentToken' => (string) Str::uuid(),
+            'paymentAccounts' => PaymentAccount::active()->ordered()->get(),
         ]);
     }
 }
