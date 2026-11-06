@@ -67,3 +67,23 @@ test('cash and items have nothing to confirm', function () {
 
     expect($cash->fresh()->verified_at)->toBeNull();
 });
+
+test('the day page shows an unconfirmed transfer, with the button for the owner only', function () {
+    $this->actingAs($this->owner)->get('/')
+        ->assertSee('لم تتأكد')
+        ->assertSee(route('transfers.verify', $this->transfer));
+
+    $this->actingAs(User::factory()->create())->get('/')
+        ->assertSee('لم تتأكد')
+        ->assertDontSee(route('transfers.verify', $this->transfer));
+});
+
+test('confirming a transfer never moves the time it was paid', function () {
+    $paidAt = $this->transfer->occurred_at->toDateTimeString();
+
+    $this->travel(2)->hours();
+    $this->actingAs($this->owner)->patch(route('transfers.verify', $this->transfer));
+    $this->actingAs($this->owner)->delete(route('transfers.unverify', $this->transfer));
+
+    expect($this->transfer->fresh()->occurred_at->toDateTimeString())->toBe($paidAt);
+});
