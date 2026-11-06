@@ -53,9 +53,9 @@
                     @foreach ($debtors->owing as $row)
                         @php $days = $row->daysSincePayment(); @endphp
 
-                        <li>
+                        <li class="flex items-center pe-2 transition hover:bg-sheet sm:pe-3">
                             <a href="{{ route('customers.show', $row->customer) }}"
-                                class="group flex items-center gap-3 px-4 py-3.5 transition hover:bg-sheet sm:gap-4 sm:px-5">
+                                class="group flex min-w-0 flex-1 items-center gap-3 py-3.5 ps-4 pe-2 sm:gap-4 sm:ps-5">
                                 <span class="w-6 shrink-0 text-center text-sm font-bold tabular-nums text-ink-muted">{{ $loop->iteration }}</span>
                                 <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">{{ mb_substr($row->customer->name, 0, 1) }}</span>
 
@@ -72,8 +72,12 @@
                                 </span>
 
                                 <span class="shrink-0 text-lg font-extrabold tabular-nums text-debit">{{ $row->balance }} <span class="text-sm">₪</span></span>
-                                <svg class="size-4 shrink-0 text-rule-strong transition group-hover:-translate-x-1 group-hover:text-ink-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
                             </a>
+                            <button type="button" data-account-message="{{ route('customers.message', $row->customer) }}"
+                                aria-label="رسالة حساب {{ $row->customer->name }}" title="رسالة الحساب"
+                                class="flex size-11 shrink-0 items-center justify-center rounded-xl border border-rule-strong bg-white text-brand transition hover:border-brand/40 hover:bg-brand-soft">
+                                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z" /><path d="M8.5 10.5h7M8.5 14h4" /></svg>
+                            </button>
                         </li>
                     @endforeach
                 </ol>
@@ -97,5 +101,7 @@
                 </ul>
             </section>
         @endif
+
+        @include('partials.account-message-dialog')
     </div>
 @endsection

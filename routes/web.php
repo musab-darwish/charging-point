@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountMessageController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerSearchController;
@@ -43,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
     Route::get('/customers/search', CustomerSearchController::class)->name('customers.search');
+    Route::get('/customers/{customer}/message', AccountMessageController::class)->name('customers.message');
     Route::resource('customers', CustomerController::class);
 
     Route::middleware('can:manage-users')->group(function () {

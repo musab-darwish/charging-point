@@ -109,6 +109,12 @@
                         </button>
                     @endif
                 </div>
+
+                <button type="button" data-account-message="{{ route('customers.message', $customer) }}"
+                    class="mt-2 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border-2 border-rule-strong bg-white/70 font-bold transition hover:bg-white active:scale-[.97]">
+                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z" /><path d="M8.5 10.5h7M8.5 14h4" /></svg>
+                    رسالة الحساب
+                </button>
             </section>
         </div>
 
@@ -224,5 +230,6 @@
         @include('day.partials.entry-form', ['day' => now()->toImmutable()->startOfDay(), 'backToCustomer' => $customer])
         @include('day.partials.payment-dialog', ['day' => now()->toImmutable()->startOfDay(), 'backToCustomer' => $customer])
         @include('day.partials.reverse-dialog')
+        @include('partials.account-message-dialog')
     </div>
 @endsection

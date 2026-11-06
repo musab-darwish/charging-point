@@ -3,6 +3,7 @@
 use App\Models\Customer;
 use App\Models\PaymentAccount;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Support\AccountMessage;
 
 beforeEach(function () {
@@ -116,4 +117,31 @@ test('the WhatsApp link opens the customer\'s number with the text', function ()
 
     expect($message->whatsappUrl('مرحبا 5 ₪'))->toBe('https://wa.me/970599123456?text='.rawurlencode('مرحبا 5 ₪'))
         ->and((new AccountMessage(Customer::factory()->create(['phone' => null])))->whatsappUrl('x'))->toBeNull();
+});
+
+test('the dialog gets both messages and their WhatsApp links', function () {
+    entry('debit', '5.00', '2026-11-05 10:00', ['description' => 'باور']);
+
+    $this->actingAs(User::factory()->create())
+        ->getJson(route('customers.message', $this->customer))
+        ->assertOk()
+        ->assertJsonPath('name', 'أبو محمد')
+        ->assertJsonPath('short.text', fn ($text) => str_contains($text, 'المتبقي عليك الآن: 5.00 ₪'))
+        ->assertJsonPath('full.text', fn ($text) => str_contains($text, 'باور = 5.00 ₪'))
+        ->assertJsonPath('short.whatsapp', fn ($url) => str_starts_with($url, 'https://wa.me/970599123456?text='));
+});
+
+test('the walk-in customer has no account message', function () {
+    $this->actingAs(User::factory()->create())
+        ->getJson(route('customers.message', Customer::walkIn()))
+        ->assertNotFound();
+});
+
+test('the customer page and the debtors list open the message', function () {
+    entry('debit', '5.00', '2026-11-05 10:00');
+    $url = route('customers.message', $this->customer);
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->get(route('customers.show', $this->customer))->assertSee($url);
+    $this->actingAs($user)->get('/debtors')->assertSee($url);
 });

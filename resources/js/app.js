@@ -1,3 +1,4 @@
+import { initAccountMessage } from './behaviors/account-message';
 import { initConfirmDialogs } from './behaviors/confirm';
 import { initCursor } from './behaviors/cursor';
 import { initDayFilter } from './behaviors/day-filter';
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initWorkEntry();
     initPaymentDialog();
     initReversal();
+    initAccountMessage();
     initDayNav();
     initDayFilter();
     initFreezer();
