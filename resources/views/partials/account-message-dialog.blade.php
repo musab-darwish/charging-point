@@ -34,19 +34,25 @@
         </div>
 
         <div class="px-6 pb-6 pt-5 sm:px-7 sm:pb-7">
-            <div class="grid grid-cols-2 gap-3">
+            {{-- On a phone, a third button opens the Messages app; a laptop has none to open --}}
+            <div class="grid grid-cols-3 gap-2 lg:grid-cols-2 lg:gap-3">
                 <button type="button" data-copy-message disabled
-                    class="inline-flex h-12 items-center justify-center gap-2 rounded-xl border-2 border-rule-strong font-bold transition hover:bg-paper active:scale-[.97] disabled:pointer-events-none disabled:opacity-50">
-                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" /><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" /></svg>
+                    class="inline-flex h-12 items-center justify-center gap-1.5 rounded-xl border-2 border-rule-strong text-sm font-bold transition hover:bg-paper active:scale-[.97] disabled:pointer-events-none disabled:opacity-50 sm:gap-2 sm:text-base">
+                    <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" /><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" /></svg>
                     <span data-copy-label>نسخ</span>
                 </button>
                 <a data-whatsapp target="_blank" rel="noopener" aria-disabled="true"
-                    class="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-brand font-bold text-white transition hover:bg-brand-deep active:scale-[.97] aria-disabled:pointer-events-none aria-disabled:opacity-50">
-                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z" /></svg>
-                    فتح بالواتساب
+                    class="inline-flex h-12 items-center justify-center gap-1.5 rounded-xl bg-brand text-sm font-bold text-white transition hover:bg-brand-deep active:scale-[.97] aria-disabled:pointer-events-none aria-disabled:opacity-50 sm:gap-2 sm:text-base">
+                    <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z" /></svg>
+                    واتساب
+                </a>
+                <a data-sms aria-disabled="true"
+                    class="inline-flex h-12 items-center justify-center gap-1.5 rounded-xl bg-credit text-sm font-bold text-white transition hover:bg-credit/90 active:scale-[.97] aria-disabled:pointer-events-none aria-disabled:opacity-50 sm:gap-2 sm:text-base lg:hidden">
+                    <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="13" rx="2" /><path d="M3 7l9 6 9-6" /></svg>
+                    <span class="whitespace-nowrap">رسالة<span class="sr-only"> نصية</span></span>
                 </a>
             </div>
-            <p data-no-phone hidden class="mt-3 text-xs text-ink-muted">لا يوجد رقم جوال لهذا الزبون، فانسخ الرسالة وأرسلها بنفسك، أو أضف رقمه من «تعديل».</p>
+            <p data-no-phone hidden class="mt-3 text-xs text-ink-muted">لا يوجد رقم جوال لهذا الزبون، فانسخ الرسالة وأرسلها بنفسك، أو أضف رقمه من «تعديل» لتُفتح الرسالة مباشرة.</p>
         </div>
     </div>
 </dialog>

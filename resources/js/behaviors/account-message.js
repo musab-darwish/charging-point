@@ -1,8 +1,9 @@
 /**
  * The account message dialog: [data-account-message="<url>"] opens it and
  * fetches the customer's message, short and in full. "مختصرة" / "كشف كامل"
- * switches between them; "نسخ" copies the one shown, and WhatsApp opens the
- * customer's number with it (when they have one).
+ * switches between them; "نسخ" copies the one shown, and WhatsApp (or, on
+ * a phone, the Messages app) opens the customer's number with it, when they
+ * have one.
  */
 export function initAccountMessage() {
     const dialog = document.getElementById('account-message');
@@ -16,7 +17,7 @@ export function initAccountMessage() {
     const failed = dialog.querySelector('[data-message-failed]');
     const copy = dialog.querySelector('[data-copy-message]');
     const copyLabel = dialog.querySelector('[data-copy-label]');
-    const whatsapp = dialog.querySelector('[data-whatsapp]');
+    const links = { whatsapp: dialog.querySelector('[data-whatsapp]'), sms: dialog.querySelector('[data-sms]') };
     const noPhone = dialog.querySelector('[data-no-phone]');
     const kinds = dialog.querySelectorAll('[data-message-kind]');
     const kindNote = dialog.querySelector('[data-message-kind-note]');
@@ -40,13 +41,8 @@ export function initAccountMessage() {
         copy.disabled = false;
         copyLabel.textContent = 'نسخ';
 
-        const link = message[kind].whatsapp;
-        whatsapp.toggleAttribute('href', Boolean(link));
-        if (link) {
-            whatsapp.href = link;
-        }
-        whatsapp.setAttribute('aria-disabled', String(!link));
-        noPhone.hidden = Boolean(link);
+        Object.entries(links).forEach(([app, anchor]) => setLink(anchor, message[kind][app]));
+        noPhone.hidden = Boolean(message[kind].whatsapp);
     };
 
     const open = async (url) => {
@@ -56,8 +52,7 @@ export function initAccountMessage() {
         failed.hidden = true;
         loading.hidden = false;
         copy.disabled = true;
-        whatsapp.removeAttribute('href');
-        whatsapp.setAttribute('aria-disabled', 'true');
+        Object.values(links).forEach((anchor) => setLink(anchor, null));
         noPhone.hidden = true;
         dialog.querySelector('[data-message-name]').textContent = '';
         show();
@@ -113,4 +108,17 @@ export function initAccountMessage() {
             dialog.close();
         }
     });
+}
+
+/**
+ * Point a button-link at a URL, or leave it disabled when there is none.
+ */
+function setLink(anchor, url) {
+    if (url) {
+        anchor.href = url;
+    } else {
+        anchor.removeAttribute('href');
+    }
+
+    anchor.setAttribute('aria-disabled', String(!url));
 }

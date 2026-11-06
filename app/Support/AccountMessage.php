@@ -109,6 +109,16 @@ final class AccountMessage
         return $this->customer->phone ? 'https://wa.me/'.$this->customer->phone.'?text='.rawurlencode($text) : null;
     }
 
+    /**
+     * An sms: link that opens the phone's Messages app on the customer's
+     * number with the text ready; null when they have no number. "?&body="
+     * is read by both Android ("?body=") and iPhone ("&body=").
+     */
+    public function smsUrl(string $text): ?string
+    {
+        return $this->customer->phone ? 'sms:+'.$this->customer->phone.'?&body='.rawurlencode($text) : null;
+    }
+
     private function compose(bool $withDays): string
     {
         $lines = ['مرحباً '.$this->customer->name.'،', 'هذا كشف حسابك لدى '.config('app.name').':', ''];

@@ -145,3 +145,15 @@ test('the customer page and the debtors list open the message', function () {
     $this->actingAs($user)->get(route('customers.show', $this->customer))->assertSee($url);
     $this->actingAs($user)->get('/debtors')->assertSee($url);
 });
+
+test('the text message link opens the phone\'s Messages app with the text', function () {
+    entry('debit', '5.00', '2026-11-05 10:00');
+    $message = new AccountMessage($this->customer);
+
+    expect($message->smsUrl('مرحبا 5 ₪'))->toBe('sms:+970599123456?&body='.rawurlencode('مرحبا 5 ₪'))
+        ->and((new AccountMessage(Customer::factory()->create(['phone' => null])))->smsUrl('x'))->toBeNull();
+
+    $this->actingAs(User::factory()->create())
+        ->getJson(route('customers.message', $this->customer))
+        ->assertJsonPath('short.sms', fn ($url) => str_starts_with($url, 'sms:+970599123456?&body='));
+});

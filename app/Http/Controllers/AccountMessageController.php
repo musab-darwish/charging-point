@@ -10,7 +10,7 @@ class AccountMessageController extends Controller
 {
     /**
      * A customer's account message, short and in full, with the WhatsApp
-     * links. Built only when the dialog opens, so a list of debtors doesn't
+     * and text message links. Built only when the dialog opens, so a list of debtors doesn't
      * work out every message up front.
      */
     public function __invoke(Customer $customer): JsonResponse
@@ -23,8 +23,8 @@ class AccountMessageController extends Controller
 
         return response()->json([
             'name' => $customer->name,
-            'short' => ['text' => $short, 'whatsapp' => $message->whatsappUrl($short)],
-            'full' => ['text' => $full, 'whatsapp' => $message->whatsappUrl($full)],
+            'short' => ['text' => $short, 'whatsapp' => $message->whatsappUrl($short), 'sms' => $message->smsUrl($short)],
+            'full' => ['text' => $full, 'whatsapp' => $message->whatsappUrl($full), 'sms' => $message->smsUrl($full)],
         ]);
     }
 }
