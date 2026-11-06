@@ -151,3 +151,13 @@ test('a picked-up item cannot be deleted', function () {
 
     expect($item->fresh())->not->toBeNull();
 });
+
+test('the freezer page lists what is waiting and what was picked up', function () {
+    FreezeItem::factory()->for($this->customer)->create(['description' => 'كيكة وسط', 'stored_at' => now()->subDays(3)]);
+    $done = FreezeItem::factory()->for($this->customer)->pickedUp()->create(['description' => 'قنينة مي']);
+    Transaction::factory()->for($this->customer)->debit('2.00')->create(['freeze_item_id' => $done->id, 'category' => 'freezing']);
+
+    $this->actingAs($this->user)->get('/freezer')
+        ->assertOk()
+        ->assertSeeInOrder(['في الفريزر الآن', 'كيكة وسط', 'أبو محمد', '3 أيام', 'استُلمت مؤخراً', 'قنينة مي', '2.00 ₪']);
+});

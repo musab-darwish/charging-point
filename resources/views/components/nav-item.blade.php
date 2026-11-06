@@ -1,4 +1,4 @@
-@props(['href' => null, 'active' => false, 'soon' => false, 'layout' => 'side'])
+@props(['href' => null, 'active' => false, 'soon' => false, 'layout' => 'side', 'count' => null])
 
 @php
     $tag = $soon ? 'span' : 'a';
@@ -23,8 +23,21 @@
         <span @class(['size-1.5 rounded-full', 'bg-debit' => $active])></span>
     @endunless
 
-    <span class="flex size-6 items-center justify-center">{{ $icon }}</span>
+    <span class="relative flex size-6 items-center justify-center">
+        {{ $icon }}
+        @if ($count && ! $side)
+            <span class="absolute -top-1.5 -end-2.5 min-w-4.5 rounded-full bg-brand px-1 text-center text-[11px] font-bold leading-4.5 tabular-nums text-white">{{ $count }}</span>
+        @endif
+    </span>
     <span>{{ $slot }}</span>
+
+    @if ($count && $side)
+        <span @class([
+            'ms-auto rounded-md px-1.5 text-xs font-bold tabular-nums',
+            'bg-white/20 text-white' => $active,
+            'bg-paper text-ink-muted' => ! $active,
+        ])>{{ $count }}</span>
+    @endif
 
     @if ($side && $active)
         <span class="ms-auto size-1.5 rounded-full bg-debit"></span>

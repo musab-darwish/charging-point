@@ -8,6 +8,7 @@ use App\Http\Requests\PickUpFreezeItemRequest;
 use App\Http\Requests\StoreFreezeItemRequest;
 use App\Models\Customer;
 use App\Models\FreezeItem;
+use App\Models\PriceItem;
 use App\Support\WorkDay;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +26,8 @@ class FreezeItemController extends Controller
         return view('freezer.index', [
             'items' => FreezeItem::inFreezer()->with(['customer', 'user'])->get(),
             'recent' => FreezeItem::recentlyPickedUp()->with(['customer', 'pickedUpBy', 'transaction'])->get(),
+            // The freezing items on the price list, as quick descriptions.
+            'suggestions' => PriceItem::active()->where('category', 'freezing')->ordered()->pluck('name'),
             'storeToken' => (string) Str::uuid(),
             'pickUpToken' => (string) Str::uuid(),
         ]);
@@ -54,7 +57,7 @@ class FreezeItemController extends Controller
         }
 
         return redirect()->route('freezer.index')
-            ->with('status', 'وُضع '.$item->label().' لـ'.$item->customer->name.' في الفريزر.');
+            ->with('status', 'وُضع '.$item->label().' في الفريزر باسم '.$item->customer->name.'.');
     }
 
     /**
@@ -68,7 +71,7 @@ class FreezeItemController extends Controller
             return redirect()->route('freezer.index')->with('status', 'هذا الغرض مُسلَّم من قبل.');
         }
 
-        $who = $freezeItem->label().' لـ'.$freezeItem->customer->name;
+        $who = $freezeItem->label().' إلى '.$freezeItem->customer->name;
 
         return redirect()->route('freezer.index')->with('status', match (true) {
             bccomp($price, '0', 2) <= 0 => 'تم تسليم '.$who.' بدون مقابل.',

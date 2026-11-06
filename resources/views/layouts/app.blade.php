@@ -97,7 +97,7 @@
         </div>
 
         {{-- Bottom navigation (phone) --}}
-        <nav aria-label="التنقل الرئيسي" data-bottom-nav class="fixed inset-x-0 bottom-0 z-30 grid h-18 grid-cols-4 border-t border-rule bg-sheet pb-[env(safe-area-inset-bottom)] lg:hidden">
+        <nav aria-label="التنقل الرئيسي" data-bottom-nav class="fixed inset-x-0 bottom-0 z-30 grid h-18 grid-cols-5 border-t border-rule bg-sheet pb-[env(safe-area-inset-bottom)] lg:hidden">
             @include('layouts.partials.nav', ['layout' => 'bottom'])
         </nav>
     </body>
