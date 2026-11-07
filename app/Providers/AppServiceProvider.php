@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Http\Responses\PasskeyDeletedResponse;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passkeys\Contracts\PasskeyDeletedResponse as PasskeyDeletedResponseContract;
+use Laravel\Passkeys\Passkeys;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(PasskeyDeletedResponseContract::class, PasskeyDeletedResponse::class);
     }
 
     /**
@@ -27,6 +30,9 @@ class AppServiceProvider extends ServiceProvider
         if (str_starts_with((string) config('app.url'), 'https://')) {
             URL::forceScheme('https');
         }
+
+        // A deactivated user can't sign in with a fingerprint either.
+        Passkeys::authorizeLoginUsing(fn ($request, User $user) => ! $user->isDeactivated());
 
         // Only the owner manages users, the price list and the transfer
         // accounts, confirms that a transfer arrived, and moves over the

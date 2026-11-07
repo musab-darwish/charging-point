@@ -7,6 +7,7 @@ import { initFlashMessages } from './behaviors/flash';
 import { initFreezer } from './behaviors/freezer';
 import { initLiveSearch } from './behaviors/live-search';
 import { initOldDebts } from './behaviors/old-debts';
+import { initPasskeys } from './behaviors/passkeys';
 import { initPasswordToggles } from './behaviors/password-toggle';
 import { initPaymentDialog } from './behaviors/payment-dialog';
 import { initReversal } from './behaviors/reversal';
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initPaymentDialog();
     initReversal();
     initAccountMessage();
+    initPasskeys();
     initDayNav();
     initDayFilter();
     initFreezer();

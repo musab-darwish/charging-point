@@ -97,6 +97,17 @@
                     <x-button class="w-full text-lg" loading="جارٍ تسجيل الدخول…">تسجيل الدخول</x-button>
                 </form>
 
+                {{-- Fingerprint sign-in, shown only where the browser supports it (resources/js/behaviors/passkeys.js) --}}
+                <div data-passkey-login hidden class="mt-4">
+                    <div class="flex items-center gap-3 text-xs font-bold text-ink-muted"><span class="h-px flex-1 bg-rule"></span>أو<span class="h-px flex-1 bg-rule"></span></div>
+                    <button type="button" data-passkey-verify
+                        class="mt-4 inline-flex h-13 w-full items-center justify-center gap-2 rounded-xl border-2 border-brand text-lg font-bold text-brand transition hover:bg-brand-soft active:scale-[.97] disabled:pointer-events-none disabled:opacity-60">
+                        @include('passkeys.partials.icon', ['class' => 'size-6'])
+                        <span data-passkey-verify-label>الدخول بالبصمة</span>
+                    </button>
+                    <p data-passkey-error hidden role="alert" class="mt-3 text-sm font-medium text-debit"></p>
+                </div>
+
                 <p class="mt-7 border-t border-rule pt-4 text-sm leading-relaxed text-ink-muted lg:mt-10 lg:pt-5">
                     يُنشئ المالك حسابات المستخدمين. إذا لم يكن لديك حساب، تواصل معه.
                 </p>

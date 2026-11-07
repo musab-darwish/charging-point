@@ -9,13 +9,24 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passkeys\Contracts\PasskeyUser;
+use Laravel\Passkeys\PasskeyAuthenticatable;
 
 #[Fillable(['name', 'username', 'password', 'is_owner'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, PasskeyAuthenticatable;
+
+    /**
+     * The account a passkey is saved under on the phone: the username, as
+     * there is no email.
+     */
+    public function getPasskeyUsername(): string
+    {
+        return $this->username;
+    }
 
     /**
      * Get the attributes that should be cast.

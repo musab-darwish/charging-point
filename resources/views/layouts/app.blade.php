@@ -30,6 +30,10 @@
                         <p class="truncate font-bold">{{ $user->name }}</p>
                         <p class="text-xs text-ink-muted">{{ $role }}</p>
                     </div>
+                    <a href="{{ route('passkeys.index') }}" aria-label="الدخول بالبصمة" title="الدخول بالبصمة"
+                        class="flex size-11 items-center justify-center rounded-xl text-ink-muted transition hover:bg-paper hover:text-brand">
+                        @include('passkeys.partials.icon', ['class' => 'size-5'])
+                    </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" aria-label="تسجيل الخروج" title="تسجيل الخروج" class="flex size-11 items-center justify-center rounded-xl text-ink-muted transition hover:bg-paper hover:text-debit">
@@ -58,6 +62,11 @@
                                 <p class="font-bold">{{ $user->name }}</p>
                                 <p class="text-xs text-ink-muted">{{ $role }}</p>
                             </div>
+                            <a href="{{ route('passkeys.index') }}" class="flex h-11 items-center gap-2 rounded-xl px-3 font-bold transition hover:bg-paper">
+                                @include('passkeys.partials.icon', ['class' => 'size-5'])
+                                الدخول بالبصمة
+                            </a>
+
                             @can('manage-users')
                                 <a href="{{ route('users.index') }}" class="flex h-11 items-center gap-2 rounded-xl px-3 font-bold transition hover:bg-paper">
                                     <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="4" /><path d="M3 20c0-3.5 3-6 7-6 1.4 0 2.7.3 3.8.9" /><path d="M18 14v6M15 17h6" /></svg>

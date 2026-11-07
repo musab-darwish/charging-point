@@ -1,0 +1,2 @@
+{{-- A fingerprint, for the fingerprint sign-in --}}
+<svg class="{{ $class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v2a9 9 0 0 1-1.5 5" /><path d="M8.5 8A5 5 0 0 1 17 11.5v1.5" /><path d="M5.5 12a7 7 0 0 1 11.5-5.4" /><path d="M7.5 16.5a11 11 0 0 0 .7-4.5" /><path d="M15.5 18.5a13 13 0 0 0 1.4-4" /><path d="M19.5 15a15 15 0 0 0 .4-3.5" /></svg>

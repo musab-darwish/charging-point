@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\AccountMessageController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\PasswordConfirmationController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerSearchController;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\DebtorController;
 use App\Http\Controllers\FreezeItemController;
 use App\Http\Controllers\OldDebtController;
+use App\Http\Controllers\PasskeyController;
 use App\Http\Controllers\PaymentAccountController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PriceItemController;
@@ -42,6 +44,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/freezer/{freezeItem}', [FreezeItemController::class, 'destroy'])->name('freezer.destroy');
 
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+
+    // Fingerprint sign-in (laravel/passkeys registers its own endpoints): managing it asks for the password first.
+    Route::get('/confirm-password', [PasswordConfirmationController::class, 'create'])->name('password.confirm');
+    Route::post('/confirm-password', [PasswordConfirmationController::class, 'store'])->middleware('throttle:6,1');
+    Route::get('/fingerprint', [PasskeyController::class, 'index'])->middleware('password.confirm')->name('passkeys.index');
 
     Route::get('/customers/search', CustomerSearchController::class)->name('customers.search');
     Route::get('/customers/{customer}/message', AccountMessageController::class)->name('customers.message');

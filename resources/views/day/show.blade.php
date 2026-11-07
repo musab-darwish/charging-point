@@ -6,6 +6,8 @@
     <div class="space-y-6">
         @include('day.partials.header')
 
+        @include('passkeys.partials.offer')
+
         @include('day.partials.errors')
 
         @include('day.partials.summary')
