@@ -27,7 +27,8 @@
                 <div class="mt-auto flex items-center gap-3 border-t border-rule px-2 pt-4">
                     <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand text-base font-bold text-white">{{ $initial }}</span>
                     <div class="min-w-0 flex-1">
-                        <p class="truncate font-bold">{{ $user->name }}</p>
+                        {{-- Wraps rather than cutting the name short beside the two buttons --}}
+                        <p class="line-clamp-2 font-bold leading-snug">{{ $user->name }}</p>
                         <p class="text-xs text-ink-muted">{{ $role }}</p>
                     </div>
                     <a href="{{ route('passkeys.index') }}" aria-label="الدخول بالبصمة" title="الدخول بالبصمة"

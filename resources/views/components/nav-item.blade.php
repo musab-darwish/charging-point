@@ -19,8 +19,9 @@
         'font-medium text-ink-muted' => ! $side && ! $active && ! $soon,
         'cursor-default font-medium text-ink-muted/60' => $soon,
     ]) }}>
+    {{-- Phone bar: the active dot, unless a count is already on the icon --}}
     @unless ($side)
-        <span @class(['size-1.5 rounded-full', 'bg-debit' => $active])></span>
+        <span @class(['size-1.5 rounded-full', 'bg-debit' => $active && ! $count])></span>
     @endunless
 
     <span class="relative flex size-6 items-center justify-center">
@@ -31,15 +32,14 @@
     </span>
     <span>{{ $slot }}</span>
 
+    {{-- A count takes the place of the active dot, so the two never sit side by side --}}
     @if ($count && $side)
         <span @class([
-            'ms-auto rounded-md px-1.5 text-xs font-bold tabular-nums',
-            'bg-white/20 text-white' => $active,
+            'ms-auto min-w-6 rounded-md px-1.5 text-center text-xs font-bold leading-6 tabular-nums',
+            'bg-white text-brand' => $active,
             'bg-paper text-ink-muted' => ! $active,
         ])>{{ $count }}</span>
-    @endif
-
-    @if ($side && $active)
+    @elseif ($side && $active)
         <span class="ms-auto size-1.5 rounded-full bg-debit"></span>
     @elseif ($side && $soon)
         <span class="ms-auto rounded-md border border-rule-strong px-1.5 text-[11px] font-bold">قريباً</span>

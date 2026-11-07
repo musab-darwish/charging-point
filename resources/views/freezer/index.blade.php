@@ -139,13 +139,6 @@
             </section>
         @endif
 
-        {{-- Phone: the add button stays in reach --}}
-        <button type="button" data-open-freezer
-            class="fixed bottom-22 end-4 z-30 inline-flex h-14 items-center gap-2 rounded-2xl bg-brand px-5 text-lg font-bold text-white shadow-xl shadow-brand/30 transition active:scale-[.97] lg:hidden">
-            <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
-            وضع غرض
-        </button>
-
         @include('freezer.partials.store-dialog')
         @include('freezer.partials.pickup-dialog')
     </div>
