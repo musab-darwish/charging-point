@@ -11,6 +11,9 @@
                 <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
                 إضافة «{{ $search }}» كزبون جديد
             </a>
+        @elseif ($oneTime ?? false)
+            <p class="mt-4 text-lg font-bold">لا يوجد زبائن لمرة واحدة</p>
+            <p class="mt-1 text-ink-muted">يظهر هنا من يُسجَّل من «الزبون العابر» باسمه لأنه ترك غرضاً.</p>
         @else
             <p class="mt-4 text-lg font-bold">لا يوجد زبائن بعد</p>
             <p class="mt-1 text-ink-muted">أضف أول زبون لتبدأ تسجيل حساباته.</p>

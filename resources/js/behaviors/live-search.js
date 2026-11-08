@@ -21,6 +21,13 @@ export function initLiveSearch() {
         const search = async () => {
             const url = new URL(form.action);
 
+            // The form's other fields too (like a list filter), and the query unless empty.
+            for (const [name, value] of new FormData(form)) {
+                if (name !== input.name && value !== '') {
+                    url.searchParams.set(name, value);
+                }
+            }
+
             if (input.value.trim() !== '') {
                 url.searchParams.set('q', input.value.trim());
             }

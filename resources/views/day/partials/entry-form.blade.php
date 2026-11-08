@@ -13,7 +13,7 @@
 {{-- A register in a dialog: full screen on a phone, a large window on a laptop.
      Customer and items on one side, the receipt on the other. --}}
 <dialog id="work-entry" data-work-entry aria-label="تسجيل شغل"
-    data-open-on-load="{{ $errors->hasAny(['customer_id', 'new_customer_name', 'items', 'items.*', 'date']) ? 'true' : 'false' }}"
+    data-open-on-load="{{ $errors->hasAny(['customer_id', 'new_customer_name', 'one_time_name', 'one_time_phone', 'items', 'items.*', 'date']) ? 'true' : 'false' }}"
     class="m-0 h-dvh max-h-none w-full max-w-none overflow-visible bg-transparent p-0 text-ink backdrop:bg-ink/45 lg:m-auto lg:h-[min(100dvh-3rem,54rem)] lg:w-[min(100%-3rem,78rem)]">
     <form method="POST" action="{{ route('work.store') }}" data-submit-lock data-work-form data-old='{{ json_encode($oldState) }}'
         class="flex h-full flex-col overflow-hidden bg-sheet max-lg:animate-sheet-up lg:animate-drop lg:rounded-3xl lg:border lg:border-rule lg:bg-white lg:shadow-2xl lg:shadow-ink/25">
@@ -41,6 +41,51 @@
             {{-- Customer and items --}}
             <div class="space-y-5 px-5 py-5 lg:overflow-y-auto">
                 @include('partials.customer-picker', ['pickerId' => 'entry', 'walkIn' => $walkIn])
+
+                {{-- The walk-in customer, named for one visit: they leave something and pay when they collect it.
+                     Shown (and sent) only while the walk-in is picked; see work-entry.js. --}}
+                @php
+                    $oneTimeNameError = $errors->first('one_time_name');
+                    $oneTimePhoneError = $errors->first('one_time_phone');
+                    $oneTimePrefix = old('one_time_phone_prefix', \App\Models\Customer::PHONE_PREFIXES[0]);
+                @endphp
+                <div data-one-time hidden class="-mt-2 rounded-xl border border-rule bg-white p-3.5 has-checked:border-brand/50 has-checked:bg-brand-soft/30">
+                    <label class="flex min-h-11 cursor-pointer items-start gap-3">
+                        <input type="checkbox" name="one_time" value="1" data-one-time-toggle @checked(old('one_time')) class="mt-1 size-5 shrink-0 rounded accent-brand">
+                        <span>
+                            <span class="block font-bold">لمرة واحدة، باسمه</span>
+                            <span class="block text-sm text-ink-muted">ترك غرضاً (جوال، تبريد…) ويدفع عند الاستلام. لا يظهر في قائمة الزبائن.</span>
+                        </span>
+                    </label>
+
+                    <div data-one-time-fields hidden class="mt-3 grid animate-rise gap-3 sm:grid-cols-2">
+                        <div>
+                            <label for="one_time_name" class="mb-1.5 block text-sm font-bold">اسم الزبون</label>
+                            <input id="one_time_name" name="one_time_name" type="text" maxlength="100" autocomplete="off"
+                                value="{{ old('one_time_name') }}" placeholder="مثل: أبو سامي، صاحب الجوال الأسود"
+                                @if ($oneTimeNameError) aria-invalid="true" @endif
+                                class="block h-12 w-full rounded-xl border border-rule-strong bg-white px-4 font-bold transition placeholder:font-normal placeholder:text-ink-muted/60 hover:border-ink-muted focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15 aria-[invalid=true]:border-debit aria-[invalid=true]:ring-4 aria-[invalid=true]:ring-debit/15">
+                            <p data-error-for="one_time_name" @unless ($oneTimeNameError) hidden @endunless class="mt-1.5 text-sm font-medium text-debit">{{ $oneTimeNameError }}</p>
+                        </div>
+
+                        <div>
+                            <label for="one_time_phone" class="mb-1.5 block text-sm font-bold">رقم الجوال <span class="font-medium text-ink-muted">(اختياري)</span></label>
+                            <div class="flex gap-2" dir="ltr">
+                                <select name="one_time_phone_prefix" aria-label="مقدمة الرقم"
+                                    class="h-12 w-22 shrink-0 rounded-xl border border-rule-strong bg-white px-2 font-bold tabular-nums transition hover:border-ink-muted focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15">
+                                    @foreach (\App\Models\Customer::PHONE_PREFIXES as $option)
+                                        <option value="{{ $option }}" @selected($oneTimePrefix === $option)>+{{ $option }}</option>
+                                    @endforeach
+                                </select>
+                                <input id="one_time_phone" name="one_time_phone" type="tel" inputmode="numeric" autocomplete="off"
+                                    value="{{ old('one_time_phone') }}" placeholder="0599123456"
+                                    @if ($oneTimePhoneError) aria-invalid="true" @endif
+                                    class="block h-12 w-full min-w-0 rounded-xl border border-rule-strong bg-white px-4 tabular-nums transition placeholder:text-ink-muted/50 hover:border-ink-muted focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15 aria-[invalid=true]:border-debit aria-[invalid=true]:ring-4 aria-[invalid=true]:ring-debit/15">
+                            </div>
+                            <p data-error-for="one_time_phone" @unless ($oneTimePhoneError) hidden @endunless class="mt-1.5 text-sm font-medium text-debit">{{ $oneTimePhoneError }}</p>
+                        </div>
+                    </div>
+                </div>
 
                 @if ($priceGroups->isEmpty())
                     <p class="rounded-xl border border-dashed border-rule-strong px-4 py-3 text-sm text-ink-muted">
@@ -98,7 +143,7 @@
                         <span class="text-3xl font-extrabold tabular-nums"><span data-cart-total>0.00</span> <span class="text-lg text-ink-muted">₪</span></span>
                     </div>
 
-                    <p data-walk-in-note hidden class="mb-3 rounded-lg bg-paper px-3 py-2 text-xs font-medium text-ink-muted">الزبون العابر يدفع فوراً، فيُسجَّل شغله واصلاً.</p>
+                    <p data-walk-in-note hidden class="mb-3 rounded-lg bg-paper px-3 py-2 text-xs font-medium text-ink-muted">الزبون العابر يدفع فوراً، فيُسجَّل شغله واصلاً. إن ترك غرضاً، علّم «لمرة واحدة» واكتب اسمه.</p>
 
                     <p data-entry-error role="alert" hidden class="mb-3 flex animate-rise items-center gap-2 rounded-lg bg-debit-soft px-3 py-2 text-sm font-bold text-debit">
                         <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5.5M12 16.5v.01" /></svg>

@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/customers/search', CustomerSearchController::class)->name('customers.search');
     Route::get('/customers/{customer}/message', AccountMessageController::class)->name('customers.message');
+    Route::patch('/customers/{customer}/permanent', [CustomerController::class, 'makePermanent'])->name('customers.make-permanent');
     Route::resource('customers', CustomerController::class);
 
     Route::middleware('can:manage-users')->group(function () {

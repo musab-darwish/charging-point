@@ -14,9 +14,9 @@
 
 @section('content')
     <div class="space-y-6">
-        <a href="{{ route('customers.index') }}" class="inline-flex h-11 items-center gap-1.5 text-sm font-bold text-ink-muted transition hover:text-ink">
+        <a href="{{ route('customers.index', $customer->is_one_time ? ['kind' => 'one-time'] : []) }}" class="inline-flex h-11 items-center gap-1.5 text-sm font-bold text-ink-muted transition hover:text-ink">
             <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
-            الزبائن
+            {{ $customer->is_one_time ? 'الزبائن لمرة واحدة' : 'الزبائن' }}
         </a>
 
         @include('day.partials.errors')
@@ -44,6 +44,20 @@
                         <span class="max-sm:sr-only">تعديل</span>
                     </a>
                 </div>
+
+                @if ($customer->is_one_time)
+                    <div class="mt-4 flex flex-col gap-3 rounded-xl border border-dashed border-rule-strong bg-sheet px-4 py-3 sm:flex-row sm:items-center">
+                        <p class="flex-1 text-sm leading-relaxed">
+                            <x-one-time-badge class="me-1" />
+                            سُجّل لزيارة واحدة، فلا يظهر في قائمة الزبائن. إن صار يتعامل معك، اجعله زبوناً دائماً.
+                        </p>
+                        <form method="POST" action="{{ route('customers.make-permanent', $customer) }}" data-submit-lock class="shrink-0">
+                            @csrf
+                            @method('PATCH')
+                            <x-button variant="secondary" class="h-11! w-full px-4 text-sm" loading="جارٍ الحفظ…">جعله زبوناً دائماً</x-button>
+                        </form>
+                    </div>
+                @endif
 
                 @if ($customer->notes)
                     <p class="mt-4 rounded-xl bg-sheet px-4 py-3 text-sm leading-relaxed">{{ $customer->notes }}</p>

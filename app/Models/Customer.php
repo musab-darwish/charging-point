@@ -19,6 +19,9 @@ class Customer extends Model
     /** Country prefixes a phone number can have. 970 is the default. */
     public const PHONE_PREFIXES = ['970', '972'];
 
+    /** How long a one-time customer still comes up in the picker after their last movement. */
+    public const ONE_TIME_SEARCH_DAYS = 7;
+
     /**
      * Get the attributes that should be cast.
      *
@@ -28,6 +31,7 @@ class Customer extends Model
     {
         return [
             'is_walk_in' => 'boolean',
+            'is_one_time' => 'boolean',
         ];
     }
 
@@ -47,6 +51,43 @@ class Customer extends Model
     public function scopeRegular(Builder $query): void
     {
         $query->where('is_walk_in', false);
+    }
+
+    /**
+     * Customers on the customer list: named, and not added for one visit.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopePermanent(Builder $query): void
+    {
+        $query->regular()->where('is_one_time', false);
+    }
+
+    /**
+     * Customers added for one visit.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeOneTime(Builder $query): void
+    {
+        $query->regular()->where('is_one_time', true);
+    }
+
+    /**
+     * Customers the picker offers: every regular customer, and a one-time
+     * one only while they were last seen within ONE_TIME_SEARCH_DAYS (they
+     * may come back for their phone, then they drop out of the way).
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopePickable(Builder $query): void
+    {
+        $since = now()->subDays(self::ONE_TIME_SEARCH_DAYS)->startOfDay();
+
+        $query->regular()->where(function (Builder $query) use ($since) {
+            $query->where('is_one_time', false)
+                ->orWhereHas('transactions', fn (Builder $query) => $query->where('occurred_at', '>=', $since));
+        });
     }
 
     /**

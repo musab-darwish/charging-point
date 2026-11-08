@@ -25,7 +25,12 @@
             @else
                 <a href="{{ route('customers.show', $customer) }}" class="block truncate text-lg font-bold transition hover:text-brand">{{ $customer->name }}</a>
             @endif
-            <p class="text-xs text-ink-muted">آخر حركة {{ $row->lastAt->format('H:i') }}</p>
+            <p class="flex items-center gap-1.5 text-xs text-ink-muted">
+                @if ($customer->is_one_time)
+                    <x-one-time-badge />
+                @endif
+                آخر حركة {{ $row->lastAt->format('H:i') }}
+            </p>
         </div>
 
         <span @class([

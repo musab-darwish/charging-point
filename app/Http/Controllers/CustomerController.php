@@ -15,14 +15,17 @@ use Illuminate\View\View;
 class CustomerController extends Controller
 {
     /**
-     * List customers, filtered by the search box. The live search asks
-     * for the list alone, without the rest of the page.
+     * List customers, filtered by the search box: the regular ones, or
+     * (?kind=one-time) those added for one visit. The live search asks for
+     * the list alone, without the rest of the page.
      */
     public function index(Request $request): View
     {
         $search = $request->string('q')->trim()->toString();
+        $oneTime = $request->query('kind') === 'one-time';
 
-        $customers = Customer::regular()
+        $customers = Customer::query()
+            ->when($oneTime, fn ($query) => $query->oneTime(), fn ($query) => $query->permanent())
             ->search($search)
             ->orderBy('name')
             ->get();
@@ -32,8 +35,23 @@ class CustomerController extends Controller
         return view($view, [
             'customers' => $customers,
             'search' => $search,
-            'total' => Customer::regular()->count(),
+            'oneTime' => $oneTime,
+            'total' => Customer::permanent()->count(),
+            'oneTimeTotal' => Customer::oneTime()->count(),
         ]);
+    }
+
+    /**
+     * A one-time customer came back to stay: put them on the customer list.
+     */
+    public function makePermanent(Customer $customer): RedirectResponse
+    {
+        abort_if($customer->is_walk_in, 404);
+
+        $customer->forceFill(['is_one_time' => false])->save();
+
+        return redirect()->route('customers.show', $customer)
+            ->with('status', 'أصبح '.$customer->name.' زبوناً دائماً، ويظهر الآن في قائمة الزبائن.');
     }
 
     /**

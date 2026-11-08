@@ -9,6 +9,7 @@ use App\Support\Numbers;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 /**
@@ -45,6 +46,9 @@ class RecordWorkRequest extends FormRequest
             'customer_id' => $this->input('customer_id') ?: null,
             'new_customer_name' => preg_replace('/\s+/u', ' ', trim((string) $this->input('new_customer_name'))) ?: null,
             'pay_now' => $this->boolean('pay_now'),
+            'one_time' => $this->boolean('one_time'),
+            'one_time_name' => preg_replace('/\s+/u', ' ', trim((string) $this->input('one_time_name'))) ?: null,
+            'one_time_phone' => preg_replace('/\D/', '', (string) Numbers::normalize($this->input('one_time_phone'))) ?: null,
         ]);
     }
 
@@ -65,7 +69,16 @@ class RecordWorkRequest extends FormRequest
             ];
         }
 
+        // The walk-in customer ticked "for one visit": a name (and maybe a phone) to know them by.
+        $oneTime = $this->boolean('one_time') ? [
+            'one_time_name' => ['required', 'string', 'min:2', 'max:100', 'regex:/\p{L}/u'],
+            'one_time_phone' => ['nullable', 'regex:/^0?5\d{8}$/'],
+            'one_time_phone_prefix' => ['nullable', Rule::in(Customer::PHONE_PREFIXES)],
+        ] : [];
+
         return [
+            ...$oneTime,
+            'one_time' => ['boolean'],
             'date' => ['required', 'date_format:Y-m-d', 'before_or_equal:today'],
             'customer_id' => ['nullable', 'required_without:new_customer_name', 'integer', 'exists:customers,id'],
             'new_customer_name' => ['nullable', 'string', 'max:100', 'unique:customers,name'],
@@ -81,13 +94,22 @@ class RecordWorkRequest extends FormRequest
     }
 
     /**
-     * The walk-in customer only pays on the spot.
+     * The walk-in customer only pays on the spot, unless they are named for
+     * one visit (and only the walk-in can be).
      */
     public function after(): array
     {
         return [
             function (Validator $validator) {
                 if (! $validator->errors()->isEmpty() || $this->alreadyRecorded()) {
+                    return;
+                }
+
+                if ($this->isOneTime()) {
+                    if (! $this->customer()?->is_walk_in) {
+                        $validator->errors()->add('customer_id', 'الزبون لمرة واحدة يُسجَّل من «الزبون العابر». اختره ثم علّم «لمرة واحدة».');
+                    }
+
                     return;
                 }
 
@@ -117,7 +139,30 @@ class RecordWorkRequest extends FormRequest
             'items.*.unit_price.gt' => 'سعر البند يجب أن يكون أكبر من صفر.',
             'items.*.unit_price.decimal' => 'يقبل السعر منزلتين عشريتين على الأكثر.',
             'date.before_or_equal' => 'لا يمكن تسجيل شغل في يوم لم يأتِ بعد.',
+            'one_time_name.required' => 'اكتب اسم الزبون ليُعرف عند استلام غرضه.',
+            'one_time_name.min' => 'اكتب اسم الزبون بالحروف.',
+            'one_time_name.regex' => 'اكتب اسم الزبون بالحروف.',
+            'one_time_name.max' => 'اسم الزبون طويل، اختصره إلى 100 حرف على الأكثر.',
+            'one_time_phone.regex' => 'رقم الجوال غير صحيح. اكتبه هكذا: 0599123456',
         ];
+    }
+
+    /**
+     * Whether the walk-in customer is being named for one visit.
+     */
+    public function isOneTime(): bool
+    {
+        return $this->boolean('one_time');
+    }
+
+    /**
+     * The one-time customer's phone in its stored form (970599123456), if given.
+     */
+    public function oneTimePhone(): ?string
+    {
+        $local = $this->validated('one_time_phone');
+
+        return $local ? ($this->validated('one_time_phone_prefix') ?? Customer::PHONE_PREFIXES[0]).ltrim($local, '0') : null;
     }
 
     /**

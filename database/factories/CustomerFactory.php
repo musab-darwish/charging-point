@@ -25,6 +25,16 @@ class CustomerFactory extends Factory
     }
 
     /**
+     * A customer added for one visit.
+     */
+    public function oneTime(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_one_time' => true,
+        ]);
+    }
+
+    /**
      * A customer without a phone number.
      */
     public function withoutPhone(): static

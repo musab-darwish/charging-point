@@ -14,7 +14,7 @@ export function toNumber(value) {
     return /^-?(\d+\.?\d*|\.\d+)$/.test(latin) ? Number(latin) : NaN;
 }
 
-function latinDigits(value) {
+export function latinDigits(value) {
     return String(value)
         .replace(/[٠-٩]/g, (digit) => String(digit.charCodeAt(0) - 0x0660))
         .replace(/[٫,،]/g, '.')

@@ -1,5 +1,5 @@
 import { createCustomerPicker } from './customer-picker';
-import { toNumber } from './forms';
+import { clearFieldError, latinDigits, showFieldError, toNumber } from './forms';
 
 const MAX_QUANTITY = 99;
 
@@ -19,6 +19,9 @@ export function initWorkEntry() {
     const saveOnAccount = form.querySelector('[data-save-on-account]');
     const savePaid = form.querySelector('[data-save-paid]');
     const walkInNote = form.querySelector('[data-walk-in-note]');
+    const oneTime = form.querySelector('[data-one-time]');
+    const oneTimeToggle = oneTime.querySelector('[data-one-time-toggle]');
+    const oneTimeFields = oneTime.querySelector('[data-one-time-fields]');
 
     const errorBox = form.querySelector('[data-entry-error]');
     const pickerRoot = form.querySelector('[data-customer-picker]');
@@ -32,11 +35,22 @@ export function initWorkEntry() {
 
     const update = () => {
         const chosen = picker.chosen();
+        const walkIn = Boolean(chosen?.walkIn);
+        const named = walkIn && oneTimeToggle.checked;
 
-        // Only the walk-in customer can't go on account; anything else that is
-        // missing is explained when a button is pressed.
-        saveOnAccount.disabled = Boolean(chosen?.walkIn);
-        walkInNote.hidden = !chosen?.walkIn;
+        // "For one visit" belongs to the walk-in customer alone. Its fields are
+        // only sent while they apply (a disabled field is left out of the form).
+        oneTime.hidden = !walkIn;
+        oneTimeToggle.disabled = !walkIn;
+        oneTimeFields.hidden = !named;
+        oneTimeFields.querySelectorAll('input, select').forEach((field) => {
+            field.disabled = !named;
+        });
+
+        // Only the walk-in customer can't go on account, unless named for one
+        // visit; anything else that is missing is explained when a button is pressed.
+        saveOnAccount.disabled = walkIn && !named;
+        walkInNote.hidden = !walkIn || named;
 
         if (chosen) {
             pickerRoot.dataset.missing = 'false';
@@ -60,6 +74,8 @@ export function initWorkEntry() {
 
             if (problem.field === 'customer') {
                 pickerRoot.dataset.missing = 'true';
+            } else if (problem.field === 'one_time') {
+                showFieldError(form, problem.input.id, problem.message);
             } else {
                 problem.input?.setAttribute('aria-invalid', 'true');
             }
@@ -69,7 +85,22 @@ export function initWorkEntry() {
         { capture: true },
     );
 
-    form.addEventListener('input', (event) => event.target.removeAttribute?.('aria-invalid'));
+    form.addEventListener('input', (event) => {
+        event.target.removeAttribute?.('aria-invalid');
+
+        if (event.target.closest?.('[data-one-time-fields]')) {
+            clearFieldError(form, event.target.id);
+        }
+    });
+
+    // Ticking "for one visit" goes straight to the name.
+    oneTimeToggle.addEventListener('change', () => {
+        update();
+
+        if (oneTimeToggle.checked) {
+            oneTimeFields.querySelector('#one_time_name')?.focus();
+        }
+    });
 
     const picker = createCustomerPicker(form, update);
     const cart = createCart(panel, form, update);
@@ -132,6 +163,12 @@ function findProblem(form, picker) {
         return { field: 'customer', message: 'اختر الزبون أولاً.', input: form.querySelector('#entry-customer-search') };
     }
 
+    const oneTimeProblem = findOneTimeProblem(form, picker);
+
+    if (oneTimeProblem) {
+        return oneTimeProblem;
+    }
+
     const lines = [...form.querySelectorAll('[data-line]')];
 
     if (lines.length === 0) {
@@ -150,6 +187,37 @@ function findProblem(form, picker) {
         if (!(toNumber(price.value) > 0)) {
             return { field: 'line', message: 'اكتب سعر كل بند، أكبر من صفر.', input: price };
         }
+    }
+
+    return null;
+}
+
+/**
+ * A walk-in named for one visit needs a name in letters, and a phone (if
+ * one is typed) the usual shape. Same words as the server's messages.
+ */
+function findOneTimeProblem(form, picker) {
+    const toggle = form.querySelector('[data-one-time-toggle]');
+
+    if (!picker.chosen()?.walkIn || !toggle.checked) {
+        return null;
+    }
+
+    const name = form.querySelector('#one_time_name');
+
+    if (name.value.trim() === '') {
+        return { field: 'one_time', message: 'اكتب اسم الزبون ليُعرف عند استلام غرضه.', input: name };
+    }
+
+    if (!/\p{L}/u.test(name.value) || name.value.trim().length < 2) {
+        return { field: 'one_time', message: 'اكتب اسم الزبون بالحروف.', input: name };
+    }
+
+    const phone = form.querySelector('#one_time_phone');
+    const digits = latinDigits(phone.value).replace(/\D/g, '');
+
+    if (digits !== '' && !/^0?5\d{8}$/.test(digits)) {
+        return { field: 'one_time', message: 'رقم الجوال غير صحيح. اكتبه هكذا: 0599123456', input: phone };
     }
 
     return null;

@@ -74,6 +74,9 @@
                                 <span class="min-w-0 flex-1">
                                     <span class="block truncate font-bold transition group-hover:text-brand">{{ $row->customer->name }}</span>
                                     <span class="mt-0.5 block truncate text-xs text-ink-muted">
+                                        @if ($row->customer->is_one_time)
+                                            <x-one-time-badge class="me-1" />
+                                        @endif
                                         @if ($row->lastPayment)
                                             آخر دفعة <span class="font-bold tabular-nums text-credit">{{ $row->lastPayment->amount }} ₪</span>
                                             <span @class(['font-bold text-debit' => $days >= 30])>{{ $since($days) }}</span>
@@ -106,6 +109,9 @@
                             <a href="{{ route('customers.show', $row->customer) }}" class="group flex items-center gap-3 px-4 py-3.5 transition hover:bg-sheet sm:gap-4 sm:px-5">
                                 <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-credit-soft text-sm font-bold text-credit">{{ mb_substr($row->customer->name, 0, 1) }}</span>
                                 <span class="min-w-0 flex-1 truncate font-bold transition group-hover:text-brand">{{ $row->customer->name }}</span>
+                                @if ($row->customer->is_one_time)
+                                    <x-one-time-badge />
+                                @endif
                                 <span class="shrink-0 text-lg font-extrabold tabular-nums text-credit">له {{ ltrim($row->balance, '-') }} <span class="text-sm">₪</span></span>
                             </a>
                         </li>

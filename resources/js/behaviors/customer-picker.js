@@ -174,17 +174,23 @@ function describe(customer) {
     }
 
     if (customer.walkIn) {
-        return ['يدفع فوراً', 'text-ink-muted'];
+        return ['يدفع فوراً، أو باسمه لمرة واحدة', 'text-ink-muted'];
     }
 
-    const balance = Number(customer.balance);
+    const [text, tone] = describeBalance(customer.balance);
+
+    return [customer.oneTime ? `لمرة واحدة · ${text}` : text, tone];
+}
+
+function describeBalance(amount) {
+    const balance = Number(amount);
 
     if (balance > 0) {
-        return [`عليه ${customer.balance} ₪ من قبل`, 'text-debit'];
+        return [`عليه ${amount} ₪ من قبل`, 'text-debit'];
     }
 
     if (balance < 0) {
-        return [`له ${customer.balance.replace('-', '')} ₪`, 'text-credit'];
+        return [`له ${amount.replace('-', '')} ₪`, 'text-credit'];
     }
 
     return ['حسابه مسكّر', 'text-ink-muted'];

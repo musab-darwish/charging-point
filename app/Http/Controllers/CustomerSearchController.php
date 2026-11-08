@@ -10,13 +10,14 @@ class CustomerSearchController extends Controller
 {
     /**
      * Customers for the day page's picker, with their balance. With no
-     * search term, the customers seen most recently come first.
+     * search term, the customers seen most recently come first. A one-time
+     * customer only comes up for a week after they were last seen.
      */
     public function __invoke(Request $request): JsonResponse
     {
         $term = $request->string('q')->trim()->toString();
 
-        $customers = Customer::regular()
+        $customers = Customer::pickable()
             ->search($term)
             ->withMax('transactions', 'occurred_at')
             ->when($term === '', fn ($query) => $query->orderByDesc('transactions_max_occurred_at'))
@@ -29,6 +30,7 @@ class CustomerSearchController extends Controller
             'name' => $customer->name,
             'phone' => $customer->phone_display,
             'balance' => $customer->balance(),
+            'oneTime' => $customer->is_one_time,
         ]));
     }
 }
