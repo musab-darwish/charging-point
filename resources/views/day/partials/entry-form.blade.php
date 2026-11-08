@@ -137,7 +137,7 @@
                     <ul data-cart class="space-y-2"></ul>
                 </div>
 
-                <footer class="border-t border-rule bg-white px-5 py-4 max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-10 max-lg:pb-[max(1rem,env(safe-area-inset-bottom))] max-lg:shadow-[0_-8px_24px_-12px_rgb(23_37_31/0.25)]">
+                <footer class="border-t border-rule bg-white px-5 py-4 max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-10 max-lg:pb-[max(1rem,env(safe-area-inset-bottom))] max-lg:shadow-[0_-8px_24px_-12px_rgb(24_32_46/0.25)]">
                     <div class="mb-3 flex items-baseline justify-between">
                         <span class="font-bold text-ink-muted">المجموع</span>
                         <span class="text-3xl font-extrabold tabular-nums"><span data-cart-total>0.00</span> <span class="text-lg text-ink-muted">₪</span></span>

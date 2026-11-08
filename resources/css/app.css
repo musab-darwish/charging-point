@@ -7,21 +7,23 @@
     --font-sans: 'Tajawal', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
-    /* Identity: ledger paper, ink, and the red/blue pens */
-    --color-paper: #E6EBE1;
-    --color-sheet: #F5F7F2;
-    --color-ink: #17251F;
-    --color-ink-deep: #0B1511;
-    --color-ink-muted: #4F5E56;
-    --color-brand: #1E5B43;
-    --color-brand-deep: #164533;
-    --color-brand-soft: #DCEBE2;
-    --color-rule: #C9D4C4;
-    --color-rule-strong: #A9B7A3;
+    /* Identity: ink on notebook paper, and the red/blue pens. The brand is
+       the ink itself; red (owed) and blue (paid) are the only colors, and
+       they always mean something. */
+    --color-paper: #E8E3D7;
+    --color-sheet: #F5F2EA;
+    --color-ink: #18202E;
+    --color-ink-deep: #0E141F;
+    --color-ink-muted: #545B68;
+    --color-brand: #1D2B45;
+    --color-brand-deep: #121B2D;
+    --color-brand-soft: #E3E6EC;
+    --color-rule: #DDD6C6;
+    --color-rule-strong: #C2BAA8;
     --color-debit: #B3261E;
     --color-debit-soft: #F6DEDA;
-    --color-credit: #1F3A93;
-    --color-credit-soft: #DDE3F3;
+    --color-credit: #1F4FB0;
+    --color-credit-soft: #DEE6F6;
 
     --ease-out-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
 

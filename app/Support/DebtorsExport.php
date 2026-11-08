@@ -18,11 +18,11 @@ use OpenSpout\Writer\XLSX\Writer;
 final class DebtorsExport
 {
     /** The brand's paper, debit and credit colors (the file can't read the CSS tokens). */
-    private const PAPER = 'E6EBE1';
+    private const PAPER = 'E8E3D7';
 
     private const DEBIT = 'B3261E';
 
-    private const CREDIT = '1F3A93';
+    private const CREDIT = '1F4FB0';
 
     public function __construct(private readonly Debtors $debtors) {}
 

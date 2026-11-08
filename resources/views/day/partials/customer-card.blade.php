@@ -35,7 +35,7 @@
 
         <span @class([
             'inline-flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1 text-sm font-bold',
-            'bg-brand-soft text-brand' => $status->state === \App\Support\DayStatus::PAID,
+            'bg-credit-soft text-credit' => $status->state === \App\Support\DayStatus::PAID,
             'border border-debit/40 text-debit' => $status->state === \App\Support\DayStatus::UNPAID,
             'bg-debit-soft text-debit' => $status->state === \App\Support\DayStatus::PARTIAL,
         ])>
