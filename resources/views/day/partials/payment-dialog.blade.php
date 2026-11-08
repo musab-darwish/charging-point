@@ -2,7 +2,7 @@
      (see resources/js/behaviors/payment-dialog.js). --}}
 <dialog id="payment-dialog" aria-labelledby="payment-dialog-title"
     class="m-auto w-[min(100%-2rem,28rem)] overflow-visible bg-transparent p-0 text-ink backdrop:bg-ink/45">
-    <form method="POST" action="{{ route('payments.store') }}" data-submit-lock data-payment-form
+    <form method="POST" action="{{ route('payments.store') }}" data-submit-lock data-stay data-payment-form
         class="max-h-[calc(100dvh-2rem)] animate-drop overflow-y-auto rounded-3xl border border-rule bg-white p-6 shadow-2xl shadow-ink/25 sm:p-7">
         @csrf
         <input type="hidden" name="customer_id" data-payment-customer>

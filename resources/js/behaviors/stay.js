@@ -1,10 +1,12 @@
-// Buttons that change something and come back to the same page (hide an
-// item, move it up, confirm a transfer...). Sent the usual way, each press
-// adds the same page to the browser's history again, so Back has to be
+// Forms that change something and come back to the page (hide an item,
+// move it up, confirm a transfer, record work, a payment...). Sent the usual
+// way, each one adds a page to the browser's history, so Back has to be
 // pressed once per press to leave. A form[data-stay] is sent in the
-// background instead, and the page reloads in place of its history entry,
-// where it was scrolled to. Messages and errors show as usual (the server
-// keeps them for the reload).
+// background instead, with an X-Stay header: the server answers with where
+// it would have redirected (App\Http\Middleware\StayOnPage), and that page
+// opens in place of this one's history entry, where it was scrolled to when
+// it is the same page. Messages and errors show as usual (the server keeps
+// them for that page).
 
 const SCROLL_KEY = 'stay-scroll';
 
@@ -26,6 +28,7 @@ export function initStayingForms() {
                 response = await fetch(form.action, {
                     method: 'POST',
                     body: new FormData(form, event.submitter),
+                    headers: { 'X-Stay': '1' },
                     redirect: 'manual',
                     credentials: 'same-origin',
                 });
@@ -35,8 +38,19 @@ export function initStayingForms() {
                 return;
             }
 
-            // The server sent us back (done, or refused with a message): reload in place.
-            if (response.type === 'opaqueredirect') {
+            // Done, or refused with a message: open the page the server names.
+            const location = await stayLocation(response);
+
+            if (location) {
+                rememberScroll();
+                window.location.replace(location);
+                return;
+            }
+
+            // A redirect the server didn't turn into an address (one from before
+            // this form's own handling), or an address that isn't this site's:
+            // reload in place.
+            if (response.type === 'opaqueredirect' || isJson(response)) {
                 rememberScroll();
                 window.location.replace(window.location.href);
                 return;
@@ -48,6 +62,28 @@ export function initStayingForms() {
             document.close();
         });
     });
+}
+
+/**
+ * The address in the server's { location } answer, if that is what came back
+ * (only ever this site's own pages).
+ */
+async function stayLocation(response) {
+    if (!response.ok || !isJson(response)) {
+        return null;
+    }
+
+    try {
+        const url = new URL((await response.json()).location, window.location.href);
+
+        return url.origin === window.location.origin ? url.href : null;
+    } catch {
+        return null;
+    }
+}
+
+function isJson(response) {
+    return response.headers.get('content-type')?.includes('application/json') ?? false;
 }
 
 function rememberScroll() {

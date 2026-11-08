@@ -15,7 +15,7 @@
 <dialog id="work-entry" data-work-entry aria-label="تسجيل شغل"
     data-open-on-load="{{ $errors->hasAny(['customer_id', 'new_customer_name', 'one_time_name', 'one_time_phone', 'items', 'items.*', 'date']) ? 'true' : 'false' }}"
     class="m-0 h-dvh max-h-none w-full max-w-none overflow-visible bg-transparent p-0 text-ink backdrop:bg-ink/45 lg:m-auto lg:h-[min(100dvh-3rem,54rem)] lg:w-[min(100%-3rem,78rem)]">
-    <form method="POST" action="{{ route('work.store') }}" data-submit-lock data-work-form data-old='{{ json_encode($oldState) }}'
+    <form method="POST" action="{{ route('work.store') }}" data-submit-lock data-stay data-work-form data-old='{{ json_encode($oldState) }}'
         class="flex h-full flex-col overflow-hidden bg-sheet max-lg:animate-sheet-up lg:animate-drop lg:rounded-3xl lg:border lg:border-rule lg:bg-white lg:shadow-2xl lg:shadow-ink/25">
         @csrf
         <input type="hidden" name="date" value="{{ $day->format('Y-m-d') }}">
