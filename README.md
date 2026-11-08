@@ -9,6 +9,13 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/musab-darwish/charging-point/actions/workflows/tests.yml"><img src="https://github.com/musab-darwish/charging-point/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
+  <img src="https://img.shields.io/badge/Laravel-13-1D2B45" alt="Laravel 13">
+  <img src="https://img.shields.io/badge/PHP-8.3%2B-1D2B45" alt="PHP 8.3+">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1D2B45" alt="MIT license"></a>
+</p>
+
+<p align="center">
   <img src="docs/screenshots/phone-record-work.gif" width="300" alt="Recording a customer's work on the phone, then marking it paid">
 </p>
 

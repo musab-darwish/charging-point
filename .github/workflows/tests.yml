@@ -1,0 +1,44 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: bcmath, mbstring, pdo_sqlite, sqlite3, xmlwriter, zip
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install PHP libraries
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Build CSS and JS
+        run: |
+          npm ci
+          npm run build
+
+      - name: Prepare the app
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      # SQLite in memory (phpunit.xml): no database server needed.
+      - name: Run the tests
+        run: php artisan test
