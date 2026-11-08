@@ -6,6 +6,7 @@ import { initDayNav } from './behaviors/day-nav';
 import { initFlashMessages } from './behaviors/flash';
 import { initFreezer } from './behaviors/freezer';
 import { initLiveSearch } from './behaviors/live-search';
+import { initMenus } from './behaviors/menus';
 import { initOldDebts } from './behaviors/old-debts';
 import { initPasskeys } from './behaviors/passkeys';
 import { initPasswordToggles } from './behaviors/password-toggle';
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSubmitLocks();
     initPasswordToggles();
     initFlashMessages();
+    initMenus();
     initLiveSearch();
     initWorkEntry();
     initPaymentDialog();

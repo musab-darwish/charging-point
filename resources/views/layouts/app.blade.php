@@ -45,18 +45,22 @@
             </aside>
 
             <div class="min-w-0 flex-1">
-                {{-- Top bar (phone) --}}
-                <header class="sticky top-0 z-30 flex h-15 items-center justify-between border-b border-rule bg-sheet px-4 lg:hidden">
+                {{-- Top bar (phone). Above the floating record button and the bottom bar (z-30),
+                     so its open menu and backdrop cover them too. --}}
+                <header class="sticky top-0 z-40 flex h-15 items-center justify-between border-b border-rule bg-sheet px-4 lg:hidden">
                     <a href="{{ route('day.today') }}" class="flex items-center gap-2">
                         <x-logo class="size-7" />
                         <span class="text-lg font-extrabold">{{ config('app.name') }}</span>
                     </a>
 
-                    <details class="group relative">
+                    <details data-menu class="group relative">
                         <summary class="flex h-11 list-none items-center gap-2 rounded-xl ps-2 pe-1 [&::-webkit-details-marker]:hidden">
                             <span class="text-sm font-medium text-ink-muted">{{ $user->name }}</span>
                             <span class="flex size-9 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">{{ $initial }}</span>
                         </summary>
+
+                        {{-- Shown only while open (it sits inside <details>): a tap on it just closes the menu --}}
+                        <div data-menu-backdrop class="fixed inset-0" aria-hidden="true"></div>
 
                         <div class="absolute end-0 top-full mt-2 w-60 animate-drop rounded-2xl border border-rule bg-white p-2 shadow-xl shadow-ink/10">
                             <div class="px-3 py-2">
