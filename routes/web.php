@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/transactions/{transaction}/reverse', [ReversalController::class, 'store'])->name('transactions.reverse');
 
     Route::get('/debtors', [DebtorController::class, 'index'])->name('debtors.index');
+    Route::get('/debtors/export', [DebtorController::class, 'export'])->middleware('can:export-debtors')->name('debtors.export');
     Route::get('/transfers', [TransferController::class, 'index'])->name('transfers.index');
 
     Route::get('/freezer', [FreezeItemController::class, 'index'])->name('freezer.index');

@@ -42,5 +42,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('manage-payment-accounts', fn (User $user) => $user->is_owner);
         Gate::define('verify-transfers', fn (User $user) => $user->is_owner);
         Gate::define('move-old-debts', fn (User $user) => $user->is_owner);
+        // The file carries customers' names, phones and debts out of the system.
+        Gate::define('export-debtors', fn (User $user) => $user->is_owner);
     }
 }

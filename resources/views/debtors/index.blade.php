@@ -14,9 +14,21 @@
 
 @section('content')
     <div class="space-y-6">
-        <header>
-            <h1 class="text-3xl font-extrabold">المديونون</h1>
-            <p class="mt-2 text-ink-muted">كل من عليه رصيد، الأعلى أولاً، ومتى دفع آخر مرة.</p>
+        <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+                <h1 class="text-3xl font-extrabold">المديونون</h1>
+                <p class="mt-2 text-ink-muted">كل من عليه رصيد، الأعلى أولاً، ومتى دفع آخر مرة.</p>
+            </div>
+
+            @can('export-debtors')
+                @if ($debtors->owing->isNotEmpty() || $debtors->ahead->isNotEmpty())
+                    <a href="{{ route('debtors.export') }}" download
+                        class="inline-flex h-13 shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-ink px-5 font-bold text-ink transition duration-150 hover:bg-paper active:scale-[.97]">
+                        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" /><path d="M14 3v6h6" /><path d="M9 13l6 5M15 13l-6 5" /></svg>
+                        تصدير Excel
+                    </a>
+                @endif
+            @endcan
         </header>
 
         <div class="stagger grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
