@@ -58,7 +58,7 @@
                                     <div class="flex shrink-0 items-center">
                                         @if ($item->is_active)
                                             @foreach (['up' => 'M6 15l6-6 6 6', 'down' => 'M6 9l6 6 6-6'] as $direction => $path)
-                                                <form method="POST" action="{{ route('prices.move', [$item, $direction]) }}">
+                                                <form method="POST" action="{{ route('prices.move', [$item, $direction]) }}" data-stay>
                                                     @csrf
                                                     @method('PATCH')
                                                     <button type="submit" aria-label="{{ $direction === 'up' ? 'تحريك للأعلى' : 'تحريك للأسفل' }}: {{ $item->name }}"

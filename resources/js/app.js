@@ -12,12 +12,14 @@ import { initPasskeys } from './behaviors/passkeys';
 import { initPasswordToggles } from './behaviors/password-toggle';
 import { initPaymentDialog } from './behaviors/payment-dialog';
 import { initReversal } from './behaviors/reversal';
+import { initStayingForms } from './behaviors/stay';
 import { initSubmitLocks } from './behaviors/submit-lock';
 import { initWorkEntry } from './behaviors/work-entry';
 
 document.addEventListener('DOMContentLoaded', () => {
     initConfirmDialogs();
     initSubmitLocks();
+    initStayingForms();
     initPasswordToggles();
     initFlashMessages();
     initMenus();

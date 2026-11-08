@@ -41,7 +41,7 @@
 
                     @if ($line->isVerified())
                         @can('verify-transfers')
-                            <form method="POST" action="{{ route('transfers.unverify', $line) }}" data-submit-lock
+                            <form method="POST" action="{{ route('transfers.unverify', $line) }}" data-submit-lock data-stay
                                 data-confirm-title="إلغاء تأكيد الحوالة؟"
                                 data-confirm="ستعود حوالة {{ $line->amount }} ₪ «لم تتأكد». لا يتغيّر المبلغ ولا الرصيد."
                                 data-confirm-action="إلغاء التأكيد">
@@ -63,7 +63,7 @@
                         <span class="rounded-md border border-dashed border-credit/50 px-2 py-0.5 font-bold">لم تتأكد</span>
 
                         @can('verify-transfers')
-                            <form method="POST" action="{{ route('transfers.verify', $line) }}" data-submit-lock>
+                            <form method="POST" action="{{ route('transfers.verify', $line) }}" data-submit-lock data-stay>
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit" class="inline-flex h-11 items-center gap-1 rounded-lg border border-credit/40 px-3 text-sm font-bold transition hover:bg-credit-soft active:scale-[.97]">

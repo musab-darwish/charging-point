@@ -74,7 +74,7 @@
                                     <span class="shrink-0 text-lg font-extrabold tabular-nums text-credit">{{ $transfer->amount }} ₪</span>
 
                                     @can('verify-transfers')
-                                        <form method="POST" action="{{ route('transfers.verify', $transfer) }}" data-submit-lock class="shrink-0">
+                                        <form method="POST" action="{{ route('transfers.verify', $transfer) }}" data-submit-lock data-stay class="shrink-0">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="inline-flex h-11 items-center gap-1.5 rounded-xl border border-credit/40 px-3.5 text-sm font-bold text-credit transition hover:bg-credit-soft active:scale-[.97]">

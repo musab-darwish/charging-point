@@ -57,7 +57,7 @@
 
                         @unless ($user->is_owner)
                             @if ($user->isDeactivated())
-                                <form method="POST" action="{{ route('users.activate', $user) }}" data-submit-lock>
+                                <form method="POST" action="{{ route('users.activate', $user) }}" data-submit-lock data-stay>
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" class="inline-flex h-11 items-center gap-1.5 rounded-xl border border-brand/40 px-3.5 text-sm font-bold text-brand transition hover:bg-brand-soft">
@@ -66,7 +66,7 @@
                                     </button>
                                 </form>
                             @else
-                                <form method="POST" action="{{ route('users.deactivate', $user) }}" data-submit-lock
+                                <form method="POST" action="{{ route('users.deactivate', $user) }}" data-submit-lock data-stay
                                     data-confirm-title="إيقاف {{ $user->name }}؟"
                                     data-confirm="لن يستطيع {{ $user->name }} تسجيل الدخول، وسيُسجَّل خروجه فوراً. تبقى كل حركاته مسجّلة باسمه، ويمكنك إعادة تفعيله في أي وقت."
                                     data-confirm-action="إيقاف الحساب">

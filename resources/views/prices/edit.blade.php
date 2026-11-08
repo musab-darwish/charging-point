@@ -41,7 +41,7 @@
                             ? 'لا يظهر في شغل اليوم بعد الإخفاء، وتبقى الحركات القديمة كما هي.'
                             : 'يعود زراً في شغل اليوم بالترتيب نفسه.' }}
                     </p>
-                    <form method="POST" action="{{ route('prices.toggle', $item) }}" class="mt-4" data-submit-lock>
+                    <form method="POST" action="{{ route('prices.toggle', $item) }}" class="mt-4" data-submit-lock data-stay>
                         @csrf
                         @method('PATCH')
                         <button type="submit" @class([

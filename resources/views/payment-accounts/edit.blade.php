@@ -37,7 +37,7 @@
                             ? 'لا يظهر عند تسجيل حوالة جديدة ولا في رسالة الحساب، وتبقى الحوالات المسجّلة عليه كما هي.'
                             : 'يعود متاحاً عند تسجيل الحوالات وفي رسالة الحساب.' }}
                     </p>
-                    <form method="POST" action="{{ route('payment-accounts.toggle', $account) }}" class="mt-4" data-submit-lock>
+                    <form method="POST" action="{{ route('payment-accounts.toggle', $account) }}" class="mt-4" data-submit-lock data-stay>
                         @csrf
                         @method('PATCH')
                         <button type="submit" @class([
