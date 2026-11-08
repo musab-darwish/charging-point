@@ -1,0 +1,18 @@
+{
+    "id": "/",
+    "name": "نقطة شحن",
+    "short_name": "نقطة شحن",
+    "description": "نظامك المتكامل لإدارة نقطة الشحن",
+    "lang": "ar",
+    "dir": "rtl",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#F5F7F2",
+    "theme_color": "#F5F7F2",
+    "icons": [
+        { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+        { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    ]
+}

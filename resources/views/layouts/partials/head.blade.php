@@ -6,6 +6,10 @@
 <title>@hasSection('title')@yield('title') · @endif{{ config('app.name') }}</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
+{{-- Installable on the phone's home screen: name, icon and colors live in the manifest --}}
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+
 {{-- Hide the native cursor before the page paints (mouse only), so it doesn't
      flash before the custom one loads. If the JS never loads, bring it back. --}}
 <script>
