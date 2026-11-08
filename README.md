@@ -23,8 +23,12 @@ I run a charging point: people leave their phones, power banks, batteries and la
 
 It worked, until it didn't. Every total was added up by hand. A crossed-out line never said *why* it was crossed out. Nobody knew who had written what. And a notebook can get lost.
 
-<!-- Notebook photos go here, with the customers' names blurred:
-     docs/notebooks/day.jpg and docs/notebooks/debt.jpg -->
+<p align="center">
+  <img src="docs/notebooks/day.jpg" width="380" alt="A page of the day notebook: one line per customer and what they brought, almost every line crossed out">
+  <img src="docs/notebooks/debt.jpg" width="380" alt="A page of the debt notebook: a column per customer with the days piling up as (2)+(3)+(6), transfers and what's left">
+</p>
+
+<p align="center"><sub>The real notebooks: a page of the day notebook, and a page of the debt notebook. The customers' names are pixelated.</sub></p>
 
 **Nuqta Shahn** replaces both notebooks with one system: the day's work is priced as it's recorded, every item lands on the customer's account the moment it's written down, and each customer has a running balance, a statement by day, and an account message ready to send on WhatsApp.
 
