@@ -49,7 +49,25 @@
             </div>
         </div>
 
-        <section aria-labelledby="owing-title" class="animate-rise">
+        {{-- Find someone on the list as you type (resources/js/behaviors/list-filter.js) --}}
+        @if ($debtors->owing->count() + $debtors->ahead->count() > 1)
+            <div class="relative animate-rise" role="search">
+                <label for="debtors-search" class="sr-only">البحث في المديونين</label>
+                <span class="pointer-events-none absolute inset-y-0 start-4 flex items-center text-ink-muted">
+                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-4-4" /></svg>
+                </span>
+                <input id="debtors-search" type="search" data-list-filter autocomplete="off" placeholder="ابحث بالاسم أو رقم الجوال"
+                    class="peer block h-13 w-full rounded-2xl border border-rule-strong bg-white ps-12 pe-12 text-lg transition placeholder:text-ink-muted/60 hover:border-ink-muted focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15">
+                <kbd class="pointer-events-none absolute inset-y-0 end-4 my-auto hidden h-6 items-center rounded border border-rule-strong bg-sheet px-1.5 font-sans text-xs font-bold text-ink-muted lg:flex lg:peer-focus:hidden lg:peer-[:not(:placeholder-shown)]:hidden">/</kbd>
+            </div>
+
+            <div data-filter-none hidden class="rounded-2xl border border-dashed border-rule-strong bg-white/60 px-6 py-10 text-center">
+                <p class="text-lg font-bold">لا يوجد مدين يطابق «<span data-filter-typed></span>»</p>
+                <p class="mt-1 text-ink-muted">جرّب جزءاً من الاسم أو آخر أرقام الجوال.</p>
+            </div>
+        @endif
+
+        <section aria-labelledby="owing-title" class="animate-rise" @if ($debtors->owing->isNotEmpty()) data-filter-group @endif>
             <h2 id="owing-title" class="mb-3 text-lg font-extrabold">عليهم <span class="text-sm font-medium text-ink-muted">الأعلى أولاً</span></h2>
 
             @if ($debtors->owing->isEmpty())
@@ -65,7 +83,7 @@
                     @foreach ($debtors->owing as $row)
                         @php $days = $row->daysSincePayment(); @endphp
 
-                        <li class="flex items-center pe-2 transition hover:bg-sheet sm:pe-3">
+                        <li data-filter-item data-search="{{ $row->customer->name }} {{ $row->customer->phone_local }}" class="flex items-center pe-2 transition hover:bg-sheet sm:pe-3">
                             <a href="{{ route('customers.show', $row->customer) }}"
                                 class="group flex min-w-0 flex-1 items-center gap-3 py-3.5 ps-4 pe-2 sm:gap-4 sm:ps-5">
                                 <span class="w-6 shrink-0 text-center text-sm font-bold tabular-nums text-ink-muted">{{ $loop->iteration }}</span>
@@ -100,12 +118,12 @@
         </section>
 
         @if ($debtors->ahead->isNotEmpty())
-            <section aria-labelledby="ahead-title" class="animate-rise max-lg:pb-20">
+            <section aria-labelledby="ahead-title" class="animate-rise max-lg:pb-20" data-filter-group>
                 <h2 id="ahead-title" class="mb-3 text-lg font-extrabold">لهم رصيد <span class="text-sm font-medium text-ink-muted">يُخصم من شغلهم القادم</span></h2>
 
                 <ul class="divide-y divide-rule overflow-hidden rounded-2xl border border-rule bg-white">
                     @foreach ($debtors->ahead as $row)
-                        <li>
+                        <li data-filter-item data-search="{{ $row->customer->name }} {{ $row->customer->phone_local }}">
                             <a href="{{ route('customers.show', $row->customer) }}" class="group flex items-center gap-3 px-4 py-3.5 transition hover:bg-sheet sm:gap-4 sm:px-5">
                                 <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-credit-soft text-sm font-bold text-credit">{{ mb_substr($row->customer->name, 0, 1) }}</span>
                                 <span class="min-w-0 flex-1 truncate font-bold transition group-hover:text-brand">{{ $row->customer->name }}</span>

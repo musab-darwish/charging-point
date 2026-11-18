@@ -76,3 +76,24 @@ test('the debtors page shows each one with the total', function () {
         ->assertOk()
         ->assertSeeInOrder(['40.00', 'أبو محمد', 'آخر دفعة', '2.00', 'قبل 3 أيام', '40.00']);
 });
+
+test('the list can be searched by name or phone once it has more than one person', function () {
+    $owes = Customer::factory()->create(['name' => 'أبو سامي', 'phone' => '970599123456']);
+    $ahead = Customer::factory()->withoutPhone()->create(['name' => 'دافع زيادة']);
+    moveMoney($owes, 'debit', '5.00');
+    moveMoney($ahead, 'credit', '3.00');
+
+    $this->actingAs(User::factory()->create())->get('/debtors')
+        ->assertOk()
+        ->assertSee('data-list-filter', false)
+        ->assertSee('data-search="أبو سامي 0599123456"', false)
+        ->assertSee('data-search="دافع زيادة "', false);
+});
+
+test('there is no search box for a single person', function () {
+    moveMoney(Customer::factory()->create(), 'debit', '5.00');
+
+    $this->actingAs(User::factory()->create())->get('/debtors')
+        ->assertOk()
+        ->assertDontSee('data-list-filter', false);
+});

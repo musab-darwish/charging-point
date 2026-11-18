@@ -1,3 +1,5 @@
+import { normalizeSearch as normalize } from './search-text';
+
 /**
  * Find a customer among a day's cards as you type, or show only one state
  * (لم يُدفع بعد / متبقي / واصل). Everything is already on the page, so it
@@ -52,17 +54,3 @@ export function initDayFilter() {
     });
 }
 
-/**
- * Match Arabic names the way people type them: أحمد = احمد, فاطمة = فاطمه,
- * مصطفى = مصطفي, with diacritics and extra spaces ignored.
- */
-function normalize(text) {
-    return String(text)
-        .toLowerCase()
-        .replace(/[ً-ْـ]/g, '')
-        .replace(/[أإآ]/g, 'ا')
-        .replace(/ة/g, 'ه')
-        .replace(/ى/g, 'ي')
-        .replace(/\s+/g, ' ')
-        .trim();
-}
