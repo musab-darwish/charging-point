@@ -159,7 +159,21 @@ test('the freezer page lists what is waiting and what was picked up', function (
 
     $this->actingAs($this->user)->get('/freezer')
         ->assertOk()
-        ->assertSeeInOrder(['في الفريزر الآن', 'كيكة وسط', 'أبو محمد', '3 أيام', 'استُلمت مؤخراً', 'قنينة مي', '2.00 ₪']);
+        ->assertSeeInOrder(['في الفريزر الآن', 'أبو محمد', 'كيكة وسط', '3 أيام', 'استُلمت مؤخراً', 'قنينة مي', '2.00 ₪']);
+});
+
+test('a customer\'s items share one card, each with its own day count, oldest customer first', function () {
+    $other = Customer::factory()->create(['name' => 'أم خالد']);
+    FreezeItem::factory()->for($this->customer)->create(['description' => 'دجاجة', 'stored_at' => now()->subDays(1)]);
+    FreezeItem::factory()->for($other)->create(['description' => 'لحمة', 'stored_at' => now()->subDays(5)]);
+    FreezeItem::factory()->for($this->customer)->create(['description' => 'كيكة وسط', 'stored_at' => now()->subDays(3)]);
+
+    $this->actingAs($this->user)->get('/freezer')
+        ->assertOk()
+        ->assertSeeInOrder([
+            'أم خالد', 'غرض واحد', 'لحمة', '5 أيام',
+            'أبو محمد', 'غرضان', 'أقدمها 3 أيام', 'كيكة وسط', '3 أيام', 'دجاجة', 'يوم واحد',
+        ]);
 });
 
 test('a price that is not a number is refused in plain words', function () {

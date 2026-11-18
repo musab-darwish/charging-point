@@ -22,8 +22,13 @@ class FreezeItemController extends Controller
      */
     public function index(): View
     {
+        $items = FreezeItem::inFreezer()->with(['customer', 'user'])->get();
+
         return view('freezer.index', [
-            'items' => FreezeItem::inFreezer()->with(['customer', 'user'])->get(),
+            'items' => $items,
+            // One card per customer with all their items; the items come oldest
+            // first, so the cards follow each customer's oldest item.
+            'groups' => $items->groupBy('customer_id')->values(),
             'recent' => FreezeItem::recentlyPickedUp()->with(['customer', 'pickedUpBy', 'transaction'])->get(),
             'storeToken' => (string) Str::uuid(),
             'pickUpToken' => (string) Str::uuid(),

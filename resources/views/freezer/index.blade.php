@@ -60,54 +60,82 @@
                     <p class="mt-1 text-ink-muted">سجّل كل غرض يوضع في الفريزر، ليظهر هنا حتى يستلمه صاحبه.</p>
                 </div>
             @else
-                <ul class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                    @foreach ($items as $item)
-                        @php $stored = $item->daysStored(); @endphp
+                {{-- One card per customer, their items one per row, each with its own day count and pickup --}}
+                <ul class="grid items-start gap-3 lg:grid-cols-2">
+                    @foreach ($groups as $customerItems)
+                        @php
+                            $customer = $customerItems->first()->customer;
+                            $longest = $customerItems->first()->daysStored();
+                        @endphp
 
-                        <li class="flex flex-col rounded-2xl border border-rule bg-white p-4 sm:p-5">
-                            <div class="flex items-start justify-between gap-3">
-                                <div class="min-w-0">
-                                    <p class="text-lg font-extrabold leading-snug">{{ $item->label() }}</p>
-                                    <a href="{{ route('customers.show', $item->customer) }}" class="mt-0.5 inline-flex min-h-11 items-center font-bold text-brand transition hover:text-brand-deep">{{ $item->customer->name }}</a>
+                        <li class="overflow-hidden rounded-2xl border border-rule bg-white">
+                            <header class="flex items-center gap-3 border-b border-rule bg-sheet/60 px-4 py-3 sm:px-5">
+                                <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">{{ mb_substr($customer->name, 0, 1) }}</span>
+                                <div class="min-w-0 flex-1">
+                                    <a href="{{ route('customers.show', $customer) }}" class="flex min-h-7 items-center gap-1.5 font-extrabold transition hover:text-brand">
+                                        <span class="truncate">{{ $customer->name }}</span>
+                                        @if ($customer->is_one_time)
+                                            <x-one-time-badge />
+                                        @endif
+                                    </a>
+                                    <p class="text-xs text-ink-muted">
+                                        {{ trans_choice('{1} غرض واحد|{2} غرضان|[3,10] :count أغراض|[11,*] :count غرضاً', $customerItems->count()) }}
+                                        @if ($customerItems->count() > 1)
+                                            · أقدمها {{ $longest === 0 ? 'وُضع اليوم' : $dayCount($longest) }}
+                                        @endif
+                                    </p>
                                 </div>
+                            </header>
 
-                                <span @class([
-                                    'shrink-0 rounded-lg px-2.5 py-1 text-sm font-bold tabular-nums',
-                                    'bg-brand-soft text-brand' => $stored === 0,
-                                    'bg-paper text-ink' => $stored > 0 && $stored < 7,
-                                    'bg-debit-soft text-debit' => $stored >= 7,
-                                ])>{{ $days($stored) }}</span>
-                            </div>
+                            <ul class="divide-y divide-dashed divide-rule">
+                                @foreach ($customerItems as $item)
+                                    @php $stored = $item->daysStored(); @endphp
 
-                            <p class="text-xs text-ink-muted">
-                                وصل {{ $item->stored_at->translatedFormat('l j F') }} · سجّله {{ $item->user->name }}
-                            </p>
+                                    <li class="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 sm:px-5">
+                                        <div class="min-w-0 flex-1 basis-40">
+                                            <p class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                                <span class="text-lg font-extrabold leading-snug">{{ $item->label() }}</span>
+                                                <span @class([
+                                                    'shrink-0 rounded-lg px-2 py-0.5 text-sm font-bold tabular-nums',
+                                                    'bg-brand-soft text-brand' => $stored === 0,
+                                                    'bg-paper text-ink' => $stored > 0 && $stored < 7,
+                                                    'bg-debit-soft text-debit' => $stored >= 7,
+                                                ])>{{ $days($stored) }}</span>
+                                            </p>
+                                            <p class="mt-0.5 text-xs text-ink-muted">
+                                                وصل {{ $item->stored_at->translatedFormat('l j F') }} · سجّله {{ $item->user->name }}
+                                            </p>
+                                        </div>
 
-                            <div class="mt-4 flex items-center gap-2 border-t border-dashed border-rule pt-4">
-                                <button type="button" data-pickup='{{ json_encode([
-                                    'url' => route('freezer.pickup', $item),
-                                    'id' => $item->id,
-                                    'label' => $item->label(),
-                                    'customer' => $item->customer->name,
-                                    'days' => $days($stored),
-                                ]) }}'
-                                    class="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand px-4 font-bold text-white transition hover:bg-brand-deep active:scale-[.97]">
-                                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg>
-                                    استلام
-                                </button>
+                                        <div class="flex shrink-0 items-center gap-2">
+                                            <button type="button" data-pickup='{{ json_encode([
+                                                'url' => route('freezer.pickup', $item),
+                                                'id' => $item->id,
+                                                'label' => $item->label(),
+                                                'customer' => $customer->name,
+                                                'days' => $days($stored),
+                                            ]) }}'
+                                                aria-label="استلام {{ $item->label() }} لـ {{ $customer->name }}"
+                                                class="inline-flex h-11 items-center justify-center gap-1.5 rounded-xl bg-brand px-4 font-bold text-white transition hover:bg-brand-deep active:scale-[.97]">
+                                                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg>
+                                                استلام
+                                            </button>
 
-                                <form method="POST" action="{{ route('freezer.destroy', $item) }}" data-submit-lock
-                                    data-confirm-title="حذف {{ $item->label() }}؟"
-                                    data-confirm="سيُحذف الغرض من قائمة الفريزر. استخدم هذا فقط إن سُجّل بالخطأ؛ عند تسليمه اضغط «استلام»."
-                                    data-confirm-action="حذف">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" aria-label="حذف {{ $item->label() }} باسم {{ $item->customer->name }}"
-                                        class="flex size-11 items-center justify-center rounded-xl border border-rule-strong text-ink-muted transition hover:border-debit/40 hover:bg-debit-soft hover:text-debit">
-                                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" /></svg>
-                                    </button>
-                                </form>
-                            </div>
+                                            <form method="POST" action="{{ route('freezer.destroy', $item) }}" data-submit-lock
+                                                data-confirm-title="حذف {{ $item->label() }}؟"
+                                                data-confirm="سيُحذف الغرض من قائمة الفريزر. استخدم هذا فقط إن سُجّل بالخطأ؛ عند تسليمه اضغط «استلام»."
+                                                data-confirm-action="حذف">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" aria-label="حذف {{ $item->label() }} باسم {{ $customer->name }}"
+                                                    class="flex size-11 items-center justify-center rounded-xl border border-rule-strong text-ink-muted transition hover:border-debit/40 hover:bg-debit-soft hover:text-debit">
+                                                    <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" /></svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
                         </li>
                     @endforeach
                 </ul>
