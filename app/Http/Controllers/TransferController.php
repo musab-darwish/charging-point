@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PaymentAccount;
 use App\Models\Transaction;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class TransferController extends Controller
@@ -23,6 +25,9 @@ class TransferController extends Controller
         $sum = fn (Collection $group) => $group->reduce(fn (string $total, Transaction $transfer) => bcadd($total, $transfer->amount, 2), '0.00');
 
         return view('transfers.index', [
+            // For «تسجيل حوالة»: the accounts a transfer can arrive on, and a fresh form token.
+            'paymentAccounts' => PaymentAccount::active()->ordered()->get(),
+            'transferToken' => (string) Str::uuid(),
             'groups' => $transfers->groupBy('payment_account_id')
                 ->map(fn (Collection $group) => ['account' => $group->first()->paymentAccount, 'transfers' => $group, 'total' => $sum($group)])
                 ->sortBy(fn (array $group) => $group['account']?->name)

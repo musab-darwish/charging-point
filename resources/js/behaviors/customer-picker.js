@@ -15,6 +15,7 @@ export function createCustomerPicker(form, onChange) {
     const idField = form.querySelector('[data-customer-id]');
     const newField = form.querySelector('[data-new-customer]');
     const walkIn = root.dataset.walkIn ? JSON.parse(root.dataset.walkIn) : null;
+    const allowNew = !('noNew' in root.dataset);
 
     let chosen = null;
     let options = [];
@@ -29,7 +30,13 @@ export function createCustomerPicker(form, onChange) {
 
     const render = () => {
         results.replaceChildren(...options.map((option, index) => optionElement(option, index, index === active)));
-        results.hidden = options.length === 0;
+
+        // Existing customers only: say so instead of offering to add the name.
+        if (options.length === 0 && !allowNew && input.value.trim() !== '') {
+            results.replaceChildren(noMatchElement());
+        }
+
+        results.hidden = results.children.length === 0;
         input.setAttribute('aria-expanded', String(!results.hidden));
     };
 
@@ -52,7 +59,7 @@ export function createCustomerPicker(form, onChange) {
             options = [
                 ...(walkIn && (term === '' || walkIn.name.includes(term)) ? [walkIn] : []),
                 ...customers,
-                ...(term && !exact ? [{ isNew: true, name: term.replace(/\s+/g, ' ') }] : []),
+                ...(allowNew && term && !exact ? [{ isNew: true, name: term.replace(/\s+/g, ' ') }] : []),
             ];
             active = options.length ? 0 : -1;
             render();
@@ -161,6 +168,16 @@ function optionElement(option, index, isActive) {
     }
 
     item.append(badge, text);
+
+    return item;
+}
+
+function noMatchElement() {
+    const item = document.createElement('li');
+    item.setAttribute('role', 'option');
+    item.setAttribute('aria-disabled', 'true');
+    item.className = 'px-3 py-3 text-sm text-ink-muted';
+    item.textContent = 'لا يوجد زبون بهذا الاسم أو الرقم. أضفه من صفحة الزبائن أولاً.';
 
     return item;
 }

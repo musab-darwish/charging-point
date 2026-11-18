@@ -1,9 +1,11 @@
 {{-- Pick a customer by name or phone, or add a new name (resources/js/behaviors/customer-picker.js).
-     $pickerId names the fields; $walkIn offers the walk-in customer; $next is where focus goes after a pick.
+     $pickerId names the fields; $walkIn offers the walk-in customer; $next is where focus goes after a pick;
+     $existingOnly leaves out "add as a new customer".
      The form around it holds the [data-customer-id] and [data-new-customer] hidden fields. --}}
 <div data-customer-picker data-search-url="{{ route('customers.search') }}"
     @isset($walkIn) data-walk-in='{{ json_encode(['id' => $walkIn->id, 'name' => $walkIn->name, 'balance' => '0.00', 'walkIn' => true]) }}' @endisset
     @isset($next) data-next="{{ $next }}" @endisset
+    @if ($existingOnly ?? false) data-no-new @endif
     class="rounded-xl transition data-[missing=true]:ring-4 data-[missing=true]:ring-debit/25 data-[missing=true]:ring-offset-4 data-[missing=true]:ring-offset-white">
     <label for="{{ $pickerId }}-customer-search" class="sr-only">الزبون</label>
 

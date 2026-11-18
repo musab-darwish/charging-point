@@ -29,6 +29,7 @@ class PaymentRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
+            'confirmed' => $this->boolean('confirmed'),
             'method' => $this->input('method') ?: Transaction::CASH,
             'amount' => Numbers::normalize($this->input('amount')),
             'reference' => Numbers::normalize($this->input('reference')),
@@ -52,6 +53,9 @@ class PaymentRequest extends FormRequest
             'date' => ['required', 'date_format:Y-m-d', 'before_or_equal:today'],
             'form_token' => ['required', 'uuid'],
             'back_to_customer' => ['nullable', 'integer', 'exists:customers,id'],
+            // Recorded from the transfers page: go back there.
+            'back_to' => ['nullable', Rule::in(['transfers'])],
+            'confirmed' => ['boolean'],
         ];
     }
 
@@ -70,6 +74,9 @@ class PaymentRequest extends FormRequest
             'amount.decimal' => 'يقبل المبلغ منزلتين عشريتين على الأكثر.',
             'payment_account_id.required' => 'اختر الحساب الذي وصلت عليه الحوالة.',
             'payment_account_id.exists' => 'هذا الحساب غير متاح للحوالات.',
+            'customer_id.required' => 'اختر الزبون الذي أرسل الحوالة.',
+            'date.required' => 'اختر تاريخ الدفعة.',
+            'date.before_or_equal' => 'لا يمكن تسجيل دفعة بتاريخ لم يأتِ بعد.',
         ];
     }
 
@@ -93,6 +100,25 @@ class PaymentRequest extends FormRequest
     public function amount(): string
     {
         return number_format((float) $this->validated('amount'), 2, '.', '');
+    }
+
+    /**
+     * A transfer the owner marked as already arrived ("وصلت وتأكدت منها").
+     * Anyone else sending it is ignored: the transfer waits to be confirmed.
+     */
+    public function confirmedByOwner(): bool
+    {
+        return $this->validated('confirmed')
+            && $this->validated('method') === Transaction::TRANSFER
+            && $this->user()->can('verify-transfers');
+    }
+
+    /**
+     * Whether to go back to the transfers page afterwards.
+     */
+    public function backToTransfers(): bool
+    {
+        return $this->validated('back_to') === 'transfers';
     }
 
     /**

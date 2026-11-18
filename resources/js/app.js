@@ -12,6 +12,7 @@ import { initOldDebts } from './behaviors/old-debts';
 import { initPasskeys } from './behaviors/passkeys';
 import { initPasswordToggles } from './behaviors/password-toggle';
 import { initPaymentDialog } from './behaviors/payment-dialog';
+import { initRecordTransfer } from './behaviors/record-transfer';
 import { initReversal } from './behaviors/reversal';
 import { initStayingForms } from './behaviors/stay';
 import { initSubmitLocks } from './behaviors/submit-lock';
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initLiveSearch();
     initWorkEntry();
     initPaymentDialog();
+    initRecordTransfer();
     initReversal();
     initAccountMessage();
     initPasskeys();

@@ -12,9 +12,17 @@
 
 @section('content')
     <div class="space-y-6">
-        <header>
-            <h1 class="text-3xl font-extrabold">الحوالات</h1>
-            <p class="mt-2 max-w-2xl text-ink-muted">حوالات سُجّلت ولم يُتأكد من وصولها بعد، مجمّعة بالحساب. افتح التطبيق وراجعها واحدة واحدة.</p>
+        <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+                <h1 class="text-3xl font-extrabold">الحوالات</h1>
+                <p class="mt-2 max-w-2xl text-ink-muted">حوالات سُجّلت ولم يُتأكد من وصولها بعد، مجمّعة بالحساب. افتح التطبيق وراجعها واحدة واحدة.</p>
+            </div>
+
+            <button type="button" data-open-transfer
+                class="inline-flex h-13 shrink-0 items-center justify-center gap-2 rounded-xl bg-credit px-5 font-bold text-white transition duration-150 hover:bg-credit/90 active:scale-[.97]">
+                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                تسجيل حوالة
+            </button>
         </header>
 
         <dl class="stagger grid grid-cols-2 gap-3 lg:grid-cols-3">
@@ -94,5 +102,7 @@
                 <p class="text-sm text-ink-muted">يؤكد المالك وصول الحوالات بعد مراجعة التطبيق.</p>
             @endcannot
         @endif
+
+        @include('transfers.partials.record-dialog')
     </div>
 @endsection
